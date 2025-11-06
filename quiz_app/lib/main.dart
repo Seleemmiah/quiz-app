@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quiz_app/screens/quiz_screen.dart';
+import 'package:quiz_app/screens/start_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -75,6 +77,10 @@ class MyApp extends StatelessWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: ThemeMode.system,
+      home: StartScreen(),
+      routes: {
+        '/quiz': (context) => const QuizScreen(),
+      },
     );
   }
 }
