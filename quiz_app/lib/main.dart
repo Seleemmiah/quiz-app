@@ -1,26 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_app/screens/quiz_screen.dart';
+import 'package:quiz_app/screens/result_screen.dart';
 import 'package:quiz_app/screens/start_screen.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<MyApp> createState() => MyAppState();
+}
 
+class MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // --- 1. DEFINE LIGHT THEME ---
     final lightTheme = ThemeData(
       brightness: Brightness.light,
       primarySwatch: Colors.indigo,
       scaffoldBackgroundColor: Colors.grey.shade100, // Light background
-      textTheme: GoogleFonts.latoTextTheme(
-        Theme.of(context).textTheme,
-      ).apply(
+      textTheme: GoogleFonts.latoTextTheme().apply(
         bodyColor: Colors.black, // Default text color for light mode
         displayColor: Colors.black,
       ),
@@ -33,22 +44,19 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           textStyle: GoogleFonts.lato(
-            fontSize: 18,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
     );
 
-
     // --- 2. DEFINE DARK THEME ---
     final darkTheme = ThemeData(
       brightness: Brightness.dark,
       primarySwatch: Colors.indigo,
       scaffoldBackgroundColor: Color(0xFF2D344A), // A nice dark blue
-      textTheme: GoogleFonts.latoTextTheme(
-        Theme.of(context).textTheme,
-      ).apply(
+      textTheme: GoogleFonts.latoTextTheme().apply(
         bodyColor: Colors.white, // Default text color for dark mode
         displayColor: Colors.white,
       ),
@@ -60,14 +68,10 @@ class MyApp extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-
-          // --- FIX ---
-          // You were missing the textStyle here
           textStyle: GoogleFonts.lato(
-            fontSize: 18,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
-          // --- FIX ---
         ),
       ),
     );
@@ -76,10 +80,22 @@ class MyApp extends StatelessWidget {
       title: 'Quiz App',
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.system,
-      home: StartScreen(),
+      themeMode: _themeMode,
+      initialRoute: '/',
       routes: {
-        '/quiz': (context) => const QuizScreen(),
+        '/': (context) => StartScreen(),
+        '/quiz': (context) => QuizScreen(),
+        '/results': (context) {
+          // We get the arguments (the score AND total) passed by the Navigator
+          final args =
+              ModalRoute.of(context)!.settings.arguments as Map<String, int>;
+
+          return ResultScreen(
+            score: args['score']!,
+            // We now get the total from the arguments!
+            totalQuestions: args['totalQuestions']!,
+          );
+        },
       },
     );
   }

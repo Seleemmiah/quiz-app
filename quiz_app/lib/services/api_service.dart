@@ -6,9 +6,9 @@ class ApiService {
   // This is the function we'll call to get the questions
   // It returns a "Future", meaning the data will come back later.
   Future<List<Question>> fetchQuestions() async {
-    // We're asking for 10 multiple-choice questions
-    const String apiUrl =
-        'https://opentdb.com/api.php?amount=10&type=multiple';
+    // We're asking for 10 multiple-choice questions. Since no category is
+    // specified, the API will return questions from all categories.
+    const String apiUrl = 'https://opentdb.com/api.php?amount=10&type=multiple';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));

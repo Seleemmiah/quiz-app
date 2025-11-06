@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-// This is our new "home" page (the '/' route)
+// import 'package:quiz_app/screens/quiz_screen.dart';
+
 class StartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -24,18 +25,15 @@ class StartScreen extends StatelessWidget {
                 'Welcome to the Quiz!',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Theme.of(context).textTheme.bodySmall?.color,
+                      fontWeight:
+                          FontWeight.bold, // Keep bold, but remove size/color
                     ),
               ),
               SizedBox(height: 10),
               Text(
                 'Test your knowledge.',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall?.color,
-                    fontSize: 10),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               SizedBox(height: 50),
 
