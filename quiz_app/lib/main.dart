@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:quiz_app/screens/quiz_screen.dart';
 import 'package:quiz_app/screens/result_screen.dart';
+import 'package:quiz_app/screens/review_screen.dart';
 import 'package:quiz_app/screens/splash_screen.dart';
 import 'package:quiz_app/screens/start_screen.dart';
 import 'package:quiz_app/settings.dart';
@@ -44,8 +45,19 @@ class MyAppState extends State<MyApp> {
             totalQuestions: args['totalQuestions']!,
             difficulty: args['difficulty'] as Difficulty,
             category: args['category'] as String?,
+            questions: args['questions'],
+            selectedAnswers: args['selectedAnswers'],
           );
         },
+        '/review': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>;
+
+          return ReviewScreen(
+            questions: args['questions'],
+            selectedAnswers: args['selectedAnswers'],
+          );
+        }
       },
     );
   }

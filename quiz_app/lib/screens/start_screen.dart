@@ -3,6 +3,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:quiz_app/screens/quiz_screen.dart';
 import 'package:quiz_app/settings.dart';
 import 'package:quiz_app/services/api_service.dart';
+import 'package:quiz_app/services/score_service.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -16,16 +17,32 @@ class _StartScreenState extends State<StartScreen> {
   Difficulty _selectedDifficulty = Difficulty.easy;
   int? _selectedTimeInMinutes = 5; // Default to 5 minutes
   String? _selectedCategory;
+  int _highScore = 0;
 
   // Future to hold categories from the API
   late Future<List<String>> _categoriesFuture;
   final ApiService _apiService = ApiService();
+  final ScoreService _scoreService = ScoreService();
 
   @override
   void initState() {
     super.initState();
     // Fetch categories when the widget is first created
     _categoriesFuture = _apiService.fetchCategories();
+  }
+
+  // --- New method to load the high score ---
+  Future<void> _loadHighScore() async {
+    // Ensure a category is selected before trying to load a score
+    if (_selectedCategory == null) return;
+
+    final score = await _scoreService.getHighScore(
+      difficulty: _selectedDifficulty,
+      category: _selectedCategory,
+    );
+
+    // Check if the widget is still mounted before calling setState
+    if (mounted) setState(() => _highScore = score);
   }
 
   // Helper to create a map for time options for clarity
@@ -84,6 +101,8 @@ class _StartScreenState extends State<StartScreen> {
                     final categories = snapshot.data!;
                     if (_selectedCategory == null && categories.isNotEmpty) {
                       _selectedCategory = categories.first;
+                      // Load initial high score once categories are loaded
+                      _loadHighScore();
                     }
                     return DropdownButtonFormField<String>(
                       value: _selectedCategory,
@@ -106,6 +125,7 @@ class _StartScreenState extends State<StartScreen> {
                       onChanged: (String? newValue) {
                         setState(() {
                           _selectedCategory = newValue;
+                          _loadHighScore(); // Reload score when category changes
                         });
                       },
                     );
@@ -133,6 +153,7 @@ class _StartScreenState extends State<StartScreen> {
                 onSelectionChanged: (Set<Difficulty> newSelection) {
                   setState(() {
                     _selectedDifficulty = newSelection.first;
+                    _loadHighScore(); // Reload score when difficulty changes
                   });
                 },
                 style: SegmentedButton.styleFrom(
@@ -165,6 +186,18 @@ class _StartScreenState extends State<StartScreen> {
                   });
                 },
               ),
+              const SizedBox(height: 20),
+
+              // --- High Score Display ---
+              FadeIn(
+                delay: const Duration(milliseconds: 400),
+                child: Text(
+                  'High Score: $_highScore',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+
               const SizedBox(height: 40),
               ElevatedButton(
                 child: const Text('Start Quiz'),

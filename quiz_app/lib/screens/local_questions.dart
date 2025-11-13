@@ -110,7 +110,7 @@ final List<Map<String, dynamic>> localQuestions = [
   {
     "category": "Sports",
     "type": "multiple",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "question": "Which country won the 2014 FIFA World Cup?",
     "correct_answer": "Germany",
     "incorrect_answers": ["Argentina", "Brazil", "Netherlands"],
@@ -1947,18 +1947,6 @@ final List<Map<String, dynamic>> localQuestions = [
     "explanation":
         "The clavicle, or collarbone, is a long, slender bone that connects the shoulder blade (scapula) to the breastbone (sternum)."
   },
-  {
-    "category": "Medicine",
-    "type": "multiple",
-    "difficulty": "medium",
-    "question":
-        "A person with 'Type 1 Diabetes' has a pancreas that produces little to no...?",
-    "correct_answer": "Insulin",
-    "incorrect_answers": ["Glucagon", "Bile", "Adrenaline"],
-    "explanation":
-        "Type 1 diabetes is an autoimmune condition where the body's immune system attacks and destroys the insulin-producing beta cells in the pancreas. Insulin is a hormone required to move sugar (glucose) into cells for energy."
-  },
-
   {
     "category": "Engineering",
     "type": "multiple",

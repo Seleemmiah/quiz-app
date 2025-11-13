@@ -180,6 +180,8 @@ class _QuizScreenState extends State<QuizScreen> {
         'totalQuestions': _questions.length, // Pass the total here
         'difficulty': widget.difficulty,
         'category': widget.category,
+        'questions': _questions,
+        'selectedAnswers': _selectedAnswers,
       },
     );
   }
@@ -298,109 +300,129 @@ class _QuizScreenState extends State<QuizScreen> {
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Question ${_questionIndex + 1} of ${_questions.length}',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      currentQuestion.question,
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                // Reduced font size
-                                fontWeight: FontWeight.bold,
-                              ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 30),
-                    ...List.generate(currentQuestion.shuffledAnswers.length,
-                        (index) {
-                      final answer = currentQuestion.shuffledAnswers[index];
-                      final buttonColor = _answerColors[answer];
-                      final label =
-                          String.fromCharCode('A'.codeUnitAt(0) + index);
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    // Add a fade and slight slide-up effect
+                    return FadeTransition(
+                      opacity: animation,
+                      child: SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0.0, 0.1),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: Column(
+                    // The key is crucial for AnimatedSwitcher to detect a change
+                    key: ValueKey<int>(_questionIndex),
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Question ${_questionIndex + 1} of ${_questions.length}',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        currentQuestion.question,
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  // Reduced font size
+                                  fontWeight: FontWeight.bold,
+                                ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 30),
+                      ...List.generate(currentQuestion.shuffledAnswers.length,
+                          (index) {
+                        final answer = currentQuestion.shuffledAnswers[index];
+                        final buttonColor = _answerColors[answer];
+                        final label =
+                            String.fromCharCode('A'.codeUnitAt(0) + index);
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: ElevatedButton(
-                          onPressed: _selectedAnswers[_questionIndex] != null
-                              ? null
-                              : () => _answerQuestion(answer),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text('$label. $answer'),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: buttonColor,
-                            disabledBackgroundColor: buttonColor,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 24),
-                          ),
-                        ),
-                      );
-                    }),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Previous Button
-                        ElevatedButton(
-                          onPressed: _questionIndex > 0
-                              ? () => _goToQuestion(_questionIndex - 1)
-                              : null,
-                          child: const Text('Previous'),
-                        ),
-                        // Next / Finish Button
-                        if (_questionIndex < _questions.length - 1)
-                          ElevatedButton(
-                            onPressed: () => _goToQuestion(_questionIndex + 1),
-                            child: const Text('Next'),
-                          )
-                        else
-                          ElevatedButton(
-                            onPressed: _finishQuiz,
-                            child: const Text('Finish'),
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: ElevatedButton(
+                            onPressed: _selectedAnswers[_questionIndex] != null
+                                ? null
+                                : () => _answerQuestion(answer),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('$label. $answer'),
+                            ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
+                              backgroundColor: buttonColor,
+                              disabledBackgroundColor: buttonColor,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 24),
                             ),
                           ),
+                        );
+                      }),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Previous Button
+                          ElevatedButton(
+                            onPressed: _questionIndex > 0
+                                ? () => _goToQuestion(_questionIndex - 1)
+                                : null,
+                            child: const Text('Previous'),
+                          ),
+                          // Next / Finish Button
+                          if (_questionIndex < _questions.length - 1)
+                            ElevatedButton(
+                              onPressed: () =>
+                                  _goToQuestion(_questionIndex + 1),
+                              child: const Text('Next'),
+                            )
+                          else
+                            ElevatedButton(
+                              onPressed: _finishQuiz,
+                              child: const Text('Finish'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      // Explanation Section
+                      if (_selectedAnswers[_questionIndex] != null) ...[
+                        const SizedBox(height: 20),
+                        FadeIn(
+                            child: Container(
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).cardColor.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Explanation:',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                currentQuestion.explanation ??
+                                    'No explanation available for this question.',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                        ))
                       ],
-                    ),
-                    const SizedBox(height: 30),
-                    // Explanation Section
-                    if (_selectedAnswers[_questionIndex] != null) ...[
-                      const SizedBox(height: 20),
-                      FadeIn(
-                          child: Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Explanation:',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              currentQuestion.explanation ??
-                                  'No explanation available for this question.',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              textAlign: TextAlign.start,
-                            ),
-                          ],
-                        ),
-                      ))
                     ],
-                  ],
+                  ),
                 ),
               ),
             );

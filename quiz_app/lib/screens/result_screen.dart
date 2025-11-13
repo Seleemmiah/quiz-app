@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:quiz_app/services/score_service.dart';
+import 'package:quiz_app/models/question_model.dart';
 import 'package:quiz_app/settings.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -9,6 +10,8 @@ class ResultScreen extends StatefulWidget {
   final int totalQuestions;
   final Difficulty difficulty;
   final String? category;
+  final List<Question> questions;
+  final List<String?> selectedAnswers;
 
   // Constructor to receive the data
   const ResultScreen({
@@ -17,6 +20,8 @@ class ResultScreen extends StatefulWidget {
     required this.totalQuestions, // This now comes from the arguments
     required this.difficulty,
     required this.category,
+    required this.questions,
+    required this.selectedAnswers,
   }) : super(key: key);
 
   @override
@@ -135,6 +140,27 @@ class _ResultScreenState extends State<ResultScreen> {
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              FadeInUp(
+                delay: const Duration(milliseconds: 1400),
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.rate_review_outlined),
+                  label: const Text('Review Answers'),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/review',
+                      arguments: {
+                        'questions': widget.questions,
+                        'selectedAnswers': widget.selectedAnswers,
+                      },
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                 ),
               ),
