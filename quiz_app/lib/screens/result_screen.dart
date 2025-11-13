@@ -1,21 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:quiz_app/services/score_service.dart';
+import 'package:quiz_app/settings.dart';
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   // We need to receive the score and total from the navigator
   final int score;
   final int totalQuestions;
+  final Difficulty difficulty;
+  final String? category;
 
   // Constructor to receive the data
   const ResultScreen({
     Key? key,
     required this.score,
     required this.totalQuestions, // This now comes from the arguments
+    required this.difficulty,
+    required this.category,
   }) : super(key: key);
 
   @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  final ScoreService _scoreService = ScoreService();
+  int _highScore = 0;
+  bool _isNewHighScore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateAndLoadHighScore();
+  }
+
+  Future<void> _updateAndLoadHighScore() async {
+    final isNew = await _scoreService.updateHighScore(
+      difficulty: widget.difficulty,
+      category: widget.category,
+      score: widget.score,
+    );
+    final score = await _scoreService.getHighScore(
+      difficulty: widget.difficulty,
+      category: widget.category,
+    );
+    setState(() {
+      _isNewHighScore = isNew;
+      _highScore = score;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final double percentage = (score / totalQuestions) * 100;
+    final double percentage = widget.totalQuestions > 0
+        ? (widget.score / widget.totalQuestions) * 100
+        : 0;
     final String message = percentage >= 70
         ? 'Excellent Work!'
         : percentage >= 40
@@ -45,7 +84,7 @@ class ResultScreen extends StatelessWidget {
                 child: Text(
                   'Your Score:',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
               const SizedBox(height: 10),
@@ -53,7 +92,7 @@ class ResultScreen extends StatelessWidget {
                 delay: const Duration(milliseconds: 800),
                 duration: const Duration(milliseconds: 500),
                 child: Text(
-                  '$score / $totalQuestions',
+                  '${widget.score} / ${widget.totalQuestions}',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
                         fontWeight: FontWeight.bold,
@@ -63,7 +102,25 @@ class ResultScreen extends StatelessWidget {
                       ),
                 ),
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 20),
+              if (_isNewHighScore)
+                FadeIn(
+                  delay: const Duration(milliseconds: 1000),
+                  child: const Text(
+                    '🎉 New High Score! 🎉',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.amber,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              Text(
+                'High Score: $_highScore',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 40),
               FadeInUp(
                 delay: const Duration(milliseconds: 1200),
                 child: ElevatedButton.icon(

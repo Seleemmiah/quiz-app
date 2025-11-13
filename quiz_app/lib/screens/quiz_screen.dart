@@ -1,5 +1,3 @@
-// ignore_for_file: sort_child_properties_last
-
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -9,8 +7,15 @@ import 'package:quiz_app/settings.dart';
 import 'package:quiz_app/models/question_model.dart';
 
 class QuizScreen extends StatefulWidget {
-  const QuizScreen({super.key, this.difficulty = Difficulty.easy});
+  const QuizScreen({
+    super.key,
+    this.difficulty = Difficulty.easy,
+    this.category,
+    this.timeLimitInMinutes,
+  });
   final Difficulty difficulty;
+  final String? category;
+  final int? timeLimitInMinutes;
 
   @override
   _QuizScreenState createState() => _QuizScreenState();
@@ -31,10 +36,48 @@ class _QuizScreenState extends State<QuizScreen> {
   // --- VISUAL FEEDBACK STATE ---
   Map<String, Color> _answerColors = {};
 
+  // --- TIMER STATE ---
+  Timer? _timer;
+  int _remainingTime = 0;
+
   @override
   void initState() {
     super.initState();
-    _questionFuture = _apiService.fetchQuestions(difficulty: widget.difficulty);
+    _questionFuture = _apiService.fetchQuestions(
+        difficulty: widget.difficulty, category: widget.category);
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Always cancel timers when the widget is removed
+    super.dispose();
+  }
+
+  void _startTimer() {
+    // Only start the timer if a time limit is set
+    if (widget.timeLimitInMinutes == null) return;
+
+    // Set the remaining time from the widget property
+    _remainingTime = widget.timeLimitInMinutes! * 60;
+
+    // Start a periodic timer
+    _timer?.cancel(); // Cancel any existing timer
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_remainingTime > 0) {
+        setState(() {
+          _remainingTime--;
+        });
+      } else {
+        timer.cancel();
+        _finishQuiz(timeUp: true); // End the quiz when time is up
+      }
+    });
+  }
+
+  String get _formattedTime {
+    final minutes = (_remainingTime ~/ 60).toString().padLeft(2, '0');
+    final seconds = (_remainingTime % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
   }
 
   int get _totalScore {
@@ -119,9 +162,11 @@ class _QuizScreenState extends State<QuizScreen> {
     });
   }
 
-  void _finishQuiz() {
+  void _finishQuiz({bool timeUp = false}) {
+    _timer?.cancel(); // Stop the timer
+
     // Check if any question is unanswered before finishing.
-    if (_selectedAnswers.any((answer) => answer == null)) {
+    if (!timeUp && _selectedAnswers.any((answer) => answer == null)) {
       _showUnansweredQuestionDialog(
           'Please answer all questions before finishing.');
       return;
@@ -133,6 +178,8 @@ class _QuizScreenState extends State<QuizScreen> {
       arguments: {
         'score': _totalScore,
         'totalQuestions': _questions.length, // Pass the total here
+        'difficulty': widget.difficulty,
+        'category': widget.category,
       },
     );
   }
@@ -143,7 +190,15 @@ class _QuizScreenState extends State<QuizScreen> {
     return Scaffold(
       // This Scaffold is the main one for the screen
       appBar: AppBar(
-          title: const Text('Quiz App'),
+          title: Row(
+            children: [
+              const Text('Quiz App'),
+              const Spacer(),
+              // Only show the timer if a time limit was set
+              if (widget.timeLimitInMinutes != null)
+                Text(_formattedTime, style: const TextStyle(fontSize: 18)),
+            ],
+          ),
           automaticallyImplyLeading:
               false, // We are providing a custom leading widget
           leading: IconButton(
@@ -210,7 +265,8 @@ class _QuizScreenState extends State<QuizScreen> {
                           _selectedAnswers = [];
                           _questionIndex = 0;
                           _questionFuture = _apiService.fetchQuestions(
-                              difficulty: widget.difficulty);
+                              difficulty: widget.difficulty,
+                              category: widget.category);
                         });
                       },
                       child: Text('Try Again'),
@@ -229,6 +285,7 @@ class _QuizScreenState extends State<QuizScreen> {
             if (_questions.isEmpty && (snapshot.data?.isNotEmpty ?? false)) {
               _questions = snapshot.data!;
               _selectedAnswers = List<String?>.filled(_questions.length, null);
+              _startTimer(); // Start the timer once questions are loaded
             }
 
             // Now that we're sure we have questions, we can proceed.

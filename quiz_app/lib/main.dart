@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:quiz_app/screens/quiz_screen.dart';
 import 'package:quiz_app/screens/result_screen.dart';
+import 'package:quiz_app/screens/splash_screen.dart';
 import 'package:quiz_app/screens/start_screen.dart';
+import 'package:quiz_app/settings.dart';
+// import 'packagepackage:quiz_app/settings.dart';
 
-void main() {
+void main() async {
+  // Ensure that plugin services are initialized before running the app
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -26,18 +31,19 @@ class MyAppState extends State<MyApp> {
       theme: _lightTheme, // Provide light theme.
       darkTheme: _darkTheme,
       themeMode: _themeMode, // Use state to control theme mode.
-      initialRoute: '/',
+      initialRoute: '/splash', // Set the initial route to the splash screen
       routes: {
-        '/': (context) => const StartScreen(),
+        '/splash': (context) => const SplashScreen(), // Add splash screen route
+        '/': (context) => const StartScreen(), // Keep start screen route
         '/results': (context) {
-          // We get the arguments (the score AND total) passed by the Navigator
-          final args =
-              ModalRoute.of(context)!.settings.arguments as Map<String, int>;
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>;
 
           return ResultScreen(
             score: args['score']!,
-            // We now get the total from the arguments!
             totalQuestions: args['totalQuestions']!,
+            difficulty: args['difficulty'] as Difficulty,
+            category: args['category'] as String?,
           );
         },
       },
