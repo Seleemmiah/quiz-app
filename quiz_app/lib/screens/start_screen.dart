@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/screens/quiz_screen.dart';
+import 'package:quiz_app/settings.dart';
 
-// import 'package:quiz_app/screens/quiz_screen.dart';
+class StartScreen extends StatefulWidget {
+  const StartScreen({super.key});
 
-class StartScreen extends StatelessWidget {
+  @override
+  State<StartScreen> createState() => _StartScreenState();
+}
+
+class _StartScreenState extends State<StartScreen> {
+  // Default difficulty
+  Difficulty _selectedDifficulty = Difficulty.easy;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,14 +23,14 @@ class StartScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // --- STYLING ---
-              Icon(
-                Icons.school,
-                // Use the theme's primary color instead of a hard-coded one
-                color: Theme.of(context).primaryColorLight,
+              const Icon(
+                Icons
+                    .school, // Use the theme's primary color instead of a hard-coded one
+                color: Colors
+                    .deepPurple, // This color seems to be hardcoded, consider using Theme.of(context).primaryColor
                 size: 100,
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Text(
                 'Welcome to the Quiz!',
                 textAlign: TextAlign.center,
@@ -29,19 +39,48 @@ class StartScreen extends StatelessWidget {
                           FontWeight.bold, // Keep bold, but remove size/color
                     ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 'Test your knowledge.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              SizedBox(height: 50),
-
-              // --- NAVIGATION ---
+              const SizedBox(height: 40),
+              Text(
+                'Select Difficulty:',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 10),
+              SegmentedButton<Difficulty>(
+                segments: const [
+                  ButtonSegment(value: Difficulty.easy, label: Text('Easy')),
+                  ButtonSegment(
+                      value: Difficulty.medium, label: Text('Medium')),
+                  ButtonSegment(value: Difficulty.hard, label: Text('Hard')),
+                ],
+                selected: {_selectedDifficulty},
+                onSelectionChanged: (Set<Difficulty> newSelection) {
+                  setState(() {
+                    _selectedDifficulty = newSelection.first;
+                  });
+                },
+                style: SegmentedButton.styleFrom(
+                  selectedBackgroundColor:
+                      Theme.of(context).primaryColor.withOpacity(0.2),
+                  selectedForegroundColor: Theme.of(context).primaryColor,
+                ),
+              ),
+              const SizedBox(height: 40),
               ElevatedButton(
-                child: Text('Start Quiz'),
+                child: const Text('Start Quiz'),
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/quiz');
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            QuizScreen(difficulty: _selectedDifficulty)),
+                  );
                 },
               ),
             ],

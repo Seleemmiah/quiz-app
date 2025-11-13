@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:quiz_app/main.dart';
 import 'package:quiz_app/services/api_service.dart';
+import 'package:quiz_app/settings.dart';
 import 'package:quiz_app/models/question_model.dart';
 
 class QuizScreen extends StatefulWidget {
+  const QuizScreen({super.key, this.difficulty = Difficulty.easy});
+  final Difficulty difficulty;
+
   @override
   _QuizScreenState createState() => _QuizScreenState();
 }
@@ -30,14 +34,7 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
-    // When the widget is first created, we tell it to // start fetching the questions.
-    // start fetching the questions.
-    _questionFuture = _apiService.fetchQuestions().then((questions) {
-      _questions = questions; // Assign questions here
-      _selectedAnswers = List<String?>.filled(
-          _questions.length, null); // Initialize selectedAnswers
-      return questions;
-    });
+    _questionFuture = _apiService.fetchQuestions(difficulty: widget.difficulty);
   }
 
   int get _totalScore {
@@ -147,7 +144,16 @@ class _QuizScreenState extends State<QuizScreen> {
       // This Scaffold is the main one for the screen
       appBar: AppBar(
           title: const Text('Quiz App'),
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading:
+              false, // We are providing a custom leading widget
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              // Navigate back to the StartScreen
+              Navigator.pushReplacementNamed(context, '/');
+            },
+            tooltip: 'Back to Start',
+          ),
           actions: [
             IconButton(
               icon: Icon(Theme.of(context).brightness == Brightness.dark
@@ -199,7 +205,12 @@ class _QuizScreenState extends State<QuizScreen> {
                       onPressed: () {
                         // Try fetching again
                         setState(() {
-                          _questionFuture = _apiService.fetchQuestions();
+                          // Reset state before fetching again
+                          _questions = [];
+                          _selectedAnswers = [];
+                          _questionIndex = 0;
+                          _questionFuture = _apiService.fetchQuestions(
+                              difficulty: widget.difficulty);
                         });
                       },
                       child: Text('Try Again'),
@@ -212,6 +223,15 @@ class _QuizScreenState extends State<QuizScreen> {
 
           // --- 3. DATA STATE ---
           else if (snapshot.hasData) {
+            // This is the safest place to initialize our state from the future's data.
+            // The check for `_questions.isEmpty` ensures we only do this once,
+            // preventing state resets on rebuilds (e.g., from theme changes).
+            if (_questions.isEmpty && (snapshot.data?.isNotEmpty ?? false)) {
+              _questions = snapshot.data!;
+              _selectedAnswers = List<String?>.filled(_questions.length, null);
+            }
+
+            // Now that we're sure we have questions, we can proceed.
             if (_questions.isEmpty) {
               return Center(child: Text('No questions found.'));
             }

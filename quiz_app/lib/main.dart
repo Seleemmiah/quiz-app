@@ -28,8 +28,7 @@ class MyAppState extends State<MyApp> {
       themeMode: _themeMode, // Use state to control theme mode.
       initialRoute: '/',
       routes: {
-        '/': (context) => StartScreen(),
-        '/quiz': (context) => QuizScreen(),
+        '/': (context) => const StartScreen(),
         '/results': (context) {
           // We get the arguments (the score AND total) passed by the Navigator
           final args =
