@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:animate_do/animate_do.dart';
 
 class ResultScreen extends StatelessWidget {
   // We need to receive the score and total from the navigator
@@ -14,6 +15,13 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double percentage = (score / totalQuestions) * 100;
+    final String message = percentage >= 70
+        ? 'Excellent Work!'
+        : percentage >= 40
+            ? 'Good Effort!'
+            : 'Keep Practicing!';
+
     return Scaffold(
       body: Center(
         child: Padding(
@@ -22,33 +30,56 @@ class ResultScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Quiz Complete!',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              FadeInDown(
+                child: Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              FadeIn(
+                delay: const Duration(milliseconds: 500),
+                child: Text(
+                  'Your Score:',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Pulse(
+                delay: const Duration(milliseconds: 800),
+                duration: const Duration(milliseconds: 500),
+                child: Text(
+                  '$score / $totalQuestions',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: percentage >= 70
+                            ? Colors.green
+                            : (percentage >= 40 ? Colors.orange : Colors.red),
+                      ),
+                ),
+              ),
+              const SizedBox(height: 50),
+              FadeInUp(
+                delay: const Duration(milliseconds: 1200),
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.restart_alt),
+                  label: const Text('Restart Quiz'),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Your Score:',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(height: 10),
-              Text(
-                '$score / $totalQuestions',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              SizedBox(height: 50),
-              ElevatedButton(
-                child: Text('Restart Quiz'),
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/');
-                },
+                  ),
+                ),
               ),
             ],
           ),

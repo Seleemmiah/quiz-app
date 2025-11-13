@@ -1,32 +1,26 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'dart:math';
 import 'package:quiz_app/models/question_model.dart';
+import '../screens/local_questions.dart';
 
 class ApiService {
   // This is the function we'll call to get the questions
   // It returns a "Future", meaning the data will come back later.
   Future<List<Question>> fetchQuestions() async {
-    // We're asking for 10 multiple-choice questions. Since no category is
-    // specified, the API will return questions from all categories.
-    const String apiUrl = 'https://opentdb.com/api.php?amount=10&type=multiple';
-
     try {
-      final response = await http.get(Uri.parse(apiUrl));
+      // Simulate a network delay to make it feel like a real API call
+      await Future.delayed(const Duration(seconds: 1));
 
-      if (response.statusCode == 200) {
-        // If the request was successful
-        final body = json.decode(response.body);
-        final results = body['results'] as List;
-
-        // Convert the raw JSON (List<Map>) into our clean Question objects (List<Question>)
-        return results.map((json) => Question.fromApiJson(json)).toList();
-      } else {
-        // If the server responded with an error
-        throw Exception('Failed to load questions from API');
-      }
+      final List<Map<String, dynamic>> shuffledQuestions = [...localQuestions];
+      shuffledQuestions.shuffle(Random());
+      // Convert the raw local data into our clean Question objects
+      return shuffledQuestions
+          .sublist(0, 10)
+          .map((json) => Question.fromApiJson(json))
+          .toList();
     } catch (e) {
-      // If something else went wrong (like no internet)
-      throw Exception('Failed to connect to the network: ${e.toString()}');
+      // In case of any errors during model conversion
+      throw Exception(
+          'Failed to load questions from local data: ${e.toString()}');
     }
   }
 }

@@ -9,6 +9,7 @@ class Question {
   final String question;
   final String correctAnswer;
   final List<String> incorrectAnswers;
+  final String? explanation;
   final List<String> shuffledAnswers;
 
   Question._({
@@ -17,8 +18,9 @@ class Question {
     required this.question,
     required this.correctAnswer,
     required this.incorrectAnswers,
-  }) : shuffledAnswers = _createShuffledAnswers(correctAnswer,
-            incorrectAnswers); 
+    this.explanation,
+  }) : shuffledAnswers =
+            _createShuffledAnswers(correctAnswer, incorrectAnswers);
 
   factory Question.fromApiJson(Map<String, dynamic> json) {
     // Combine correct and incorrect answers into one list
@@ -34,6 +36,7 @@ class Question {
       question: _htmlUnescape.convert(json['question'].toString()),
       correctAnswer: correct,
       incorrectAnswers: incorrect,
+      explanation: json['explanation'] as String?,
     );
   }
 
