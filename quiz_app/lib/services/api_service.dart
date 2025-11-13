@@ -3,7 +3,7 @@ import 'package:quiz_app/models/question_model.dart';
 import 'package:quiz_app/screens/local_questions.dart';
 import 'package:quiz_app/settings.dart';
 
-// import 'package:quiz_app/data/local_questions.dart';
+
 
 class ApiService {
   // This is the function we'll call to get the questions
