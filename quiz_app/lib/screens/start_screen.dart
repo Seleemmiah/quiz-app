@@ -28,17 +28,29 @@ class _StartScreenState extends State<StartScreen> {
   void initState() {
     super.initState();
     // Fetch categories when the widget is first created
-    _categoriesFuture = _apiService.fetchCategories();
+    _categoriesFuture = _apiService.fetchCategories().then((categories) {
+      // Once categories are fetched, set the initial selection and load the score.
+      // This ensures it only happens once.
+      if (mounted && categories.isNotEmpty) {
+        setState(() {
+          _selectedCategory = categories.first;
+          _loadHighScore();
+        });
+      }
+      return categories;
+    });
   }
 
   // --- New method to load the high score ---
   Future<void> _loadHighScore() async {
     // Ensure a category is selected before trying to load a score
-    if (_selectedCategory == null) return;
+    final category = _selectedCategory;
+    if (category == null) return;
 
     final score = await _scoreService.getHighScore(
       difficulty: _selectedDifficulty,
-      category: _selectedCategory,
+      // Use the local non-nullable variable
+      category: category,
     );
 
     // Check if the widget is still mounted before calling setState
@@ -56,6 +68,17 @@ class _StartScreenState extends State<StartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Quiz App'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.pushNamed(context, '/settings');
+            },
+          ),
+        ],
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -99,11 +122,6 @@ class _StartScreenState extends State<StartScreen> {
                       return const Text('Could not load categories.');
                     }
                     final categories = snapshot.data!;
-                    if (_selectedCategory == null && categories.isNotEmpty) {
-                      _selectedCategory = categories.first;
-                      // Load initial high score once categories are loaded
-                      _loadHighScore();
-                    }
                     return DropdownButtonFormField<String>(
                       value: _selectedCategory,
                       decoration: InputDecoration(
@@ -204,14 +222,14 @@ class _StartScreenState extends State<StartScreen> {
                 onPressed: () {
                   if (_selectedCategory == null)
                     return; // Don't start if no category
-                  Navigator.pushReplacement(
+                  Navigator.pushReplacementNamed(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => QuizScreen(
-                          difficulty: _selectedDifficulty,
-                          category: _selectedCategory,
-                          timeLimitInMinutes: _selectedTimeInMinutes),
-                    ),
+                    '/quiz',
+                    arguments: {
+                      'difficulty': _selectedDifficulty,
+                      'category': _selectedCategory,
+                      'timeLimitInMinutes': _selectedTimeInMinutes,
+                    },
                   );
                 },
               ),

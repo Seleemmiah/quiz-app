@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:quiz_app/main.dart';
+// import 'package:quiz_app/main.dart';
 import 'package:quiz_app/services/api_service.dart';
 import 'package:quiz_app/settings.dart';
 import 'package:quiz_app/models/question_model.dart';
@@ -21,7 +21,8 @@ class QuizScreen extends StatefulWidget {
   _QuizScreenState createState() => _QuizScreenState();
 }
 
-class _QuizScreenState extends State<QuizScreen> {
+class _QuizScreenState extends State<QuizScreen>
+    with SingleTickerProviderStateMixin {
   // This "Future" will hold our list of questions
   late Future<List<Question>> _questionFuture;
 
@@ -40,16 +41,26 @@ class _QuizScreenState extends State<QuizScreen> {
   Timer? _timer;
   int _remainingTime = 0;
 
+  // --- STREAK STATE ---
+  int _currentStreak = 0;
+  late AnimationController _streakAnimationController;
+
+  // --- LIVES STATE ---
+  int _lives = 3;
+
   @override
   void initState() {
     super.initState();
     _questionFuture = _apiService.fetchQuestions(
         difficulty: widget.difficulty, category: widget.category);
+    _streakAnimationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
   }
 
   @override
   void dispose() {
     _timer?.cancel(); // Always cancel timers when the widget is removed
+    _streakAnimationController.dispose();
     super.dispose();
   }
 
@@ -99,9 +110,20 @@ class _QuizScreenState extends State<QuizScreen> {
     setState(() {
       _selectedAnswers[_questionIndex] = selectedAnswer;
       if (isCorrect) {
+        _currentStreak++;
+        // Animate the streak counter if it's greater than 1
+        if (_currentStreak > 1) {
+          _streakAnimationController.forward(from: 0.0);
+        }
         _answerColors[selectedAnswer] = Colors.green;
       } else {
+        _lives--;
+        if (_lives == 0) {
+          _finishQuiz(outOfLives: true);
+          return; // Return early to prevent further state changes
+        }
         _answerColors[selectedAnswer] = Colors.red;
+        _currentStreak = 0; // Reset streak on incorrect answer
         _answerColors[currentQuestion.correctAnswer] = Colors.green;
       }
     });
@@ -120,15 +142,6 @@ class _QuizScreenState extends State<QuizScreen> {
         _answerColors[currentQuestion.correctAnswer] = Colors.green;
       }
     }
-  }
-
-  void _toggleTheme() {
-    final newTheme = Theme.of(context).brightness == Brightness.dark
-        ? ThemeMode.light
-        : ThemeMode.dark;
-
-    final app = context.findAncestorStateOfType<MyAppState>();
-    app?.changeTheme(newTheme);
   }
 
   void _showUnansweredQuestionDialog(String message) {
@@ -162,11 +175,13 @@ class _QuizScreenState extends State<QuizScreen> {
     });
   }
 
-  void _finishQuiz({bool timeUp = false}) {
+  void _finishQuiz({bool timeUp = false, bool outOfLives = false}) {
     _timer?.cancel(); // Stop the timer
 
     // Check if any question is unanswered before finishing.
-    if (!timeUp && _selectedAnswers.any((answer) => answer == null)) {
+    if (!timeUp &&
+        !outOfLives &&
+        _selectedAnswers.any((answer) => answer == null)) {
       _showUnansweredQuestionDialog(
           'Please answer all questions before finishing.');
       return;
@@ -196,6 +211,33 @@ class _QuizScreenState extends State<QuizScreen> {
             children: [
               const Text('Quiz App'),
               const Spacer(),
+              // --- Lives Counter ---
+              Row(
+                children: List.generate(3, (index) {
+                  return Icon(
+                    index < _lives ? Icons.favorite : Icons.favorite_border,
+                    color: Colors.red,
+                  );
+                }),
+              ),
+              const SizedBox(width: 16),
+              // --- Animated Streak Counter ---
+              if (_currentStreak > 1)
+                Pulse(
+                  // The controller allows us to trigger the animation manually
+                  controller: (controller) =>
+                      _streakAnimationController = controller,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.local_fire_department,
+                          color: Colors.orange),
+                      const SizedBox(width: 4),
+                      Text('$_currentStreak',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
               // Only show the timer if a time limit was set
               if (widget.timeLimitInMinutes != null)
                 Text(_formattedTime, style: const TextStyle(fontSize: 18)),
@@ -211,15 +253,6 @@ class _QuizScreenState extends State<QuizScreen> {
             },
             tooltip: 'Back to Start',
           ),
-          actions: [
-            IconButton(
-              icon: Icon(Theme.of(context).brightness == Brightness.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode),
-              onPressed: _toggleTheme,
-              tooltip: 'Toggle Theme', // This is the single theme toggle button
-            )
-          ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(4.0),
             child: LinearProgressIndicator(

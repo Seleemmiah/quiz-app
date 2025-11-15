@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quiz_app/models/question_model.dart';
+import 'package:quiz_app/screens/quiz_screen.dart';
+// import 'package:flutter/scheduler.dart';
 // import 'package:quiz_app/screens/quiz_screen.dart';
 import 'package:quiz_app/screens/result_screen.dart';
 import 'package:quiz_app/screens/review_screen.dart';
+import 'package:quiz_app/screens/settings_screen.dart';
 import 'package:quiz_app/screens/splash_screen.dart';
 import 'package:quiz_app/screens/start_screen.dart';
 import 'package:quiz_app/settings.dart';
+import 'package:quiz_app/services/settings_service.dart';
 // import 'packagepackage:quiz_app/settings.dart';
 
 void main() async {
   // Ensure that plugin services are initialized before running the app
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized(); 
   runApp(const MyApp());
 }
 
@@ -22,47 +27,103 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.system;
+  late ThemeMode _themeMode;
+  ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(ThemeMode.system);
+  bool _isLoading = true;
+  final SettingsService _settingsService = SettingsService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  void _loadSettings() async {
+    _themeMode = await _settingsService.getThemeMode();
+    setState(() => _isLoading = false);
+  }
+
+  @override
+  void dispose() {
+    themeModeNotifier.dispose();
+    super.dispose();
+  }
+
+  // Public getter to expose the private themeMode state
+  ThemeMode get themeMode => _themeMode;
 
   @override
   Widget build(BuildContext context) {
+    // If settings are still loading, show a simple loading screen.
+    // This prevents the LateInitializationError.
+    if (_isLoading) {
+      return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(body: Center(child: CircularProgressIndicator())),
+      );
+    }
+
+    // Once settings are loaded, build the full app.
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Quiz App',
       theme: _lightTheme, // Provide light theme.
       darkTheme: _darkTheme,
-      themeMode: _themeMode, // Use state to control theme mode.
-      initialRoute: '/splash', // Set the initial route to the splash screen
-      routes: {
-        '/splash': (context) => const SplashScreen(), // Add splash screen route
-        '/': (context) => const StartScreen(), // Keep start screen route
-        '/results': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments
-              as Map<String, dynamic>;
-
-          return ResultScreen(
-            score: args['score']!,
-            totalQuestions: args['totalQuestions']!,
-            difficulty: args['difficulty'] as Difficulty,
-            category: args['category'] as String?,
-            questions: args['questions'],
-            selectedAnswers: args['selectedAnswers'],
-          );
-        },
-        '/review': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments
-              as Map<String, dynamic>;
-
-          return ReviewScreen(
-            questions: args['questions'],
-            selectedAnswers: args['selectedAnswers'],
-          );
+      themeMode: _themeMode,
+      initialRoute: '/splash', // Set the initial route to the splash screen.
+      // Use onGenerateRoute for routes that need arguments for better safety.
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/splash':
+            return MaterialPageRoute(builder: (_) => const SplashScreen());
+          case '/':
+            return MaterialPageRoute(builder: (_) => const StartScreen());
+          case '/settings':
+            return MaterialPageRoute(builder: (_) => const SettingsScreen());
+          case '/quiz':
+            final args = (settings.arguments ?? {}) as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (_) => QuizScreen(
+                difficulty: args['difficulty'] ?? Difficulty.easy,
+                category: args['category'] as String?,
+                // Safely handle the integer type for the time limit.
+                timeLimitInMinutes: args['timeLimitInMinutes'],
+              ),
+            );
+          case '/results':
+            final args = (settings.arguments ?? {}) as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (_) => ResultScreen(
+                score: args['score'] ?? 0,
+                totalQuestions: args['totalQuestions'] ?? 0,
+                difficulty: args['difficulty'] ?? Difficulty.easy,
+                category: args['category'] as String?,
+                // Safely cast the lists to their expected types.
+                questions: List<Question>.from(args['questions'] ?? []),
+                selectedAnswers:
+                    List<String?>.from(args['selectedAnswers'] ?? []),
+              ),
+            );
+          case '/review':
+            final args = (settings.arguments ?? {}) as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (_) => ReviewScreen(
+                // Safely cast the lists to their expected types.
+                questions: List<Question>.from(args['questions'] ?? []),
+                selectedAnswers:
+                    List<String?>.from(args['selectedAnswers'] ?? []),
+              ),
+            );
+          default:
+            // If no route matches, default to the start screen.
+            return MaterialPageRoute(builder: (_) => const StartScreen());
         }
       },
     );
   }
 
   void changeTheme(ThemeMode themeMode) {
+    _settingsService.setThemeMode(themeMode);
     setState(() {
       _themeMode = themeMode;
     });

@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,11 +13,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigate to the start screen after a 3-second delay
-    Timer(const Duration(seconds: 3), () {
-      // Use pushReplacement to prevent the user from navigating back to the splash screen
-      Navigator.of(context).pushReplacementNamed('/');
-    });
+    _navigateToHome();
+  }
+
+  void _navigateToHome() async {
+    // Wait for a moment to show the animation, then navigate.
+    await Future.delayed(const Duration(seconds: 3));
+    if (mounted) Navigator.of(context).pushReplacementNamed('/');
   }
 
   @override
