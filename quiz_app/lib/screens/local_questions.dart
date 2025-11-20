@@ -162,7 +162,7 @@ final List<Map<String, dynamic>> localQuestions = [
     "category": "History",
     "type": "multiple",
     "difficulty": "hard",
-    "question": "In what year did the Magna Carta was originally issued?",
+    "question": "In what year was the Magna Carta originally issued?",
     "correct_answer": "1215",
     "incorrect_answers": ["1066", "1492", "1776"],
     "explanation":

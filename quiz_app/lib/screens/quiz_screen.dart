@@ -18,11 +18,10 @@ class QuizScreen extends StatefulWidget {
   final int? timeLimitInMinutes;
 
   @override
-  _QuizScreenState createState() => _QuizScreenState();
+  State<QuizScreen> createState() => _QuizScreenState();
 }
 
-class _QuizScreenState extends State<QuizScreen>
-    with SingleTickerProviderStateMixin {
+class _QuizScreenState extends State<QuizScreen> {
   // This "Future" will hold our list of questions
   late Future<List<Question>> _questionFuture;
 
@@ -43,7 +42,6 @@ class _QuizScreenState extends State<QuizScreen>
 
   // --- STREAK STATE ---
   int _currentStreak = 0;
-  late AnimationController _streakAnimationController;
 
   // --- LIVES STATE ---
   int _lives = 3;
@@ -53,23 +51,22 @@ class _QuizScreenState extends State<QuizScreen>
     super.initState();
     _questionFuture = _apiService.fetchQuestions(
         difficulty: widget.difficulty, category: widget.category);
-    _streakAnimationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
   }
 
   @override
   void dispose() {
     _timer?.cancel(); // Always cancel timers when the widget is removed
-    _streakAnimationController.dispose();
     super.dispose();
   }
 
   void _startTimer() {
     // Only start the timer if a time limit is set
-    if (widget.timeLimitInMinutes == null) return;
-
-    // Set the remaining time from the widget property
-    _remainingTime = widget.timeLimitInMinutes! * 60;
+    if (widget.timeLimitInMinutes != null) {
+      // Set the remaining time from the widget property
+      _remainingTime = (widget.timeLimitInMinutes ?? 0) * 60;
+    } else {
+      return; // No time limit, so no timer needed.
+    }
 
     // Start a periodic timer
     _timer?.cancel(); // Cancel any existing timer
@@ -111,10 +108,6 @@ class _QuizScreenState extends State<QuizScreen>
       _selectedAnswers[_questionIndex] = selectedAnswer;
       if (isCorrect) {
         _currentStreak++;
-        // Animate the streak counter if it's greater than 1
-        if (_currentStreak > 1) {
-          _streakAnimationController.forward(from: 0.0);
-        }
         _answerColors[selectedAnswer] = Colors.green;
       } else {
         _lives--;
@@ -222,11 +215,10 @@ class _QuizScreenState extends State<QuizScreen>
               ),
               const SizedBox(width: 16),
               // --- Animated Streak Counter ---
-              if (_currentStreak > 1)
+              if (_questions.isNotEmpty && _currentStreak > 1)
                 Pulse(
-                  // The controller allows us to trigger the animation manually
-                  controller: (controller) =>
-                      _streakAnimationController = controller,
+                  key: ValueKey<int>(
+                      _currentStreak), // Animate when streak changes
                   child: Row(
                     children: [
                       const Icon(Icons.local_fire_department,
@@ -260,7 +252,8 @@ class _QuizScreenState extends State<QuizScreen>
               value: _questions.isNotEmpty
                   ? (_questionIndex + 1) / _questions.length
                   : 0.0,
-              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
+              backgroundColor:
+                  Theme.of(context).primaryColor.withValues(alpha: 0.2),
               valueColor:
                   AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
             ),
@@ -317,10 +310,22 @@ class _QuizScreenState extends State<QuizScreen>
             // This is the safest place to initialize our state from the future's data.
             // The check for `_questions.isEmpty` ensures we only do this once,
             // preventing state resets on rebuilds (e.g., from theme changes).
-            if (_questions.isEmpty && (snapshot.data?.isNotEmpty ?? false)) {
-              _questions = snapshot.data!;
-              _selectedAnswers = List<String?>.filled(_questions.length, null);
-              _startTimer(); // Start the timer once questions are loaded
+            if (_questions.isEmpty && (snapshot.data ?? []).isNotEmpty) {
+              // Use a post-frame callback to safely update the state after the build.
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  setState(() {
+                    _questions = snapshot.data ?? [];
+                    _selectedAnswers =
+                        List<String?>.filled(_questions.length, null);
+                    _startTimer(); // Start timer after state is set
+                  });
+                }
+              });
+              // For this frame, show a loading indicator while we wait for the
+              // post-frame callback to set the state. This prevents a flash of
+              // the "No questions found" text.
+              return const Center(child: CircularProgressIndicator());
             }
 
             // Now that we're sure we have questions, we can proceed.
@@ -382,15 +387,15 @@ class _QuizScreenState extends State<QuizScreen>
                             onPressed: _selectedAnswers[_questionIndex] != null
                                 ? null
                                 : () => _answerQuestion(answer),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text('$label. $answer'),
-                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: buttonColor,
                               disabledBackgroundColor: buttonColor,
                               padding: const EdgeInsets.symmetric(
                                   vertical: 16, horizontal: 24),
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('$label. $answer'),
                             ),
                           ),
                         );
@@ -415,10 +420,10 @@ class _QuizScreenState extends State<QuizScreen>
                           else
                             ElevatedButton(
                               onPressed: _finishQuiz,
-                              child: const Text('Finish'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
                               ),
+                              child: const Text('Finish'),
                             ),
                         ],
                       ),
@@ -430,7 +435,9 @@ class _QuizScreenState extends State<QuizScreen>
                             child: Container(
                           padding: const EdgeInsets.all(16.0),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).cardColor.withOpacity(0.8),
+                            color: Theme.of(context)
+                                .cardColor
+                                .withValues(alpha: 0.8),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Column(

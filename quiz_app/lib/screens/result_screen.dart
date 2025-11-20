@@ -15,14 +15,14 @@ class ResultScreen extends StatefulWidget {
 
   // Constructor to receive the data
   const ResultScreen({
-    Key? key,
+    super.key,
     required this.score,
     required this.totalQuestions, // This now comes from the arguments
     required this.difficulty,
     required this.category,
     required this.questions,
     required this.selectedAnswers,
-  }) : super(key: key);
+  });
 
   @override
   State<ResultScreen> createState() => _ResultScreenState();

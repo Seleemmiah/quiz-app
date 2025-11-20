@@ -8,7 +8,7 @@ class ScoreService {
   String _generateKey(Difficulty difficulty, String? category) {
     final categoryPart = category ?? 'All';
     // e.g., 'high_score_easy_History' or 'high_score_medium_All'
-    return '${_highScorePrefix}${difficulty.name.toLowerCase()}_$categoryPart';
+    return '$_highScorePrefix${difficulty.name.toLowerCase()}_$categoryPart';
   }
 
   Future<int> getHighScore({

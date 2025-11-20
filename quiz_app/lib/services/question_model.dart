@@ -9,9 +9,10 @@ class Question {
   final String question;
   final String correctAnswer;
   final List<String> incorrectAnswers;
-  String? explanation;
+  final String? explanation; // Made this nullable, as it should be
   final List<String> shuffledAnswers;
 
+  // Private constructor
   Question._({
     required this.category,
     required this.difficulty,
@@ -22,27 +23,37 @@ class Question {
   }) : shuffledAnswers =
             _createShuffledAnswers(correctAnswer, incorrectAnswers);
 
+  // This factory constructor is now 100% NULL-SAFE
   factory Question.fromLocalJson(Map<String, dynamic> json) {
-    // Combine correct and incorrect answers into one list
-    final incorrect = (json['incorrect_answers'] as List)
-        .map((e) => _htmlUnescape.convert(e.toString()))
-        .toList();
+    // Safely parse the incorrect answers
+    final incorrect = (json['incorrect_answers'] as List?)
+            ?.map((e) => _htmlUnescape.convert(e?.toString() ?? ''))
+            .toList() ??
+        []; // Default to empty list if null
 
-    final correct = _htmlUnescape.convert(json['correct_answer'].toString());
+    // Safely parse the correct answer
+    final correct = _htmlUnescape
+        .convert(json['correct_answer']?.toString() ?? 'No Correct Answer');
 
     return Question._(
-      category: _htmlUnescape.convert(json['category'].toString()),
-      difficulty: _htmlUnescape.convert(json['difficulty'].toString()),
-      question: _htmlUnescape.convert(json['question'].toString()),
+      // Use '??' to provide a default value if the field is null
+      category:
+          _htmlUnescape.convert(json['category']?.toString() ?? 'Unknown'),
+      difficulty:
+          _htmlUnescape.convert(json['difficulty']?.toString() ?? 'easy'),
+      question: _htmlUnescape
+          .convert(json['question']?.toString() ?? 'No Question Text'),
       correctAnswer: correct,
       incorrectAnswers: incorrect,
+
+      // Explanation is nullable, so this is safe.
       explanation: json['explanation'] != null
           ? _htmlUnescape.convert(json['explanation'].toString())
           : null,
     );
   }
 
-  // Helper method to create the shuffled list
+  // Helper method to create the shuffled list (this was already fine)
   static List<String> _createShuffledAnswers(
     String correctAnswer,
     List<String> incorrectAnswers,

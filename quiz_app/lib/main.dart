@@ -15,21 +15,20 @@ import 'package:quiz_app/services/settings_service.dart';
 
 void main() async {
   // Ensure that plugin services are initialized before running the app
-  WidgetsFlutterBinding.ensureInitialized(); 
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   MyAppState createState() => MyAppState();
 }
 
 class MyAppState extends State<MyApp> {
-  late ThemeMode _themeMode;
+  ThemeMode _themeMode = ThemeMode.system; // Initialize directly
   ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(ThemeMode.system);
-  bool _isLoading = true;
   final SettingsService _settingsService = SettingsService();
 
   @override
@@ -39,8 +38,20 @@ class MyAppState extends State<MyApp> {
   }
 
   void _loadSettings() async {
-    _themeMode = await _settingsService.getThemeMode();
-    setState(() => _isLoading = false);
+    try {
+      // Load settings in background without blocking UI
+      final savedThemeMode = await _settingsService.getThemeMode().timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => ThemeMode.system,
+          );
+      if (mounted) {
+        setState(() {
+          _themeMode = savedThemeMode;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading settings: $e');
+    }
   }
 
   @override
@@ -54,16 +65,7 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // If settings are still loading, show a simple loading screen.
-    // This prevents the LateInitializationError.
-    if (_isLoading) {
-      return const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(body: Center(child: CircularProgressIndicator())),
-      );
-    }
-
-    // Once settings are loaded, build the full app.
+    // App is always ready to render now
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Quiz App',
@@ -86,8 +88,8 @@ class MyAppState extends State<MyApp> {
               builder: (_) => QuizScreen(
                 difficulty: args['difficulty'] ?? Difficulty.easy,
                 category: args['category'] as String?,
-                // Safely handle the integer type for the time limit.
-                timeLimitInMinutes: args['timeLimitInMinutes'],
+                // Explicitly cast to int? to ensure type safety.
+                timeLimitInMinutes: args['timeLimitInMinutes'] as int?,
               ),
             );
           case '/results':

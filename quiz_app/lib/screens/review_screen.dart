@@ -17,6 +17,28 @@ class ReviewScreen extends StatefulWidget {
 
 class _ReviewScreenState extends State<ReviewScreen> {
   int _reviewIndex = 0;
+  bool _showIncorrectOnly = false;
+  List<int> _filteredIndices = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _updateFilteredIndices();
+  }
+
+  void _updateFilteredIndices() {
+    if (_showIncorrectOnly) {
+      _filteredIndices = [];
+      for (int i = 0; i < widget.questions.length; i++) {
+        if (widget.selectedAnswers[i] != widget.questions[i].correctAnswer) {
+          _filteredIndices.add(i);
+        }
+      }
+    } else {
+      _filteredIndices = List.generate(widget.questions.length, (i) => i);
+    }
+    _reviewIndex = 0;
+  }
 
   void _goToQuestion(int index) {
     setState(() {
@@ -26,18 +48,80 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentQuestion = widget.questions[_reviewIndex];
-    final selectedAnswer = widget.selectedAnswers[_reviewIndex];
+    if (_filteredIndices.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Review Answers'),
+          actions: [
+            FilterChip(
+              label: const Text('Incorrect Only'),
+              selected: _showIncorrectOnly,
+              onSelected: (bool value) {
+                setState(() {
+                  _showIncorrectOnly = value;
+                  _updateFilteredIndices();
+                });
+              },
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.check_circle_outline,
+                  size: 80, color: Colors.green),
+              const SizedBox(height: 20),
+              Text(
+                _showIncorrectOnly
+                    ? 'Great job! No incorrect answers.'
+                    : 'No questions to review.',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              if (_showIncorrectOnly)
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _showIncorrectOnly = false;
+                      _updateFilteredIndices();
+                    });
+                  },
+                  child: const Text('Show All Questions'),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final realIndex = _filteredIndices[_reviewIndex];
+    final currentQuestion = widget.questions[realIndex];
+    final selectedAnswer = widget.selectedAnswers[realIndex];
     final isCorrect = selectedAnswer == currentQuestion.correctAnswer;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Review Answers (Q${_reviewIndex + 1})'),
+        title: Text('Review (${_reviewIndex + 1}/${_filteredIndices.length})'),
+        actions: [
+          FilterChip(
+            label: const Text('Incorrect Only'),
+            selected: _showIncorrectOnly,
+            onSelected: (bool value) {
+              setState(() {
+                _showIncorrectOnly = value;
+                _updateFilteredIndices();
+              });
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),
           child: LinearProgressIndicator(
-            value: (_reviewIndex + 1) / widget.questions.length,
-            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
+            value: (_reviewIndex + 1) / _filteredIndices.length,
+            backgroundColor:
+                Theme.of(context).primaryColor.withValues(alpha: 0.2),
             valueColor:
                 AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           ),
@@ -50,7 +134,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Question ${_reviewIndex + 1} of ${widget.questions.length}',
+                'Question ${realIndex + 1} of ${widget.questions.length}',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 10),
@@ -115,7 +199,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor.withOpacity(0.8),
+                  color: Theme.of(context).cardColor.withValues(alpha: 0.8),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -158,7 +242,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
             TextButton.icon(
               icon: const Icon(Icons.arrow_forward_ios),
               label: const Text('Next'),
-              onPressed: _reviewIndex < widget.questions.length - 1
+              onPressed: _reviewIndex < _filteredIndices.length - 1
                   ? () => _goToQuestion(_reviewIndex + 1)
                   : null,
             ),

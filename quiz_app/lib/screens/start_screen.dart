@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:animate_do/animate_do.dart';
-import 'package:quiz_app/screens/quiz_screen.dart';
+
+// import 'package:quiz_app/screens/quiz_screen.dart';
 import 'package:quiz_app/settings.dart';
 import 'package:quiz_app/services/api_service.dart';
 import 'package:quiz_app/services/score_service.dart';
@@ -15,7 +15,7 @@ class StartScreen extends StatefulWidget {
 class _StartScreenState extends State<StartScreen> {
   // --- State Variables ---
   Difficulty _selectedDifficulty = Difficulty.easy;
-  int? _selectedTimeInMinutes = 5; // Default to 5 minutes
+  int _selectedTimeInMinutes = 5; // Default to 5 minutes, now non-nullable
   String? _selectedCategory;
   int _highScore = 0;
 
@@ -27,18 +27,8 @@ class _StartScreenState extends State<StartScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch categories when the widget is first created
-    _categoriesFuture = _apiService.fetchCategories().then((categories) {
-      // Once categories are fetched, set the initial selection and load the score.
-      // This ensures it only happens once.
-      if (mounted && categories.isNotEmpty) {
-        setState(() {
-          _selectedCategory = categories.first;
-          _loadHighScore();
-        });
-      }
-      return categories;
-    });
+    // Fetch categories when the widget is first created.
+    _categoriesFuture = _apiService.fetchCategories();
   }
 
   // --- New method to load the high score ---
@@ -58,11 +48,11 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   // Helper to create a map for time options for clarity
-  final Map<int?, String> _timeOptions = {
+  final Map<int, String> _timeOptions = {
     2: '2 Min',
     5: '5 Min',
     10: '10 Min',
-    null: 'Unlimited', // null represents unlimited time
+    // null: 'Unlimited', // Temporarily removed to resolve null issue
   };
 
   @override
@@ -80,39 +70,49 @@ class _StartScreenState extends State<StartScreen> {
         ],
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Icon(
-                Icons.school,
-                color: Theme.of(context).primaryColor,
-                size: 100,
-              ),
-              const SizedBox(height: 30),
-              Text(
-                'Welcome to the Quiz!',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight:
-                          FontWeight.bold, // Keep bold, but remove size/color
-                    ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Test your knowledge.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 40),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 800),
+                  curve: Curves.elasticOut,
+                  builder: (context, value, child) {
+                    return Transform.scale(
+                      scale: value,
+                      child: child,
+                    );
+                  },
+                  child: Icon(
+                    Icons.school,
+                    color: Theme.of(context).primaryColor,
+                    size: 100,
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Text(
+                  'Welcome to the Quiz!',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight:
+                            FontWeight.bold, // Keep bold, but remove size/color
+                      ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Test your knowledge.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 40),
 
-              // --- Category Selector ---
-              // Animate the dropdown appearing
-              FadeInUp(
-                delay: const Duration(milliseconds: 200),
-                child: FutureBuilder<List<String>>(
+                // --- Category Selector ---
+                // Animate the dropdown appearing
+                FutureBuilder<List<String>>(
                   future: _categoriesFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -121,14 +121,28 @@ class _StartScreenState extends State<StartScreen> {
                     if (snapshot.hasError || !snapshot.hasData) {
                       return const Text('Could not load categories.');
                     }
-                    final categories = snapshot.data!;
+                    final categories = snapshot.data ?? [];
+                    // If there are no categories, don't show the dropdown.
+                    if (categories.isEmpty) {
+                      return const Text('No quiz categories available.');
+                    }
+
+                    // If categories have loaded but none is selected yet,
+                    // set the first category as the default.
+                    // This is safe to do directly in the build method here.
+                    if (categories.isNotEmpty && _selectedCategory == null) {
+                      _selectedCategory = categories.first;
+                      _loadHighScore();
+                    }
+
                     return DropdownButtonFormField<String>(
                       value: _selectedCategory,
                       decoration: InputDecoration(
                         labelText: 'Select Category',
                         filled: true, // Add a fill color
-                        fillColor:
-                            Theme.of(context).canvasColor.withOpacity(0.5),
+                        fillColor: Theme.of(context)
+                            .canvasColor
+                            .withValues(alpha: 0.5),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none, // Hide the border
@@ -149,91 +163,89 @@ class _StartScreenState extends State<StartScreen> {
                     );
                   },
                 ),
-              ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              // --- Difficulty Selector ---
-              Text(
-                'Select Difficulty:',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 10),
-              SegmentedButton<Difficulty>(
-                segments: const [
-                  ButtonSegment(value: Difficulty.easy, label: Text('Easy')),
-                  ButtonSegment(
-                      value: Difficulty.medium, label: Text('Medium')),
-                  ButtonSegment(value: Difficulty.hard, label: Text('Hard')),
-                ],
-                selected: {_selectedDifficulty},
-                onSelectionChanged: (Set<Difficulty> newSelection) {
-                  setState(() {
-                    _selectedDifficulty = newSelection.first;
-                    _loadHighScore(); // Reload score when difficulty changes
-                  });
-                },
-                style: SegmentedButton.styleFrom(
-                  selectedBackgroundColor:
-                      Theme.of(context).primaryColor.withOpacity(0.2),
-                  selectedForegroundColor: Theme.of(context).primaryColor,
+                // --- Difficulty Selector ---
+                Text(
+                  'Select Difficulty:',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-              ),
+                const SizedBox(height: 10),
+                SegmentedButton<Difficulty>(
+                  segments: const [
+                    ButtonSegment(value: Difficulty.easy, label: Text('Easy')),
+                    ButtonSegment(
+                        value: Difficulty.medium, label: Text('Medium')),
+                    ButtonSegment(value: Difficulty.hard, label: Text('Hard')),
+                  ],
+                  selected: {_selectedDifficulty},
+                  onSelectionChanged: (Set<Difficulty> newSelection) {
+                    setState(() {
+                      _selectedDifficulty = newSelection.first;
+                      _loadHighScore(); // Reload score when difficulty changes
+                    });
+                  },
+                  style: SegmentedButton.styleFrom(
+                    selectedBackgroundColor:
+                        Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                    selectedForegroundColor: Theme.of(context).primaryColor,
+                  ),
+                ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              // --- Time Limit Selector ---
-              Text(
-                'Select Time:',
-                textAlign: TextAlign.start,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 10),
-              SegmentedButton<int?>(
-                segments: _timeOptions.entries.map((entry) {
-                  return ButtonSegment<int?>(
-                    value: entry.key,
-                    label: Text(entry.value),
-                  );
-                }).toList(),
-                selected: {_selectedTimeInMinutes},
-                onSelectionChanged: (Set<int?> newSelection) {
-                  setState(() {
-                    _selectedTimeInMinutes = newSelection.first;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
+                // --- Time Limit Selector ---
+                Text(
+                  'Select Time:',
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 10),
+                SegmentedButton<int>(
+                  segments: _timeOptions.entries.map((entry) {
+                    return ButtonSegment<int>(
+                      value: entry.key,
+                      label: Text(entry.value),
+                    );
+                  }).toList(),
+                  selected: {_selectedTimeInMinutes},
+                  onSelectionChanged: (Set<int> newSelection) {
+                    setState(() {
+                      _selectedTimeInMinutes = newSelection.first;
+                    });
+                  },
+                ),
+                const SizedBox(height: 20),
 
-              // --- High Score Display ---
-              FadeIn(
-                delay: const Duration(milliseconds: 400),
-                child: Text(
+                // --- High Score Display ---
+                Text(
                   'High Score: $_highScore',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-              ),
 
-              const SizedBox(height: 40),
-              ElevatedButton(
-                child: const Text('Start Quiz'),
-                onPressed: () {
-                  if (_selectedCategory == null)
-                    return; // Don't start if no category
-                  Navigator.pushReplacementNamed(
-                    context,
-                    '/quiz',
-                    arguments: {
-                      'difficulty': _selectedDifficulty,
-                      'category': _selectedCategory,
-                      'timeLimitInMinutes': _selectedTimeInMinutes,
-                    },
-                  );
-                },
-              ),
-            ],
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  child: const Text('Start Quiz'),
+                  onPressed: () {
+                    if (_selectedCategory == null) {
+                      return; // Don't start if no category
+                    }
+                    Navigator.pushReplacementNamed(
+                      context,
+                      '/quiz',
+                      arguments: {
+                        'difficulty': _selectedDifficulty,
+                        'category': _selectedCategory,
+                        'timeLimitInMinutes': _selectedTimeInMinutes,
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
