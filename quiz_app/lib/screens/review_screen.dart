@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/models/question_model.dart';
+import 'package:quiz_app/services/bookmark_service.dart';
 
 class ReviewScreen extends StatefulWidget {
   final List<Question> questions;
@@ -19,11 +20,43 @@ class _ReviewScreenState extends State<ReviewScreen> {
   int _reviewIndex = 0;
   bool _showIncorrectOnly = false;
   List<int> _filteredIndices = [];
+  final BookmarkService _bookmarkService = BookmarkService();
+  final Map<int, bool> _bookmarkStates = {};
 
   @override
   void initState() {
     super.initState();
     _updateFilteredIndices();
+    _loadBookmarkStates();
+  }
+
+  Future<void> _loadBookmarkStates() async {
+    for (int i = 0; i < widget.questions.length; i++) {
+      final isBookmarked =
+          await _bookmarkService.isBookmarked(widget.questions[i]);
+      if (mounted) {
+        setState(() {
+          _bookmarkStates[i] = isBookmarked;
+        });
+      }
+    }
+  }
+
+  Future<void> _toggleBookmark(int index) async {
+    final question = widget.questions[index];
+    final isBookmarked = await _bookmarkService.toggleBookmark(question);
+    if (mounted) {
+      setState(() {
+        _bookmarkStates[index] = isBookmarked;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+              Text(isBookmarked ? 'Question bookmarked' : 'Bookmark removed'),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    }
   }
 
   void _updateFilteredIndices() {
@@ -104,6 +137,16 @@ class _ReviewScreenState extends State<ReviewScreen> {
       appBar: AppBar(
         title: Text('Review (${_reviewIndex + 1}/${_filteredIndices.length})'),
         actions: [
+          IconButton(
+            icon: Icon(
+              _bookmarkStates[realIndex] == true
+                  ? Icons.bookmark
+                  : Icons.bookmark_border,
+              color: _bookmarkStates[realIndex] == true ? Colors.amber : null,
+            ),
+            onPressed: () => _toggleBookmark(realIndex),
+            tooltip: 'Bookmark question',
+          ),
           FilterChip(
             label: const Text('Incorrect Only'),
             selected: _showIncorrectOnly,

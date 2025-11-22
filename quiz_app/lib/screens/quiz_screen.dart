@@ -1,10 +1,14 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-// import 'package:quiz_app/main.dart';
+import 'package:flutter/services.dart';
+import 'package:quiz_app/main.dart';
 import 'package:quiz_app/services/api_service.dart';
 import 'package:quiz_app/settings.dart';
 import 'package:quiz_app/models/question_model.dart';
+import 'package:quiz_app/services/leaderboard_service.dart';
+import 'package:quiz_app/models/leaderboard_entry.dart';
+import 'package:quiz_app/services/quiz_state_service.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({
@@ -12,10 +16,12 @@ class QuizScreen extends StatefulWidget {
     this.difficulty = Difficulty.easy,
     this.category,
     this.timeLimitInMinutes,
+    this.quizLength = 10,
   });
   final Difficulty difficulty;
   final String? category;
   final int? timeLimitInMinutes;
+  final int quizLength;
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -46,20 +52,69 @@ class _QuizScreenState extends State<QuizScreen> {
   // --- LIVES STATE ---
   int _lives = 3;
 
+  // --- TIME TRACKING ---
+  DateTime? _quizStartTime;
+  int? _quizCompletionTimeSeconds;
+
+  // --- PAUSE STATE ---
+  bool _isPaused = false;
+  final QuizStateService _quizStateService = QuizStateService();
+
   @override
   void initState() {
     super.initState();
     _questionFuture = _apiService.fetchQuestions(
-        difficulty: widget.difficulty, category: widget.category);
+        amount: widget.quizLength,
+        difficulty: widget.difficulty,
+        category: widget.category);
   }
 
   @override
   void dispose() {
     _timer?.cancel(); // Always cancel timers when the widget is removed
+    // Save state if quiz is incomplete
+    if (_questions.isNotEmpty && !_selectedAnswers.every((a) => a != null)) {
+      _saveQuizState();
+    }
     super.dispose();
   }
 
+  Future<void> _saveQuizState() async {
+    if (_questions.isEmpty) return;
+    await _quizStateService.saveQuizState(
+      questions: _questions,
+      selectedAnswers: _selectedAnswers,
+      currentIndex: _questionIndex,
+      remainingTime: _remainingTime,
+      difficulty: widget.difficulty,
+      category: widget.category,
+      lives: _lives,
+      streak: _currentStreak,
+      startTime: _quizStartTime ?? DateTime.now(),
+    );
+  }
+
+  void _pauseQuiz() {
+    setState(() {
+      _isPaused = true;
+      _timer?.cancel();
+    });
+    _saveQuizState();
+  }
+
+  void _resumeQuiz() {
+    setState(() {
+      _isPaused = false;
+    });
+    if (widget.timeLimitInMinutes != null && _remainingTime > 0) {
+      _startTimer();
+    }
+  }
+
   void _startTimer() {
+    // Track quiz start time
+    _quizStartTime = DateTime.now();
+
     // Only start the timer if a time limit is set
     if (widget.timeLimitInMinutes != null) {
       // Set the remaining time from the widget property
@@ -101,15 +156,22 @@ class _QuizScreenState extends State<QuizScreen> {
   void _answerQuestion(String selectedAnswer) {
     if (_selectedAnswers[_questionIndex] != null) return;
 
+    // Haptic Feedback check
+    final myAppState = context.findAncestorStateOfType<MyAppState>();
+    final hapticEnabled = myAppState?.hapticEnabled ?? true;
+    if (hapticEnabled) HapticFeedback.selectionClick();
+
     final currentQuestion = _questions[_questionIndex];
     final bool isCorrect = currentQuestion.correctAnswer == selectedAnswer;
 
     setState(() {
       _selectedAnswers[_questionIndex] = selectedAnswer;
       if (isCorrect) {
+        if (hapticEnabled) HapticFeedback.mediumImpact();
         _currentStreak++;
         _answerColors[selectedAnswer] = Colors.green;
       } else {
+        if (hapticEnabled) HapticFeedback.heavyImpact();
         _lives--;
         if (_lives == 0) {
           _finishQuiz(outOfLives: true);
@@ -171,6 +233,12 @@ class _QuizScreenState extends State<QuizScreen> {
   void _finishQuiz({bool timeUp = false, bool outOfLives = false}) {
     _timer?.cancel(); // Stop the timer
 
+    // Calculate completion time
+    if (_quizStartTime != null) {
+      _quizCompletionTimeSeconds =
+          DateTime.now().difference(_quizStartTime!).inSeconds;
+    }
+
     // Check if any question is unanswered before finishing.
     if (!timeUp &&
         !outOfLives &&
@@ -179,6 +247,17 @@ class _QuizScreenState extends State<QuizScreen> {
           'Please answer all questions before finishing.');
       return;
     }
+    // Save to Leaderboard
+    final leaderboardService = LeaderboardService();
+    leaderboardService.addScore(LeaderboardEntry(
+      playerName: 'You', // Default name for now
+      score: _totalScore,
+      totalQuestions: _questions.length,
+      date: DateTime.now(),
+      category: widget.category ?? 'General',
+      difficulty: widget.difficulty.name,
+    ));
+
     // End of quiz: Navigate to results
     Navigator.pushReplacementNamed(
       context,
@@ -190,6 +269,7 @@ class _QuizScreenState extends State<QuizScreen> {
         'category': widget.category,
         'questions': _questions,
         'selectedAnswers': _selectedAnswers,
+        'quizDurationSeconds': _quizCompletionTimeSeconds,
       },
     );
   }
@@ -202,14 +282,25 @@ class _QuizScreenState extends State<QuizScreen> {
       appBar: AppBar(
           title: Row(
             children: [
-              const Text('Quiz App'),
-              const Spacer(),
+              const Hero(
+                tag: 'app_icon',
+                child: Icon(Icons.school, color: Colors.white),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  widget.category ?? 'Quiz App',
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              // const Spacer(), // Removed Spacer as Expanded takes available space
               // --- Lives Counter ---
               Row(
                 children: List.generate(3, (index) {
                   return Icon(
                     index < _lives ? Icons.favorite : Icons.favorite_border,
                     color: Colors.red,
+                    size: 20, // Reduced size
                   );
                 }),
               ),
@@ -222,17 +313,76 @@ class _QuizScreenState extends State<QuizScreen> {
                   child: Row(
                     children: [
                       const Icon(Icons.local_fire_department,
-                          color: Colors.orange),
+                          color: Colors.orange, size: 20),
                       const SizedBox(width: 4),
                       Text('$_currentStreak',
                           style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
               // Only show the timer if a time limit was set
               if (widget.timeLimitInMinutes != null)
-                Text(_formattedTime, style: const TextStyle(fontSize: 18)),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _remainingTime <= 30
+                        ? Colors.red.withValues(alpha: 0.2)
+                        : _remainingTime <= 60
+                            ? Colors.orange.withValues(alpha: 0.2)
+                            : Colors.blue.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: _remainingTime <= 30
+                          ? Colors.red
+                          : _remainingTime <= 60
+                              ? Colors.orange
+                              : Colors.blue,
+                      width: 2,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.timer,
+                        color: _remainingTime <= 30
+                            ? Colors.red
+                            : _remainingTime <= 60
+                                ? Colors.orange
+                                : Colors.blue,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 4),
+                      TweenAnimationBuilder<double>(
+                        duration: _remainingTime <= 30
+                            ? const Duration(milliseconds: 500)
+                            : const Duration(milliseconds: 0),
+                        tween: Tween(
+                            begin: 1.0, end: _remainingTime <= 30 ? 1.2 : 1.0),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(
+                            scale: scale,
+                            child: Text(
+                              _formattedTime,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: _remainingTime <= 30
+                                    ? Colors.red
+                                    : _remainingTime <= 60
+                                        ? Colors.orange
+                                        : Colors.blue,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
           automaticallyImplyLeading:
@@ -245,6 +395,19 @@ class _QuizScreenState extends State<QuizScreen> {
             },
             tooltip: 'Back to Start',
           ),
+          actions: [
+            IconButton(
+              icon: Icon(_isPaused ? Icons.play_arrow : Icons.pause),
+              onPressed: () {
+                if (_isPaused) {
+                  _resumeQuiz();
+                } else {
+                  _pauseQuiz();
+                }
+              },
+              tooltip: _isPaused ? 'Resume' : 'Pause',
+            ),
+          ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(4.0),
             child: LinearProgressIndicator(
@@ -374,32 +537,84 @@ class _QuizScreenState extends State<QuizScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 30),
-                      ...List.generate(currentQuestion.shuffledAnswers.length,
-                          (index) {
-                        final answer = currentQuestion.shuffledAnswers[index];
-                        final buttonColor = _answerColors[answer];
-                        final label =
-                            String.fromCharCode('A'.codeUnitAt(0) + index);
+                      // Different UI for True/False vs Multiple Choice
+                      if (currentQuestion.isTrueFalse)
+                        // True/False Buttons
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: ElevatedButton.icon(
+                                  onPressed:
+                                      _selectedAnswers[_questionIndex] != null
+                                          ? null
+                                          : () => _answerQuestion('True'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: _answerColors['True'],
+                                    disabledBackgroundColor:
+                                        _answerColors['True'],
+                                    padding: const EdgeInsets.all(12),
+                                  ),
+                                  icon:
+                                      const Icon(Icons.check_circle, size: 20),
+                                  label: const Text('True',
+                                      style: TextStyle(fontSize: 16)),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: ElevatedButton.icon(
+                                  onPressed:
+                                      _selectedAnswers[_questionIndex] != null
+                                          ? null
+                                          : () => _answerQuestion('False'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: _answerColors['False'],
+                                    disabledBackgroundColor:
+                                        _answerColors['False'],
+                                    padding: const EdgeInsets.all(12),
+                                  ),
+                                  icon: const Icon(Icons.cancel, size: 20),
+                                  label: const Text('False',
+                                      style: TextStyle(fontSize: 16)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      else
+                        // Multiple Choice Buttons
+                        ...List.generate(currentQuestion.shuffledAnswers.length,
+                            (index) {
+                          final answer = currentQuestion.shuffledAnswers[index];
+                          final buttonColor = _answerColors[answer];
+                          final label =
+                              String.fromCharCode('A'.codeUnitAt(0) + index);
 
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: ElevatedButton(
-                            onPressed: _selectedAnswers[_questionIndex] != null
-                                ? null
-                                : () => _answerQuestion(answer),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: buttonColor,
-                              disabledBackgroundColor: buttonColor,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 16, horizontal: 24),
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: ElevatedButton(
+                              onPressed:
+                                  _selectedAnswers[_questionIndex] != null
+                                      ? null
+                                      : () => _answerQuestion(answer),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: buttonColor,
+                                disabledBackgroundColor: buttonColor,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 16),
+                              ),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text('$label. $answer',
+                                    style: const TextStyle(fontSize: 16)),
+                              ),
                             ),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text('$label. $answer'),
-                            ),
-                          ),
-                        );
-                      }),
+                          );
+                        }),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
