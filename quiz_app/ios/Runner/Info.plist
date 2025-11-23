@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
+
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
@@ -47,5 +48,19 @@
 	<true/>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>We use notifications to remind you to keep your quiz streak alive!</string>
+	<key>GIDClientID</key>
+	<string>362153618720-qod5e15ubgq7v3urkqnc7r2aou7ovb25.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <!-- Replace with your iOS URL Scheme from Firebase -->
+            <string>com.googleusercontent.apps.362153618720-qod5e15ubgq7v3urkqnc7r2aou7ovb25</string>
+        </array>
+    </dict>
+</array>
 </dict>
 </plist>

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/services/statistics_service.dart';
 import 'package:quiz_app/settings.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:share_plus/share_plus.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -33,6 +34,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       appBar: AppBar(
         title: const Text('Statistics'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.ios_share),
+            onPressed: () async {
+              final stats = await _statsFuture;
+              _exportStatistics(stats);
+            },
+            tooltip: 'Export Statistics',
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _refreshStats,
@@ -113,6 +122,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   value: '${stats.totalCorrect} / ${stats.totalQuestions}',
                   color: Colors.purple,
                 ),
+                const SizedBox(height: 24),
+
+                // Performance Comparison Section
+                _buildPerformanceComparison(stats),
                 const SizedBox(height: 24),
 
                 // Category Performance Chart
@@ -530,6 +543,227 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildPerformanceComparison(QuizStatistics stats) {
+    return FutureBuilder<List<QuizHistory>>(
+      future: _statisticsService.getQuizHistory(
+        startDate: DateTime.now().subtract(const Duration(days: 7)),
+      ),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        final recentQuizzes = snapshot.data!;
+        final recentAverage = recentQuizzes.isEmpty
+            ? 0.0
+            : recentQuizzes.map((q) => q.percentage).reduce((a, b) => a + b) /
+                recentQuizzes.length;
+
+        final overallAverage = stats.averageScore;
+        final difference = recentAverage - overallAverage;
+        final isImproving = difference > 0;
+        final percentChange = overallAverage > 0
+            ? (difference / overallAverage * 100).abs()
+            : 0.0;
+
+        return Card(
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.compare_arrows,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Performance Comparison',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildComparisonCard(
+                        context,
+                        title: 'Last 7 Days',
+                        value: '${recentAverage.toStringAsFixed(1)}%',
+                        subtitle:
+                            '${recentQuizzes.length} quiz${recentQuizzes.length == 1 ? '' : 'zes'}',
+                        color: Colors.blue,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildComparisonCard(
+                        context,
+                        title: 'Overall Avg',
+                        value: '${overallAverage.toStringAsFixed(1)}%',
+                        subtitle:
+                            '${stats.totalQuizzes} quiz${stats.totalQuizzes == 1 ? '' : 'zes'}',
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isImproving
+                        ? Colors.green.withValues(alpha: 0.1)
+                        : Colors.orange.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: isImproving ? Colors.green : Colors.orange,
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        isImproving ? Icons.trending_up : Icons.trending_down,
+                        color: isImproving ? Colors.green : Colors.orange,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              isImproving
+                                  ? 'You\'re improving! 🎉'
+                                  : 'Keep practicing! 💪',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    isImproving ? Colors.green : Colors.orange,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${isImproving ? '+' : ''}${difference.toStringAsFixed(1)}% (${percentChange.toStringAsFixed(1)}% ${isImproving ? 'increase' : 'decrease'})',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildComparisonCard(
+    BuildContext context, {
+    required String title,
+    required String value,
+    required String subtitle,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.grey[600],
+                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _exportStatistics(QuizStatistics stats) {
+    final buffer = StringBuffer();
+    buffer.writeln('📊 My Quiz Statistics');
+    buffer.writeln('═' * 30);
+    buffer.writeln();
+    buffer.writeln('📈 Overall Performance');
+    buffer.writeln('Total Quizzes: ${stats.totalQuizzes}');
+    buffer.writeln('Average Score: ${stats.averageScore.toStringAsFixed(1)}%');
+    buffer.writeln(
+        'Total Correct: ${stats.totalCorrect}/${stats.totalQuestions}');
+    buffer.writeln();
+
+    if (stats.bestCategory != null) {
+      buffer.writeln('⭐ Best Category: ${stats.bestCategory}');
+      buffer.writeln(
+          '   ${stats.categoryAverages[stats.bestCategory]?.toStringAsFixed(1)}%');
+      buffer.writeln();
+    }
+
+    if (stats.bestDifficulty != null) {
+      buffer.writeln(
+          '🎯 Best Difficulty: ${_capitalize(stats.bestDifficulty!.name)}');
+      buffer.writeln(
+          '   ${stats.difficultyAverages[stats.bestDifficulty]?.toStringAsFixed(1)}%');
+      buffer.writeln();
+    }
+
+    if (stats.categoryAverages.isNotEmpty) {
+      buffer.writeln('📚 Category Breakdown:');
+      stats.categoryAverages.forEach((category, average) {
+        final quizzes = stats.categoryQuizzes[category] ?? 0;
+        buffer.writeln(
+            '  • $category: ${average.toStringAsFixed(1)}% ($quizzes quiz${quizzes == 1 ? '' : 'zes'})');
+      });
+      buffer.writeln();
+    }
+
+    if (stats.difficultyAverages.isNotEmpty) {
+      buffer.writeln('🎮 Difficulty Breakdown:');
+      stats.difficultyAverages.forEach((difficulty, average) {
+        final quizzes = stats.difficultyQuizzes[difficulty] ?? 0;
+        buffer.writeln(
+            '  • ${_capitalize(difficulty.name)}: ${average.toStringAsFixed(1)}% ($quizzes quiz${quizzes == 1 ? '' : 'zes'})');
+      });
+    }
+
+    buffer.writeln();
+    buffer.writeln('Generated by Quiz App 🎓');
+
+    Share.share(
+      buffer.toString(),
+      subject: 'My Quiz Statistics',
     );
   }
 

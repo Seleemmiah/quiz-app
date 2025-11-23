@@ -6,9 +6,12 @@ import 'package:quiz_app/main.dart';
 import 'package:quiz_app/services/api_service.dart';
 import 'package:quiz_app/settings.dart';
 import 'package:quiz_app/models/question_model.dart';
+import 'package:quiz_app/models/quiz_model.dart';
 import 'package:quiz_app/services/leaderboard_service.dart';
 import 'package:quiz_app/models/leaderboard_entry.dart';
 import 'package:quiz_app/services/quiz_state_service.dart';
+import 'package:quiz_app/services/class_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({
@@ -17,17 +20,22 @@ class QuizScreen extends StatefulWidget {
     this.category,
     this.timeLimitInMinutes,
     this.quizLength = 10,
+    this.customQuestions,
+    this.quiz,
   });
   final Difficulty difficulty;
   final String? category;
   final int? timeLimitInMinutes;
   final int quizLength;
+  final List<Question>? customQuestions;
+  final Quiz?
+      quiz; // Quiz object for custom quizzes (to access isBlindMode, timeLimitMinutes)
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
 }
 
-class _QuizScreenState extends State<QuizScreen> {
+class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
   // This "Future" will hold our list of questions
   late Future<List<Question>> _questionFuture;
 
@@ -56,27 +64,50 @@ class _QuizScreenState extends State<QuizScreen> {
   DateTime? _quizStartTime;
   int? _quizCompletionTimeSeconds;
 
-  // --- PAUSE STATE ---
-  bool _isPaused = false;
   final QuizStateService _quizStateService = QuizStateService();
 
   @override
   void initState() {
     super.initState();
-    _questionFuture = _apiService.fetchQuestions(
-        amount: widget.quizLength,
-        difficulty: widget.difficulty,
-        category: widget.category);
+    WidgetsBinding.instance.addObserver(this);
+    if (widget.customQuestions != null && widget.customQuestions!.isNotEmpty) {
+      _questionFuture = Future.value(widget.customQuestions);
+    } else {
+      _questionFuture = _apiService.fetchQuestions(
+          amount: widget.quizLength,
+          difficulty: widget.difficulty,
+          category: widget.category);
+    }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel(); // Always cancel timers when the widget is removed
     // Save state if quiz is incomplete
     if (_questions.isNotEmpty && !_selectedAnswers.every((a) => a != null)) {
       _saveQuizState();
     }
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    // Auto-submit quiz when app is minimized or goes to background
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
+      if (_questions.isNotEmpty && mounted) {
+        // Check if quiz is in progress
+        final hasAnsweredAny = _selectedAnswers.any((a) => a != null);
+        if (hasAnsweredAny) {
+          // Auto-submit the quiz
+          _finishQuiz(timeUp: false, outOfLives: false);
+        }
+      }
+    }
   }
 
   Future<void> _saveQuizState() async {
@@ -94,46 +125,38 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  void _pauseQuiz() {
-    setState(() {
-      _isPaused = true;
-      _timer?.cancel();
-    });
-    _saveQuizState();
-  }
-
-  void _resumeQuiz() {
-    setState(() {
-      _isPaused = false;
-    });
-    if (widget.timeLimitInMinutes != null && _remainingTime > 0) {
-      _startTimer();
-    }
-  }
-
   void _startTimer() {
     // Track quiz start time
     _quizStartTime = DateTime.now();
 
-    // Only start the timer if a time limit is set
-    if (widget.timeLimitInMinutes != null) {
-      // Set the remaining time from the widget property
-      _remainingTime = (widget.timeLimitInMinutes ?? 0) * 60;
+    // Determine time limit: explicit argument takes precedence, then quiz object
+    final timeLimit =
+        widget.timeLimitInMinutes ?? widget.quiz?.timeLimitMinutes;
+
+    // Set the remaining time from the widget property or start at 0 for stopwatch
+    if (timeLimit != null) {
+      _remainingTime = timeLimit * 60;
     } else {
-      return; // No time limit, so no timer needed.
+      _remainingTime = 0; // Start at 0 for stopwatch mode
     }
 
     // Start a periodic timer
     _timer?.cancel(); // Cancel any existing timer
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_remainingTime > 0) {
-        setState(() {
-          _remainingTime--;
-        });
-      } else {
-        timer.cancel();
-        _finishQuiz(timeUp: true); // End the quiz when time is up
-      }
+      setState(() {
+        if (timeLimit != null) {
+          // Countdown mode
+          if (_remainingTime > 0) {
+            _remainingTime--;
+          } else {
+            timer.cancel();
+            _finishQuiz(timeUp: true); // End the quiz when time is up
+          }
+        } else {
+          // Stopwatch mode - count up
+          _remainingTime++;
+        }
+      });
     });
   }
 
@@ -164,12 +187,20 @@ class _QuizScreenState extends State<QuizScreen> {
     final currentQuestion = _questions[_questionIndex];
     final bool isCorrect = currentQuestion.correctAnswer == selectedAnswer;
 
+    // Check if this is a blind mode quiz
+    final isBlindMode =
+        widget.customQuestions != null && widget.quiz?.isBlindMode == true;
+
     setState(() {
       _selectedAnswers[_questionIndex] = selectedAnswer;
       if (isCorrect) {
         if (hapticEnabled) HapticFeedback.mediumImpact();
         _currentStreak++;
-        _answerColors[selectedAnswer] = Colors.green;
+        if (!isBlindMode) {
+          _answerColors[selectedAnswer] = Colors.green;
+        } else {
+          _answerColors[selectedAnswer] = Colors.grey.shade300;
+        }
       } else {
         if (hapticEnabled) HapticFeedback.heavyImpact();
         _lives--;
@@ -177,9 +208,13 @@ class _QuizScreenState extends State<QuizScreen> {
           _finishQuiz(outOfLives: true);
           return; // Return early to prevent further state changes
         }
-        _answerColors[selectedAnswer] = Colors.red;
+        if (!isBlindMode) {
+          _answerColors[selectedAnswer] = Colors.red;
+          _answerColors[currentQuestion.correctAnswer] = Colors.green;
+        } else {
+          _answerColors[selectedAnswer] = Colors.grey;
+        }
         _currentStreak = 0; // Reset streak on incorrect answer
-        _answerColors[currentQuestion.correctAnswer] = Colors.green;
       }
     });
   }
@@ -190,11 +225,21 @@ class _QuizScreenState extends State<QuizScreen> {
     if (selectedAnswer != null) {
       final currentQuestion = _questions[_questionIndex];
       final isCorrect = currentQuestion.correctAnswer == selectedAnswer;
-      if (isCorrect) {
-        _answerColors[selectedAnswer] = Colors.green;
+
+      // Check if this is a blind mode quiz
+      final isBlindMode =
+          widget.customQuestions != null && widget.quiz?.isBlindMode == true;
+
+      if (!isBlindMode) {
+        if (isCorrect) {
+          _answerColors[selectedAnswer] = Colors.green;
+        } else {
+          _answerColors[selectedAnswer] = Colors.red;
+          _answerColors[currentQuestion.correctAnswer] = Colors.green;
+        }
       } else {
-        _answerColors[selectedAnswer] = Colors.red;
-        _answerColors[currentQuestion.correctAnswer] = Colors.green;
+        // Blind mode: just show selection without color feedback
+        _answerColors[selectedAnswer] = Colors.grey.shade300;
       }
     }
   }
@@ -230,7 +275,7 @@ class _QuizScreenState extends State<QuizScreen> {
     });
   }
 
-  void _finishQuiz({bool timeUp = false, bool outOfLives = false}) {
+  void _finishQuiz({bool timeUp = false, bool outOfLives = false}) async {
     _timer?.cancel(); // Stop the timer
 
     // Calculate completion time
@@ -258,10 +303,28 @@ class _QuizScreenState extends State<QuizScreen> {
       difficulty: widget.difficulty.name,
     ));
 
+    // Submit score to all user's classes
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      try {
+        final classService = ClassService();
+        await classService.submitScoreToClasses(
+          userId: currentUser.uid,
+          userName: currentUser.displayName ?? 'Student',
+          score: _totalScore,
+          totalQuestions: _questions.length,
+          category: widget.category ?? 'General',
+          difficulty: widget.difficulty.name,
+        );
+      } catch (e) {
+        debugPrint('Failed to submit score to classes: $e');
+      }
+    }
+
     // End of quiz: Navigate to results
     Navigator.pushReplacementNamed(
       context,
-      '/results',
+      '/result',
       arguments: {
         'score': _totalScore,
         'totalQuestions': _questions.length, // Pass the total here
@@ -270,6 +333,7 @@ class _QuizScreenState extends State<QuizScreen> {
         'questions': _questions,
         'selectedAnswers': _selectedAnswers,
         'quizDurationSeconds': _quizCompletionTimeSeconds,
+        'isBlindMode': widget.quiz?.isBlindMode ?? false,
       },
     );
   }
@@ -321,68 +385,66 @@ class _QuizScreenState extends State<QuizScreen> {
                     ],
                   ),
                 ),
-              // Only show the timer if a time limit was set
-              if (widget.timeLimitInMinutes != null)
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
+              // Always show the timer
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: _remainingTime <= 30
+                      ? Colors.red.withValues(alpha: 0.2)
+                      : _remainingTime <= 60
+                          ? Colors.orange.withValues(alpha: 0.2)
+                          : Colors.blue.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
                     color: _remainingTime <= 30
-                        ? Colors.red.withValues(alpha: 0.2)
+                        ? Colors.red
                         : _remainingTime <= 60
-                            ? Colors.orange.withValues(alpha: 0.2)
-                            : Colors.blue.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
+                            ? Colors.orange
+                            : Colors.blue,
+                    width: 2,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.timer,
                       color: _remainingTime <= 30
                           ? Colors.red
                           : _remainingTime <= 60
                               ? Colors.orange
                               : Colors.blue,
-                      width: 2,
+                      size: 16,
                     ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.timer,
-                        color: _remainingTime <= 30
-                            ? Colors.red
-                            : _remainingTime <= 60
-                                ? Colors.orange
-                                : Colors.blue,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      TweenAnimationBuilder<double>(
-                        duration: _remainingTime <= 30
-                            ? const Duration(milliseconds: 500)
-                            : const Duration(milliseconds: 0),
-                        tween: Tween(
-                            begin: 1.0, end: _remainingTime <= 30 ? 1.2 : 1.0),
-                        curve: Curves.easeInOut,
-                        builder: (context, scale, child) {
-                          return Transform.scale(
-                            scale: scale,
-                            child: Text(
-                              _formattedTime,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: _remainingTime <= 30
-                                    ? Colors.red
-                                    : _remainingTime <= 60
-                                        ? Colors.orange
-                                        : Colors.blue,
-                              ),
+                    const SizedBox(width: 4),
+                    TweenAnimationBuilder<double>(
+                      duration: _remainingTime <= 30
+                          ? const Duration(milliseconds: 500)
+                          : const Duration(milliseconds: 0),
+                      tween: Tween(
+                          begin: 1.0, end: _remainingTime <= 30 ? 1.2 : 1.0),
+                      curve: Curves.easeInOut,
+                      builder: (context, scale, child) {
+                        return Transform.scale(
+                          scale: scale,
+                          child: Text(
+                            _formattedTime,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: _remainingTime <= 30
+                                  ? Colors.red
+                                  : _remainingTime <= 60
+                                      ? Colors.orange
+                                      : Colors.blue,
                             ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
+              ),
             ],
           ),
           automaticallyImplyLeading:
@@ -395,19 +457,6 @@ class _QuizScreenState extends State<QuizScreen> {
             },
             tooltip: 'Back to Start',
           ),
-          actions: [
-            IconButton(
-              icon: Icon(_isPaused ? Icons.play_arrow : Icons.pause),
-              onPressed: () {
-                if (_isPaused) {
-                  _resumeQuiz();
-                } else {
-                  _pauseQuiz();
-                }
-              },
-              tooltip: _isPaused ? 'Resume' : 'Pause',
-            ),
-          ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(4.0),
             child: LinearProgressIndicator(
@@ -527,6 +576,58 @@ class _QuizScreenState extends State<QuizScreen> {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 10),
+                      // Image Display
+                      if (currentQuestion.imageUrl != null &&
+                          currentQuestion.imageUrl!.isNotEmpty) ...[
+                        Container(
+                          height: 200,
+                          margin: const EdgeInsets.only(bottom: 20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              currentQuestion.imageUrl!,
+                              fit: BoxFit.contain,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.broken_image,
+                                          size: 40, color: Colors.grey),
+                                      Text('Image failed to load',
+                                          style: TextStyle(color: Colors.grey)),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                       Text(
                         currentQuestion.question,
                         style:

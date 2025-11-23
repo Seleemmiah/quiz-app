@@ -6,6 +6,7 @@ import 'package:quiz_app/services/achievement_service.dart';
 import 'package:quiz_app/services/bookmark_service.dart';
 import 'package:quiz_app/services/preferences_service.dart';
 import 'package:quiz_app/services/api_service.dart';
+import 'package:quiz_app/services/auth_service.dart';
 import 'package:quiz_app/settings.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:quiz_app/models/theme_preset.dart';
@@ -185,61 +186,78 @@ class _SettingsScreenState extends State<SettingsScreen> {
             context,
             'Appearance',
             [
+              SwitchListTile(
+                title: const Text('OLED Dark Mode'),
+                subtitle:
+                    const Text('Use true black background (dark mode only)'),
+                value: myAppState?.isOledMode ?? false,
+                onChanged: (bool value) {
+                  myAppState?.toggleOledMode(value);
+                },
+                secondary: const Icon(Icons.dark_mode),
+                activeColor: Theme.of(context).primaryColor,
+              ),
               ListTile(
                 leading: const Icon(Icons.brightness_6),
-                title: const Text('Theme'),
-                subtitle: const Text('Choose your preferred theme'),
+                title: const Text('Theme Mode'),
+                subtitle: Text(_getThemeModeLabel(
+                    myAppState?.themeMode ?? ThemeMode.system)),
                 trailing: DropdownButton<ThemeMode>(
-                  value: myAppState == null
-                      ? ThemeMode.system
-                      : myAppState.themeMode,
+                  value: myAppState?.themeMode ?? ThemeMode.system,
                   underline: const SizedBox(),
                   items: const [
                     DropdownMenuItem(
-                      value: ThemeMode.system,
-                      child: Text('System'),
+                      value: ThemeMode.light,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.light_mode, size: 18),
+                          SizedBox(width: 8),
+                          Text('Light'),
+                        ],
+                      ),
                     ),
                     DropdownMenuItem(
-                      value: ThemeMode.light,
-                      child: Text('Light'),
+                      value: ThemeMode.system,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.brightness_auto, size: 18),
+                          SizedBox(width: 8),
+                          Text('System'),
+                        ],
+                      ),
                     ),
                     DropdownMenuItem(
                       value: ThemeMode.dark,
-                      child: Text('Dark'),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.dark_mode, size: 18),
+                          SizedBox(width: 8),
+                          Text('Dark'),
+                        ],
+                      ),
                     ),
                   ],
-                  onChanged: (ThemeMode? theme) {
-                    if (theme != null) {
-                      myAppState?.changeTheme(theme);
+                  onChanged: (ThemeMode? newValue) {
+                    if (newValue != null) {
+                      myAppState?.changeThemeMode(newValue);
                     }
                   },
                 ),
               ),
-              if (myAppState != null &&
-                  (myAppState.themeMode == ThemeMode.dark ||
-                      (myAppState.themeMode == ThemeMode.system &&
-                          MediaQuery.of(context).platformBrightness ==
-                              Brightness.dark)))
-                SwitchListTile(
-                  title: const Text('OLED Dark Mode'),
-                  subtitle: const Text('Use true black background'),
-                  value: myAppState.isOledMode,
-                  onChanged: (bool value) {
-                    myAppState.toggleOledMode(value);
-                  },
-                  secondary: const Icon(Icons.dark_mode),
-                  activeColor: Theme.of(context).primaryColor,
-                ),
               ListTile(
                 leading: const Icon(Icons.palette),
                 title: const Text('Color Theme'),
-                subtitle: Text(myAppState?.currentThemePreset ?? 'Default'),
-                trailing: DropdownButton<String>(
-                  value: myAppState?.currentThemePreset ?? 'Default',
+                subtitle:
+                    Text(myAppState?.currentThemePreset.name ?? 'Default'),
+                trailing: DropdownButton<ThemePreset>(
+                  value: myAppState?.currentThemePreset,
                   underline: const SizedBox(),
                   items: ThemePreset.presets.map((preset) {
                     return DropdownMenuItem(
-                      value: preset.name,
+                      value: preset,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -250,9 +268,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     );
                   }).toList(),
-                  onChanged: (String? value) {
-                    if (value != null) {
-                      myAppState?.changeThemePreset(value);
+                  onChanged: (ThemePreset? preset) {
+                    if (preset != null) {
+                      myAppState?.changeThemePreset(preset);
                     }
                   },
                 ),
@@ -498,6 +516,48 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onTap: _shareApp,
               ),
               ListTile(
+                leading: const Icon(Icons.logout, color: Colors.red),
+                title: const Text(
+                  'Logout',
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                ),
+                subtitle: const Text('Sign out of your account'),
+                onTap: () async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Logout'),
+                      content: const Text('Are you sure you want to logout?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          style:
+                              TextButton.styleFrom(foregroundColor: Colors.red),
+                          onPressed: () => Navigator.pop(context, true),
+                          child: const Text('Logout'),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (confirmed == true && mounted) {
+                    final authService = AuthService();
+                    await authService.signOut();
+                    if (mounted) {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/welcome',
+                        (route) => false,
+                      );
+                    }
+                  }
+                },
+              ),
+              ListTile(
                 leading:
                     const Icon(Icons.bug_report_outlined, color: Colors.orange),
                 title: const Text('Report a Bug'),
@@ -530,6 +590,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+  }
+
+  String _getThemeModeLabel(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.light:
+        return 'Light';
+      case ThemeMode.dark:
+        return 'Dark';
+      case ThemeMode.system:
+        return 'System';
+    }
   }
 
   Widget _buildSectionCard(

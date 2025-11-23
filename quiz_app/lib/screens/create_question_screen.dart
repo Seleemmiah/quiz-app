@@ -2,16 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/services/custom_quiz_service.dart';
 import 'package:quiz_app/settings.dart';
 
+import 'package:quiz_app/models/question_model.dart';
+
 class CreateQuestionScreen extends StatefulWidget {
   final CustomQuestion? editQuestion;
+  final bool returnQuestion;
 
-  const CreateQuestionScreen({super.key, this.editQuestion});
+  const CreateQuestionScreen({
+    super.key,
+    this.editQuestion,
+    this.returnQuestion = false,
+  });
 
   @override
   State<CreateQuestionScreen> createState() => _CreateQuestionScreenState();
 }
 
 class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
+  // ... (keep existing variables)
   final _formKey = GlobalKey<FormState>();
   final _questionController = TextEditingController();
   final _correctAnswerController = TextEditingController();
@@ -19,10 +27,12 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
   final _wrong2Controller = TextEditingController();
   final _wrong3Controller = TextEditingController();
   final _categoryController = TextEditingController();
+  final _imageUrlController = TextEditingController();
 
   Difficulty _selectedDifficulty = Difficulty.easy;
   final CustomQuizService _customQuizService = CustomQuizService();
 
+  // ... (keep existing initState and dispose)
   @override
   void initState() {
     super.initState();
@@ -39,6 +49,10 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
         _wrong2Controller.text = incorrectAnswers[1];
       if (incorrectAnswers.length > 2)
         _wrong3Controller.text = incorrectAnswers[2];
+
+      if (widget.editQuestion?.imageUrl != null) {
+        _imageUrlController.text = widget.editQuestion!.imageUrl!;
+      }
     }
   }
 
@@ -50,11 +64,35 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
     _wrong2Controller.dispose();
     _wrong3Controller.dispose();
     _categoryController.dispose();
+    _imageUrlController.dispose();
     super.dispose();
   }
 
   Future<void> _saveQuestion() async {
     if (_formKey.currentState!.validate()) {
+      if (widget.returnQuestion) {
+        // Create Question object for Firestore
+        final question = Question.fromLocalJson({
+          'category': _categoryController.text.trim(),
+          'difficulty': _selectedDifficulty.name, // Use string name
+          'question': _questionController.text.trim(),
+          'correct_answer': _correctAnswerController.text.trim(),
+          'incorrect_answers': [
+            _wrong1Controller.text.trim(),
+            _wrong2Controller.text.trim(),
+            _wrong3Controller.text.trim(),
+          ],
+          'type': 'multiple',
+          'imageUrl': _imageUrlController.text.trim().isNotEmpty
+              ? _imageUrlController.text.trim()
+              : null,
+        });
+
+        Navigator.pop(context, question);
+        return;
+      }
+
+      // Existing logic for local storage
       final question = CustomQuestion(
         id: widget.editQuestion?.id ??
             DateTime.now().millisecondsSinceEpoch.toString(),
@@ -68,6 +106,9 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
         category: _categoryController.text.trim(),
         difficulty: _selectedDifficulty,
         createdAt: widget.editQuestion?.createdAt ?? DateTime.now(),
+        imageUrl: _imageUrlController.text.trim().isNotEmpty
+            ? _imageUrlController.text.trim()
+            : null,
       );
 
       if (widget.editQuestion != null) {
@@ -117,6 +158,49 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                 return null;
               },
             ),
+            const SizedBox(height: 16),
+
+            // Image URL Field
+            TextFormField(
+              controller: _imageUrlController,
+              decoration: const InputDecoration(
+                labelText: 'Image URL (Optional)',
+                hintText: 'https://example.com/image.jpg',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.image),
+              ),
+              onChanged: (value) {
+                setState(() {}); // Rebuild to show preview
+              },
+            ),
+            if (_imageUrlController.text.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Container(
+                height: 200,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    _imageUrlController.text,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.error, color: Colors.red),
+                            Text('Invalid Image URL'),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
 
             // Correct Answer

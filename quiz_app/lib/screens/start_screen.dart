@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quiz_app/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // import 'package:quiz_app/screens/quiz_screen.dart';
 import 'package:quiz_app/services/score_service.dart';
@@ -9,6 +10,7 @@ import 'package:quiz_app/services/preferences_service.dart';
 import 'package:quiz_app/settings.dart';
 import 'package:quiz_app/services/notification_service.dart';
 import 'package:quiz_app/services/recommendation_service.dart';
+import 'package:quiz_app/services/api_service.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -32,6 +34,7 @@ class _StartScreenState extends State<StartScreen> {
   final BookmarkService _bookmarkService = BookmarkService();
   final PreferencesService _preferencesService = PreferencesService();
   final RecommendationService _recommendationService = RecommendationService();
+  final ApiService _apiService = ApiService();
 
   List<Recommendation> _recommendations = [];
 
@@ -42,6 +45,16 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   Future<void> _initializeScreen() async {
+    // Check for username first
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null &&
+        (user.displayName == null || user.displayName!.isEmpty)) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/username_setup');
+        return;
+      }
+    }
+
     // Load preferences first
     final difficulty = await _preferencesService.getDefaultDifficulty();
     final category = await _preferencesService.getDefaultCategory();
@@ -63,6 +76,17 @@ class _StartScreenState extends State<StartScreen> {
 
       // Setup notifications
       _setupNotifications();
+    }
+  }
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good Morning,';
+    } else if (hour < 17) {
+      return 'Good Afternoon,';
+    } else {
+      return 'Good Evening,';
     }
   }
 
@@ -106,6 +130,151 @@ class _StartScreenState extends State<StartScreen> {
 
     // Check if the widget is still mounted before calling setState
     if (mounted) setState(() => _highScore = score);
+  }
+
+  Future<void> _showCategoryPicker(BuildContext context) async {
+    try {
+      final categories = await _apiService.fetchCategories();
+
+      if (!mounted) return;
+
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Select Category'),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  final category = categories[index];
+                  final isSelected = category == _selectedCategory;
+
+                  return ListTile(
+                    title: Text(category),
+                    leading: Icon(
+                      isSelected ? Icons.check_circle : Icons.circle_outlined,
+                      color: isSelected ? Theme.of(context).primaryColor : null,
+                    ),
+                    selected: isSelected,
+                    onTap: () {
+                      setState(() {
+                        _selectedCategory = category;
+                      });
+                      Navigator.pop(context);
+                      _loadHighScore(); // Reload high score for new category
+                    },
+                  );
+                },
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading categories: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _showDifficultyPicker(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Difficulty'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: Difficulty.values.map((difficulty) {
+              final isSelected = difficulty == _selectedDifficulty;
+              return ListTile(
+                title: Text(difficulty.name.toUpperCase()),
+                leading: Icon(
+                  isSelected ? Icons.check_circle : Icons.circle_outlined,
+                  color: isSelected ? Theme.of(context).primaryColor : null,
+                ),
+                selected: isSelected,
+                onTap: () async {
+                  setState(() {
+                    _selectedDifficulty = difficulty;
+                  });
+                  // Save to preferences
+                  await _preferencesService.setDefaultDifficulty(difficulty);
+                  Navigator.pop(context);
+                  _loadHighScore(); // Reload high score for new difficulty
+                },
+              );
+            }).toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showTimeLimitPicker(BuildContext context) async {
+    final timeLimits = [0, 1, 2, 3, 5, 10, 15, 20, 30]; // 0 means no limit
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Time Limit'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: timeLimits.length,
+              itemBuilder: (context, index) {
+                final timeLimit = timeLimits[index];
+                final isSelected = timeLimit == _selectedTimeInMinutes;
+                final displayText =
+                    timeLimit == 0 ? 'No Limit' : '$timeLimit minutes';
+
+                return ListTile(
+                  title: Text(displayText),
+                  leading: Icon(
+                    isSelected ? Icons.check_circle : Icons.circle_outlined,
+                    color: isSelected ? Theme.of(context).primaryColor : null,
+                  ),
+                  selected: isSelected,
+                  onTap: () async {
+                    setState(() {
+                      _selectedTimeInMinutes = timeLimit;
+                    });
+                    // Save to preferences
+                    await _preferencesService.setDefaultTimeLimit(timeLimit);
+                    Navigator.pop(context);
+                  },
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -186,6 +355,14 @@ class _StartScreenState extends State<StartScreen> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.school_outlined),
+              title: const Text('My Classes'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/classes');
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.bookmark_border),
               title: const Text('Bookmarks'),
               onTap: () {
@@ -207,6 +384,22 @@ class _StartScreenState extends State<StartScreen> {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, '/myQuizzes');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.groups),
+              title: const Text('Join Quiz'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/joinQuiz');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.auto_awesome),
+              title: const Text('AI Quiz Generator'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/generateQuiz');
               },
             ),
             const Divider(),
@@ -253,7 +446,7 @@ class _StartScreenState extends State<StartScreen> {
                 ),
                 const SizedBox(height: 30),
                 Text(
-                  'Welcome to the Quiz!',
+                  '${_getGreeting()} $_username!',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight:
@@ -297,23 +490,34 @@ class _StartScreenState extends State<StartScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          _buildSettingItem(
-                            context,
-                            Icons.category,
-                            _selectedCategory ?? 'All',
-                            'Category',
+                          GestureDetector(
+                            onTap: () => _showCategoryPicker(context),
+                            child: _buildSettingItem(
+                              context,
+                              Icons.category,
+                              _selectedCategory ?? 'All',
+                              'Category',
+                            ),
                           ),
-                          _buildSettingItem(
-                            context,
-                            Icons.speed,
-                            _selectedDifficulty.name.toUpperCase(),
-                            'Difficulty',
+                          GestureDetector(
+                            onTap: () => _showDifficultyPicker(context),
+                            child: _buildSettingItem(
+                              context,
+                              Icons.speed,
+                              _selectedDifficulty.name.toUpperCase(),
+                              'Difficulty',
+                            ),
                           ),
-                          _buildSettingItem(
-                            context,
-                            Icons.timer,
-                            '$_selectedTimeInMinutes min',
-                            'Time',
+                          GestureDetector(
+                            onTap: () => _showTimeLimitPicker(context),
+                            child: _buildSettingItem(
+                              context,
+                              Icons.timer,
+                              _selectedTimeInMinutes == 0
+                                  ? 'No Limit'
+                                  : '$_selectedTimeInMinutes min',
+                              'Time',
+                            ),
                           ),
                         ],
                       ),

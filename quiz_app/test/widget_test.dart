@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_app/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:quiz_app/services/settings_service.dart';
 
 void main() {
   setUpAll(() {
@@ -14,7 +15,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
 
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MyApp(settingsService: SettingsService()));
 
     // Wait for settings load (5s timeout) + splash screen delay (3s) + animations
     await tester.pump(const Duration(seconds: 10));

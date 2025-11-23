@@ -16,6 +16,7 @@ class Question {
   final String correctAnswer;
   final List<String> incorrectAnswers;
   String? explanation;
+  final String? imageUrl; // New field for image support
   final List<String> shuffledAnswers;
   final QuestionType questionType;
 
@@ -27,6 +28,7 @@ class Question {
     required this.incorrectAnswers,
     required this.questionType,
     this.explanation,
+    this.imageUrl,
   }) : shuffledAnswers = _createShuffledAnswers(
             correctAnswer, incorrectAnswers, questionType);
 
@@ -59,6 +61,7 @@ class Question {
       explanation: json['explanation'] != null
           ? _htmlUnescape.convert(json['explanation'].toString())
           : null,
+      imageUrl: json['imageUrl'],
     );
   }
 
@@ -91,6 +94,7 @@ class Question {
       'correctAnswer': correctAnswer,
       'incorrectAnswers': incorrectAnswers,
       'explanation': explanation,
+      'imageUrl': imageUrl,
       'questionType':
           questionType == QuestionType.trueFalse ? 'boolean' : 'multiple',
     };

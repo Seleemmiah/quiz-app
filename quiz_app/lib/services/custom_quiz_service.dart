@@ -11,6 +11,7 @@ class CustomQuestion {
   final String category;
   final Difficulty difficulty;
   final DateTime createdAt;
+  final String? imageUrl; // New field
 
   CustomQuestion({
     required this.id,
@@ -20,6 +21,7 @@ class CustomQuestion {
     required this.category,
     required this.difficulty,
     required this.createdAt,
+    this.imageUrl,
   });
 
   Map<String, dynamic> toJson() {
@@ -31,6 +33,7 @@ class CustomQuestion {
       'category': category,
       'difficulty': difficulty.name,
       'createdAt': createdAt.toIso8601String(),
+      'imageUrl': imageUrl,
     };
   }
 
@@ -46,6 +49,7 @@ class CustomQuestion {
         orElse: () => Difficulty.easy,
       ),
       createdAt: DateTime.parse(json['createdAt'] as String),
+      imageUrl: json['imageUrl'],
     );
   }
 
@@ -58,6 +62,7 @@ class CustomQuestion {
       'category': category,
       'difficulty': difficulty.name,
       'type': 'multiple',
+      'imageUrl': imageUrl,
     });
   }
 }

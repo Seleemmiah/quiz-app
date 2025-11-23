@@ -16,16 +16,20 @@ class ResultScreen extends StatefulWidget {
   final String? category;
   final List<Question> questions;
   final List<String?> selectedAnswers;
+  final int? timeTaken;
+  final bool isBlindMode;
 
   // Constructor to receive the data
   const ResultScreen({
     super.key,
     required this.score,
-    required this.totalQuestions, // This now comes from the arguments
+    required this.totalQuestions,
     required this.difficulty,
     required this.category,
     required this.questions,
     required this.selectedAnswers,
+    this.timeTaken,
+    this.isBlindMode = false,
   });
 
   @override
@@ -46,17 +50,25 @@ class _ResultScreenState extends State<ResultScreen> {
     super.initState();
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 3));
-    _updateAndLoadHighScore();
-    _recordStatisticsAndCheckAchievements();
 
-    // Trigger confetti for high scores
-    final percentage = widget.totalQuestions > 0
-        ? (widget.score / widget.totalQuestions) * 100
-        : 0;
-    if (percentage >= 80) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        _confettiController.play();
-      });
+    // Only show confetti and update high score if NOT in blind mode
+    if (!widget.isBlindMode) {
+      _updateAndLoadHighScore();
+      _recordStatisticsAndCheckAchievements();
+
+      // Trigger confetti for high scores
+      final percentage = widget.totalQuestions > 0
+          ? (widget.score / widget.totalQuestions) * 100
+          : 0;
+      if (percentage >= 80) {
+        Future.delayed(const Duration(milliseconds: 500), () {
+          _confettiController.play();
+        });
+      }
+    } else {
+      // Still record statistics but maybe don't show achievements yet?
+      // For now, let's record it.
+      _recordStatisticsAndCheckAchievements();
     }
   }
 
@@ -125,6 +137,42 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isBlindMode) {
+      return Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.check_circle_outline,
+                    size: 80, color: Colors.green),
+                const SizedBox(height: 20),
+                Text(
+                  'Quiz Submitted!',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Your answers have been recorded.\nScores will be released by your teacher.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/');
+                  },
+                  child: const Text('Return to Home'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     final double percentage = widget.totalQuestions > 0
         ? (widget.score / widget.totalQuestions) * 100
         : 0;
