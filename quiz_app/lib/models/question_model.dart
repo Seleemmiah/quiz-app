@@ -17,6 +17,7 @@ class Question {
   final List<String> incorrectAnswers;
   String? explanation;
   final String? imageUrl; // New field for image support
+  final String? videoUrl; // New field for video explanations
   final List<String> shuffledAnswers;
   final QuestionType questionType;
 
@@ -29,8 +30,12 @@ class Question {
     required this.questionType,
     this.explanation,
     this.imageUrl,
+    this.videoUrl,
   }) : shuffledAnswers = _createShuffledAnswers(
             correctAnswer, incorrectAnswers, questionType);
+
+  factory Question.fromMap(Map<String, dynamic> map) =>
+      Question.fromLocalJson(map);
 
   factory Question.fromLocalJson(Map<String, dynamic> json) {
     // Combine correct and incorrect answers into one list
@@ -62,6 +67,7 @@ class Question {
           ? _htmlUnescape.convert(json['explanation'].toString())
           : null,
       imageUrl: json['imageUrl'],
+      videoUrl: json['videoUrl'],
     );
   }
 
@@ -98,6 +104,13 @@ class Question {
       'questionType':
           questionType == QuestionType.trueFalse ? 'boolean' : 'multiple',
     };
+  }
+
+  // Helper to check if question contains LaTeX
+  bool get isLatex {
+    return question.contains(r'$') ||
+        question.contains(r'\(') ||
+        question.contains(r'\[');
   }
 
   factory Question.fromJson(Map<String, dynamic> json) {

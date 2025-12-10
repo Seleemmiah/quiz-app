@@ -2,6 +2,10 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quiz_app/models/class_model.dart';
 import 'package:quiz_app/models/class_member.dart';
+import 'package:quiz_app/services/notification_service.dart';
+import 'package:quiz_app/models/notification_model.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/foundation.dart';
 
 class ClassService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -70,6 +74,16 @@ class ClassService {
           .collection('class_members')
           .doc('${classId}_$teacherId')
           .set(teacherMember.toJson());
+
+      // Send notification to teacher
+      await NotificationService().sendNotification(
+        userId: teacherId,
+        title: 'Class Created!',
+        body:
+            'You have successfully created class "$className". Code: $classCode',
+        type: NotificationType.general,
+        data: {'route': '/class_detail', 'arguments': newClass.toJson()},
+      );
 
       return newClass;
     } catch (e) {
@@ -248,15 +262,36 @@ class ClassService {
         query = query.where('difficulty', isEqualTo: difficulty);
       }
 
-      final scoresQuery = await query
-          .orderBy('percentage', descending: true)
-          .orderBy('completedAt', descending: false)
-          .limit(limit)
-          .get();
+      // Fetch all scores for the class (without ordering to avoid index issues)
+      final scoresQuery = await query.get();
 
-      return scoresQuery.docs
+      final scores = scoresQuery.docs
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
+
+      // Sort client-side
+      scores.sort((a, b) {
+        // Sort by percentage descending
+        final percentageA = (a['percentage'] as num?)?.toDouble() ?? 0.0;
+        final percentageB = (b['percentage'] as num?)?.toDouble() ?? 0.0;
+        final percentageCompare = percentageB.compareTo(percentageA);
+
+        if (percentageCompare != 0) {
+          return percentageCompare;
+        }
+
+        // Secondary sort by completedAt ascending (earlier is better)
+        final completedAtA = (a['completedAt'] as num?)?.toInt() ?? 0;
+        final completedAtB = (b['completedAt'] as num?)?.toInt() ?? 0;
+        return completedAtA.compareTo(completedAtB);
+      });
+
+      // Apply limit
+      if (scores.length > limit) {
+        return scores.sublist(0, limit);
+      }
+
+      return scores;
     } catch (e) {
       throw Exception('Failed to fetch leaderboard: $e');
     }
@@ -316,6 +351,181 @@ class ClassService {
       return member.isTeacher;
     } catch (e) {
       return false;
+    }
+  }
+
+  // Schedule an event for a class
+  Future<void> scheduleEvent({
+    required String classId,
+    required String title,
+    String? description,
+    required DateTime scheduledAt,
+    int? reminderBeforeMinutes,
+  }) async {
+    try {
+      final eventData = {
+        'classId': classId,
+        'title': title,
+        'description': description,
+        'scheduledAt': scheduledAt.millisecondsSinceEpoch,
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
+        if (reminderBeforeMinutes != null)
+          'reminderBeforeMinutes': reminderBeforeMinutes,
+      };
+
+      await _firestore.collection('class_events').add(eventData);
+
+      // Schedule reminder notification with custom time
+      final eventId =
+          '${eventData['classId']}_${scheduledAt.millisecondsSinceEpoch}';
+      final reminderBefore = eventData['reminderBeforeMinutes'] != null
+          ? Duration(minutes: eventData['reminderBeforeMinutes'] as int)
+          : const Duration(hours: 1); // Default 1 hour
+
+      await NotificationService().scheduleEventReminder(
+        eventId: eventId,
+        title: 'Upcoming Event: $title',
+        body: 'Event starts in ${_formatDuration(reminderBefore)}',
+        scheduledAt: scheduledAt,
+        reminderBefore: reminderBefore,
+      );
+
+      // Notify all class members
+      final members = await getClassMembers(classId);
+      for (final member in members) {
+        // Don't notify the teacher who created it
+        if (member.role == 'teacher') continue;
+
+        await NotificationService().sendNotification(
+          userId: member.userId,
+          title: 'New Event Scheduled: $title',
+          body:
+              'A new event has been scheduled for ${DateFormat.yMMMd().add_jm().format(scheduledAt)}.',
+          type: NotificationType.scheduleUpdate,
+          data: {
+            'route': '/class_detail',
+            'arguments': (await getClass(classId))?.toJson()
+          },
+        );
+      }
+    } catch (e) {
+      throw Exception('Failed to schedule event: $e');
+    }
+  }
+
+  // Get upcoming events for a class
+  Future<List<Map<String, dynamic>>> getClassEvents(String classId) async {
+    try {
+      debugPrint('Fetching events for classId: $classId');
+      final query = await _firestore
+          .collection('class_events')
+          .where('classId', isEqualTo: classId)
+          .get();
+
+      debugPrint('Found ${query.docs.length} events in Firestore');
+
+      // Sort client-side to avoid index requirement
+      final events = query.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id; // Add document ID for edit/delete
+        return data;
+      }).toList();
+
+      events.sort((a, b) {
+        final aTime = (a['scheduledAt'] as num?)?.toInt() ?? 0;
+        final bTime = (b['scheduledAt'] as num?)?.toInt() ?? 0;
+        return aTime.compareTo(bTime);
+      });
+
+      return events;
+    } catch (e) {
+      debugPrint('Error fetching class events: $e');
+      throw Exception('Failed to load events: $e');
+    }
+  }
+
+  // Update an existing event
+  Future<void> updateEvent({
+    required String eventId,
+    required String classId,
+    required String title,
+    String? description,
+    required DateTime scheduledAt,
+  }) async {
+    try {
+      final eventData = {
+        'title': title,
+        'description': description,
+        'scheduledAt': scheduledAt.millisecondsSinceEpoch,
+      };
+
+      await _firestore
+          .collection('class_events')
+          .doc(eventId)
+          .update(eventData);
+
+      // Notify all class members about the update
+      final members = await getClassMembers(classId);
+      for (final member in members) {
+        if (member.role == 'teacher') continue;
+
+        await NotificationService().sendNotification(
+          userId: member.userId,
+          title: 'Event Updated: $title',
+          body:
+              'An event has been updated to ${DateFormat.yMMMd().add_jm().format(scheduledAt)}.',
+          type: NotificationType.scheduleUpdate,
+          data: {
+            'route': '/class_detail',
+            'arguments': (await getClass(classId))?.toJson()
+          },
+        );
+      }
+    } catch (e) {
+      throw Exception('Failed to update event: $e');
+    }
+  }
+
+  // Delete an event
+  Future<void> deleteEvent({
+    required String eventId,
+    required String classId,
+    required String eventTitle,
+  }) async {
+    try {
+      // Cancel reminder notification
+      await NotificationService().cancelEventReminder(eventId);
+
+      await _firestore.collection('class_events').doc(eventId).delete();
+
+      // Notify all class members about the deletion
+      final members = await getClassMembers(classId);
+      for (final member in members) {
+        if (member.role == 'teacher') continue;
+
+        await NotificationService().sendNotification(
+          userId: member.userId,
+          title: 'Event Cancelled: $eventTitle',
+          body: 'The event "$eventTitle" has been cancelled.',
+          type: NotificationType.scheduleUpdate,
+          data: {
+            'route': '/class_detail',
+            'arguments': (await getClass(classId))?.toJson()
+          },
+        );
+      }
+    } catch (e) {
+      throw Exception('Failed to delete event: $e');
+    }
+  }
+
+  String _formatDuration(Duration duration) {
+    if (duration.inMinutes < 60) {
+      return '${duration.inMinutes} minutes';
+    } else if (duration.inHours < 24) {
+      return '${duration.inHours} hour${duration.inHours > 1 ? 's' : ''}';
+    } else {
+      return '${duration.inDays} day${duration.inDays > 1 ? 's' : ''}';
     }
   }
 }

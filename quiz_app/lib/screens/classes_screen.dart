@@ -147,12 +147,27 @@ class _ClassesScreenState extends State<ClassesScreen> {
                     ],
                   ),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/class_detail',
-                      arguments: classModel,
-                    ).then((_) => _loadClasses());
+                  onTap: () async {
+                    try {
+                      debugPrint(
+                          'Navigating to class_detail with: $classModel');
+                      debugPrint('Class ID: ${classModel.classId}');
+                      debugPrint('Class Name: ${classModel.className}');
+                      await Navigator.pushNamed(
+                        context,
+                        '/class_detail',
+                        arguments: classModel,
+                      );
+                      _loadClasses();
+                    } catch (e, stackTrace) {
+                      debugPrint('Error navigating to class detail: $e');
+                      debugPrint('Stack trace: $stackTrace');
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error opening class: $e')),
+                        );
+                      }
+                    }
                   },
                 ),
               );

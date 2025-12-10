@@ -37,7 +37,7 @@ class OnboardingScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                'Welcome to the Quiz App!',
+                'Welcome to Mindly!',
                 textAlign: TextAlign.center,
                 style: textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,

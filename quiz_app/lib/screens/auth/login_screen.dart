@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/auth_service.dart';
+import 'package:quiz_app/services/preferences_service.dart';
 import 'package:animate_do/animate_do.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,10 +29,15 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       try {
-        await _authService.signIn(
+        final credential = await _authService.signIn(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
+
+        // Update local preferences
+        if (credential.user?.displayName != null) {
+          await PreferencesService().setUsername(credential.user!.displayName!);
+        }
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         }
@@ -53,7 +59,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
     try {
-      await _authService.signInWithGoogle();
+      final credential = await _authService.signInWithGoogle();
+      // Update local preferences
+      if (credential.user?.displayName != null) {
+        await PreferencesService().setUsername(credential.user!.displayName!);
+      }
       if (mounted) {
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       }

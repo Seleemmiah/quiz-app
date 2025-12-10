@@ -27,7 +27,7 @@ class PreferencesService {
   // Username
   Future<String> getUsername() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_usernameKey) ?? 'Quiz Master'; // Default name
+    return prefs.getString(_usernameKey) ?? 'Mindly User'; // Default name
   }
 
   Future<void> setUsername(String username) async {
@@ -114,6 +114,19 @@ class PreferencesService {
   Future<void> setVibrationEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_vibrationEnabledKey, enabled);
+  }
+
+  static const String _studyRemindersKey = 'study_reminders_enabled';
+
+  // Study Reminders Enabled
+  Future<bool> getStudyRemindersEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_studyRemindersKey) ?? true;
+  }
+
+  Future<void> setStudyRemindersEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_studyRemindersKey, enabled);
   }
 
   // Reset all preferences

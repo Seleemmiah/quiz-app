@@ -1,0 +1,1088 @@
+// AUTO-GENERATED QUIZ QUESTIONS
+// Add these to the localQuestions list in local_questions.dart
+
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In which year did World War I begin?",
+    "correct_answer": "1914",
+    "incorrect_answers": ["1918", "1939", "1945"],
+    "explanation": "World War I began in 1914 after the assassination of Archduke Franz Ferdinand."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first woman to fly solo across the Atlantic Ocean?",
+    "correct_answer": "Amelia Earhart",
+    "incorrect_answers": ["Bessie Coleman", "Harriet Quimby", "Jacqueline Cochran"],
+    "explanation": "Amelia Earhart became the first woman to fly solo across the Atlantic in 1932."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What ancient wonder of the world still stands today?",
+    "correct_answer": "Great Pyramid of Giza",
+    "incorrect_answers": ["Hanging Gardens of Babylon", "Colossus of Rhodes", "Lighthouse of Alexandria"],
+    "explanation": "The Great Pyramid of Giza is the only ancient wonder still standing."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who invented the telephone?",
+    "correct_answer": "Alexander Graham Bell",
+    "incorrect_answers": ["Thomas Edison", "Nikola Tesla", "Guglielmo Marconi"],
+    "explanation": "Alexander Graham Bell is credited with inventing the telephone in 1876."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What year did the Berlin Wall fall?",
+    "correct_answer": "1989",
+    "incorrect_answers": ["1985", "1991", "1987"],
+    "explanation": "The Berlin Wall fell on November 9, 1989, marking the end of the Cold War era."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first person to set foot on the moon?",
+    "correct_answer": "Neil Armstrong",
+    "incorrect_answers": ["Buzz Aldrin", "Yuri Gagarin", "John Glenn"],
+    "explanation": "Neil Armstrong was the first person to walk on the moon on July 20, 1969."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In which city was the Declaration of Independence signed?",
+    "correct_answer": "Philadelphia",
+    "incorrect_answers": ["Boston", "New York", "Washington D.C."],
+    "explanation": "The Declaration of Independence was signed in Philadelphia in 1776."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was known as the 'Iron Lady'?",
+    "correct_answer": "Margaret Thatcher",
+    "incorrect_answers": ["Queen Victoria", "Golda Meir", "Indira Gandhi"],
+    "explanation": "Margaret Thatcher, the British Prime Minister, was known as the 'Iron Lady'."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What year did Christopher Columbus first reach the Americas?",
+    "correct_answer": "1492",
+    "incorrect_answers": ["1776", "1620", "1607"],
+    "explanation": "Christopher Columbus reached the Americas in 1492."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first emperor of China?",
+    "correct_answer": "Qin Shi Huang",
+    "incorrect_answers": ["Kublai Khan", "Emperor Wu", "Confucius"],
+    "explanation": "Qin Shi Huang unified China and became its first emperor in 221 BC."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What ancient civilization built Machu Picchu?",
+    "correct_answer": "Inca",
+    "incorrect_answers": ["Maya", "Aztec", "Olmec"],
+    "explanation": "Machu Picchu was built by the Inca civilization in the 15th century."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who wrote the 95 Theses?",
+    "correct_answer": "Martin Luther",
+    "incorrect_answers": ["John Calvin", "Henry VIII", "Pope Leo X"],
+    "explanation": "Martin Luther wrote the 95 Theses in 1517, sparking the Protestant Reformation."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What year did the Titanic sink?",
+    "correct_answer": "1912",
+    "incorrect_answers": ["1910", "1915", "1920"],
+    "explanation": "The RMS Titanic sank on April 15, 1912, after hitting an iceberg."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first President of South Africa after apartheid?",
+    "correct_answer": "Nelson Mandela",
+    "incorrect_answers": ["Desmond Tutu", "F.W. de Klerk", "Thabo Mbeki"],
+    "explanation": "Nelson Mandela became the first President of South Africa after apartheid in 1994."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What ancient city was buried by the eruption of Mount Vesuvius?",
+    "correct_answer": "Pompeii",
+    "incorrect_answers": ["Herculaneum", "Rome", "Athens"],
+    "explanation": "Pompeii was buried by the eruption of Mount Vesuvius in 79 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the longest-reigning British monarch before Elizabeth II?",
+    "correct_answer": "Queen Victoria",
+    "incorrect_answers": ["King George III", "Queen Elizabeth I", "King Henry VIII"],
+    "explanation": "Queen Victoria reigned for 63 years before being surpassed by Elizabeth II."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What year did India gain independence from Britain?",
+    "correct_answer": "1947",
+    "incorrect_answers": ["1945", "1950", "1942"],
+    "explanation": "India gained independence from Britain on August 15, 1947."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first female Prime Minister of the United Kingdom?",
+    "correct_answer": "Margaret Thatcher",
+    "incorrect_answers": ["Theresa May", "Queen Elizabeth II", "Indira Gandhi"],
+    "explanation": "Margaret Thatcher became the UK's first female Prime Minister in 1979."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What ancient empire was ruled by Julius Caesar?",
+    "correct_answer": "Roman Empire",
+    "incorrect_answers": ["Greek Empire", "Persian Empire", "Egyptian Empire"],
+    "explanation": "Julius Caesar was a leader of the Roman Empire."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who discovered America for Spain?",
+    "correct_answer": "Christopher Columbus",
+    "incorrect_answers": ["Amerigo Vespucci", "Ferdinand Magellan", "Hern\u00e1n Cort\u00e9s"],
+    "explanation": "Christopher Columbus discovered America for Spain in 1492."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What year did the French Revolution begin?",
+    "correct_answer": "1789",
+    "incorrect_answers": ["1776", "1799", "1804"],
+    "explanation": "The French Revolution began in 1789 with the storming of the Bastille."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the last Tsar of Russia?",
+    "correct_answer": "Nicholas II",
+    "incorrect_answers": ["Alexander III", "Peter the Great", "Ivan the Terrible"],
+    "explanation": "Nicholas II was the last Tsar of Russia, executed in 1918."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What treaty ended World War I?",
+    "correct_answer": "Treaty of Versailles",
+    "incorrect_answers": ["Treaty of Paris", "Treaty of Ghent", "Treaty of Tordesillas"],
+    "explanation": "The Treaty of Versailles ended World War I in 1919."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who led the Mongol Empire at its peak?",
+    "correct_answer": "Genghis Khan",
+    "incorrect_answers": ["Kublai Khan", "Tamerlane", "Attila the Hun"],
+    "explanation": "Genghis Khan founded and led the Mongol Empire to its greatest extent."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What year did the American Civil War end?",
+    "correct_answer": "1865",
+    "incorrect_answers": ["1861", "1870", "1877"],
+    "explanation": "The American Civil War ended in 1865 with the surrender at Appomattox."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the first Holy Roman Emperor?",
+    "correct_answer": "Charlemagne",
+    "incorrect_answers": ["Otto I", "Frederick Barbarossa", "Napoleon"],
+    "explanation": "Charlemagne was crowned the first Holy Roman Emperor in 800 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What ancient library was destroyed by fire?",
+    "correct_answer": "Library of Alexandria",
+    "incorrect_answers": ["Library of Pergamum", "Library of Ephesus", "Library of Athens"],
+    "explanation": "The Library of Alexandria was one of the largest libraries of the ancient world, destroyed by fire."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who led the Haitian Revolution?",
+    "correct_answer": "Toussaint Louverture",
+    "incorrect_answers": ["Jean-Jacques Dessalines", "Henri Christophe", "Alexandre P\u00e9tion"],
+    "explanation": "Toussaint Louverture led the Haitian Revolution against French colonial rule."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What year did the Ottoman Empire fall?",
+    "correct_answer": "1922",
+    "incorrect_answers": ["1918", "1920", "1924"],
+    "explanation": "The Ottoman Empire officially ended in 1922 after World War I."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the first woman to win a Nobel Prize?",
+    "correct_answer": "Marie Curie",
+    "incorrect_answers": ["Mother Teresa", "Jane Addams", "Bertha von Suttner"],
+    "explanation": "Marie Curie was the first woman to win a Nobel Prize in 1903."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What ancient civilization invented paper?",
+    "correct_answer": "China",
+    "incorrect_answers": ["Egypt", "Mesopotamia", "India"],
+    "explanation": "Paper was invented in ancient China around 105 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the youngest US President?",
+    "correct_answer": "Theodore Roosevelt",
+    "incorrect_answers": ["John F. Kennedy", "Bill Clinton", "Barack Obama"],
+    "explanation": "Theodore Roosevelt became president at age 42 after McKinley's assassination."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What year did the Spanish Armada attempt to invade England?",
+    "correct_answer": "1588",
+    "incorrect_answers": ["1492", "1600", "1620"],
+    "explanation": "The Spanish Armada attempted to invade England in 1588 but was defeated."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the first woman to serve as Prime Minister of India?",
+    "correct_answer": "Indira Gandhi",
+    "incorrect_answers": ["Benazir Bhutto", "Sirimavo Bandaranaike", "Golda Meir"],
+    "explanation": "Indira Gandhi became India's first female Prime Minister in 1966."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What ancient trade route connected East and West?",
+    "correct_answer": "Silk Road",
+    "incorrect_answers": ["Spice Route", "Amber Road", "Incense Route"],
+    "explanation": "The Silk Road was an ancient network of trade routes connecting East and West."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who wrote 'The Communist Manifesto'?",
+    "correct_answer": "Karl Marx",
+    "incorrect_answers": ["Vladimir Lenin", "Joseph Stalin", "Leon Trotsky"],
+    "explanation": "Karl Marx and Friedrich Engels wrote 'The Communist Manifesto' in 1848."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What year did the Suez Canal open?",
+    "correct_answer": "1869",
+    "incorrect_answers": ["1859", "1879", "1889"],
+    "explanation": "The Suez Canal opened in 1869, connecting the Mediterranean and Red Seas."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the first woman in space?",
+    "correct_answer": "Valentina Tereshkova",
+    "incorrect_answers": ["Sally Ride", "Mae Jemison", "Svetlana Savitskaya"],
+    "explanation": "Valentina Tereshkova became the first woman in space in 1963."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What ancient city was the capital of the Byzantine Empire?",
+    "correct_answer": "Constantinople",
+    "incorrect_answers": ["Rome", "Athens", "Alexandria"],
+    "explanation": "Constantinople (modern Istanbul) was the capital of the Byzantine Empire."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who led the Protestant Reformation in Switzerland?",
+    "correct_answer": "John Calvin",
+    "incorrect_answers": ["Martin Luther", "Huldrych Zwingli", "John Knox"],
+    "explanation": "John Calvin was a key figure in the Protestant Reformation in Switzerland."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year was the Battle of Hastings?",
+    "correct_answer": "1066",
+    "incorrect_answers": ["1215", "1415", "1588"],
+    "explanation": "The Battle of Hastings in 1066 led to the Norman conquest of England."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first Caliph after Muhammad's death?",
+    "correct_answer": "Abu Bakr",
+    "incorrect_answers": ["Umar", "Uthman", "Ali"],
+    "explanation": "Abu Bakr became the first Caliph after Prophet Muhammad's death in 632 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What treaty divided the New World between Spain and Portugal?",
+    "correct_answer": "Treaty of Tordesillas",
+    "incorrect_answers": ["Treaty of Utrecht", "Treaty of Westphalia", "Treaty of Paris"],
+    "explanation": "The Treaty of Tordesillas in 1494 divided the New World between Spain and Portugal."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the Byzantine Emperor during the construction of Hagia Sophia?",
+    "correct_answer": "Justinian I",
+    "incorrect_answers": ["Constantine I", "Theodosius I", "Heraclius"],
+    "explanation": "Justinian I commissioned the construction of Hagia Sophia in 537 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year did the Hundred Years' War begin?",
+    "correct_answer": "1337",
+    "incorrect_answers": ["1215", "1415", "1453"],
+    "explanation": "The Hundred Years' War between England and France began in 1337."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first Ming Dynasty emperor?",
+    "correct_answer": "Hongwu Emperor",
+    "incorrect_answers": ["Yongle Emperor", "Kangxi Emperor", "Qianlong Emperor"],
+    "explanation": "The Hongwu Emperor founded the Ming Dynasty in 1368."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What ancient battle is considered the turning point of the Persian Wars?",
+    "correct_answer": "Battle of Salamis",
+    "incorrect_answers": ["Battle of Marathon", "Battle of Thermopylae", "Battle of Plataea"],
+    "explanation": "The Battle of Salamis in 480 BC was the decisive naval battle of the Persian Wars."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the last Western Roman Emperor?",
+    "correct_answer": "Romulus Augustulus",
+    "incorrect_answers": ["Constantine XI", "Justinian I", "Theodosius I"],
+    "explanation": "Romulus Augustulus was the last Western Roman Emperor, deposed in 476 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year did the Taiping Rebellion begin in China?",
+    "correct_answer": "1850",
+    "incorrect_answers": ["1839", "1860", "1870"],
+    "explanation": "The Taiping Rebellion, one of the deadliest conflicts in history, began in 1850."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first Shogun of Japan?",
+    "correct_answer": "Minamoto no Yoritomo",
+    "incorrect_answers": ["Tokugawa Ieyasu", "Oda Nobunaga", "Toyotomi Hideyoshi"],
+    "explanation": "Minamoto no Yoritomo became the first Shogun of Japan in 1192."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What ancient civilization created the first known writing system?",
+    "correct_answer": "Sumerians",
+    "incorrect_answers": ["Egyptians", "Phoenicians", "Chinese"],
+    "explanation": "The Sumerians created cuneiform, the first known writing system, around 3400 BC."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who led the Zulu Kingdom during the Anglo-Zulu War?",
+    "correct_answer": "Cetshwayo",
+    "incorrect_answers": ["Shaka", "Dingane", "Mpande"],
+    "explanation": "Cetshwayo led the Zulu Kingdom during the Anglo-Zulu War of 1879."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year was the Edict of Milan issued?",
+    "correct_answer": "313 AD",
+    "incorrect_answers": ["325 AD", "380 AD", "395 AD"],
+    "explanation": "The Edict of Milan in 313 AD granted religious tolerance to Christians in the Roman Empire."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first Mughal Emperor of India?",
+    "correct_answer": "Babur",
+    "incorrect_answers": ["Akbar", "Humayun", "Shah Jahan"],
+    "explanation": "Babur founded the Mughal Empire in India in 1526."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What ancient city-state was led by Pericles during its Golden Age?",
+    "correct_answer": "Athens",
+    "incorrect_answers": ["Sparta", "Thebes", "Corinth"],
+    "explanation": "Pericles led Athens during its Golden Age in the 5th century BC."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first Pharaoh of unified Egypt?",
+    "correct_answer": "Narmer",
+    "incorrect_answers": ["Khufu", "Ramesses II", "Tutankhamun"],
+    "explanation": "Narmer (also known as Menes) is credited with unifying Egypt around 3100 BC."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year did the Glorious Revolution occur in England?",
+    "correct_answer": "1688",
+    "incorrect_answers": ["1642", "1660", "1707"],
+    "explanation": "The Glorious Revolution of 1688 overthrew King James II of England."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the founder of the Achaemenid Persian Empire?",
+    "correct_answer": "Cyrus the Great",
+    "incorrect_answers": ["Darius I", "Xerxes I", "Artaxerxes I"],
+    "explanation": "Cyrus the Great founded the Achaemenid Persian Empire in 550 BC."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year did the War of the Roses begin?",
+    "correct_answer": "1455",
+    "incorrect_answers": ["1399", "1485", "1509"],
+    "explanation": "The War of the Roses began in 1455 between the Houses of Lancaster and York."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the last emperor of the Aztec Empire?",
+    "correct_answer": "Cuauhtémoc",
+    "incorrect_answers": ["Moctezuma II", "Cuitl\u00e1huac", "Itzcoatl"],
+    "explanation": "Cuauhtémoc was the last Aztec emperor, defeated by Cortés in 1521."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the capital of France?",
+    "correct_answer": "Paris",
+    "incorrect_answers": ["London", "Berlin", "Madrid"],
+    "explanation": "Paris is the capital and largest city of France."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which is the largest ocean on Earth?",
+    "correct_answer": "Pacific Ocean",
+    "incorrect_answers": ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean"],
+    "explanation": "The Pacific Ocean is the largest and deepest ocean on Earth."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the longest river in the world?",
+    "correct_answer": "Nile River",
+    "incorrect_answers": ["Amazon River", "Yangtze River", "Mississippi River"],
+    "explanation": "The Nile River in Africa is generally considered the longest river at 6,650 km."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which continent is the Sahara Desert located on?",
+    "correct_answer": "Africa",
+    "incorrect_answers": ["Asia", "Australia", "South America"],
+    "explanation": "The Sahara Desert is located in North Africa."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the smallest country in the world?",
+    "correct_answer": "Vatican City",
+    "incorrect_answers": ["Monaco", "San Marino", "Liechtenstein"],
+    "explanation": "Vatican City is the smallest country with an area of 0.44 square kilometers."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which mountain range separates Europe and Asia?",
+    "correct_answer": "Ural Mountains",
+    "incorrect_answers": ["Alps", "Himalayas", "Rockies"],
+    "explanation": "The Ural Mountains form a natural boundary between Europe and Asia."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the capital of Japan?",
+    "correct_answer": "Tokyo",
+    "incorrect_answers": ["Kyoto", "Osaka", "Hiroshima"],
+    "explanation": "Tokyo is the capital and most populous city of Japan."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which country has the most natural lakes?",
+    "correct_answer": "Canada",
+    "incorrect_answers": ["USA", "Russia", "Finland"],
+    "explanation": "Canada has more natural lakes than any other country in the world."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the largest island in the world?",
+    "correct_answer": "Greenland",
+    "incorrect_answers": ["New Guinea", "Borneo", "Madagascar"],
+    "explanation": "Greenland is the world's largest island with an area of 2.16 million km²."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which river flows through London?",
+    "correct_answer": "Thames",
+    "incorrect_answers": ["Seine", "Rhine", "Danube"],
+    "explanation": "The River Thames flows through London and southern England."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the capital of Australia?",
+    "correct_answer": "Canberra",
+    "incorrect_answers": ["Sydney", "Melbourne", "Brisbane"],
+    "explanation": "Canberra is the capital city of Australia, not Sydney."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which desert is the driest in the world?",
+    "correct_answer": "Atacama Desert",
+    "incorrect_answers": ["Sahara Desert", "Gobi Desert", "Kalahari Desert"],
+    "explanation": "The Atacama Desert in Chile is the driest non-polar desert on Earth."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the tallest mountain in North America?",
+    "correct_answer": "Denali",
+    "incorrect_answers": ["Mount Logan", "Mount Whitney", "Pikes Peak"],
+    "explanation": "Denali (formerly Mount McKinley) in Alaska is North America's highest peak at 6,190 m."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which sea is the saltiest?",
+    "correct_answer": "Dead Sea",
+    "incorrect_answers": ["Red Sea", "Mediterranean Sea", "Baltic Sea"],
+    "explanation": "The Dead Sea has a salinity of about 34%, making it one of the saltiest bodies of water."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the capital of Canada?",
+    "correct_answer": "Ottawa",
+    "incorrect_answers": ["Toronto", "Montreal", "Vancouver"],
+    "explanation": "Ottawa is the capital city of Canada, located in Ontario."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which continent has no permanent human population?",
+    "correct_answer": "Antarctica",
+    "incorrect_answers": ["Arctic", "Greenland", "Iceland"],
+    "explanation": "Antarctica has no permanent human residents, only research station personnel."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the largest country by land area?",
+    "correct_answer": "Russia",
+    "incorrect_answers": ["Canada", "China", "United States"],
+    "explanation": "Russia is the largest country with an area of 17.1 million km²."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which waterfall is the tallest in the world?",
+    "correct_answer": "Angel Falls",
+    "incorrect_answers": ["Niagara Falls", "Victoria Falls", "Iguazu Falls"],
+    "explanation": "Angel Falls in Venezuela is the world's tallest waterfall at 979 meters."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the capital of Brazil?",
+    "correct_answer": "Brasília",
+    "incorrect_answers": ["Rio de Janeiro", "S\u00e3o Paulo", "Salvador"],
+    "explanation": "Brasília has been the capital of Brazil since 1960."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which strait separates Africa from Europe?",
+    "correct_answer": "Strait of Gibraltar",
+    "incorrect_answers": ["Bosphorus Strait", "Strait of Hormuz", "Bering Strait"],
+    "explanation": "The Strait of Gibraltar separates Spain from Morocco."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the deepest point in the ocean?",
+    "correct_answer": "Mariana Trench",
+    "incorrect_answers": ["Puerto Rico Trench", "Java Trench", "Philippine Trench"],
+    "explanation": "The Mariana Trench reaches a depth of about 11,000 meters."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which African country was formerly known as Abyssinia?",
+    "correct_answer": "Ethiopia",
+    "incorrect_answers": ["Eritrea", "Somalia", "Sudan"],
+    "explanation": "Ethiopia was historically known as Abyssinia."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the only country that borders both the Atlantic and Indian Oceans?",
+    "correct_answer": "South Africa",
+    "incorrect_answers": ["Namibia", "Mozambique", "Tanzania"],
+    "explanation": "South Africa's coastline touches both the Atlantic and Indian Oceans."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which city is located on two continents?",
+    "correct_answer": "Istanbul",
+    "incorrect_answers": ["Cairo", "Moscow", "Jerusalem"],
+    "explanation": "Istanbul straddles both Europe and Asia across the Bosphorus Strait."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the largest lake in Africa?",
+    "correct_answer": "Lake Victoria",
+    "incorrect_answers": ["Lake Tanganyika", "Lake Malawi", "Lake Chad"],
+    "explanation": "Lake Victoria is Africa's largest lake by area."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which country has the most time zones?",
+    "correct_answer": "France",
+    "incorrect_answers": ["Russia", "United States", "Australia"],
+    "explanation": "France has 12 time zones due to its overseas territories."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the highest capital city in the world?",
+    "correct_answer": "La Paz",
+    "incorrect_answers": ["Quito", "Bogot\u00e1", "Addis Ababa"],
+    "explanation": "La Paz, Bolivia sits at 3,640 meters above sea level."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which European country has the longest coastline?",
+    "correct_answer": "Norway",
+    "incorrect_answers": ["Greece", "Italy", "United Kingdom"],
+    "explanation": "Norway has a coastline of about 25,000 km including fjords."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the largest desert in Asia?",
+    "correct_answer": "Gobi Desert",
+    "incorrect_answers": ["Arabian Desert", "Thar Desert", "Karakum Desert"],
+    "explanation": "The Gobi Desert spans parts of China and Mongolia."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which river forms part of the border between Mexico and the United States?",
+    "correct_answer": "Rio Grande",
+    "incorrect_answers": ["Colorado River", "Columbia River", "Mississippi River"],
+    "explanation": "The Rio Grande forms a natural border between Texas and Mexico."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the smallest ocean?",
+    "correct_answer": "Arctic Ocean",
+    "incorrect_answers": ["Southern Ocean", "Indian Ocean", "Atlantic Ocean"],
+    "explanation": "The Arctic Ocean is the smallest and shallowest of the world's oceans."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which country is known as the Land of a Thousand Lakes?",
+    "correct_answer": "Finland",
+    "incorrect_answers": ["Sweden", "Norway", "Canada"],
+    "explanation": "Finland has approximately 188,000 lakes."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the longest mountain range in the world?",
+    "correct_answer": "Andes",
+    "incorrect_answers": ["Rockies", "Himalayas", "Alps"],
+    "explanation": "The Andes stretch about 7,000 km along South America's western coast."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which sea has no coastline?",
+    "correct_answer": "Sargasso Sea",
+    "incorrect_answers": ["Dead Sea", "Caspian Sea", "Aral Sea"],
+    "explanation": "The Sargasso Sea is bounded by ocean currents rather than land."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the largest peninsula in the world?",
+    "correct_answer": "Arabian Peninsula",
+    "incorrect_answers": ["Indian Peninsula", "Iberian Peninsula", "Indochina Peninsula"],
+    "explanation": "The Arabian Peninsula covers about 3.2 million km²."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which country has the most volcanoes?",
+    "correct_answer": "Indonesia",
+    "incorrect_answers": ["Japan", "Philippines", "Chile"],
+    "explanation": "Indonesia has more than 130 active volcanoes."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the southernmost capital city in the world?",
+    "correct_answer": "Wellington",
+    "incorrect_answers": ["Canberra", "Buenos Aires", "Cape Town"],
+    "explanation": "Wellington, New Zealand is the southernmost capital city."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which lake is the deepest in the world?",
+    "correct_answer": "Lake Baikal",
+    "incorrect_answers": ["Lake Tanganyika", "Crater Lake", "Lake Superior"],
+    "explanation": "Lake Baikal in Russia reaches depths of 1,642 meters."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the largest gulf in the world?",
+    "correct_answer": "Gulf of Mexico",
+    "incorrect_answers": ["Persian Gulf", "Gulf of Alaska", "Bay of Bengal"],
+    "explanation": "The Gulf of Mexico has an area of about 1.6 million km²."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which country is the flattest on Earth?",
+    "correct_answer": "Maldives",
+    "incorrect_answers": ["Netherlands", "Denmark", "Bangladesh"],
+    "explanation": "The Maldives has an average elevation of just 1.5 meters above sea level."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the tripoint where Argentina, Brazil, and Paraguay meet?",
+    "correct_answer": "Triple Frontier",
+    "incorrect_answers": ["Tri-Border Area", "Three Nations Point", "Southern Junction"],
+    "explanation": "The Triple Frontier is where the Iguazu and Paraná rivers converge."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which country has the most UNESCO World Heritage Sites?",
+    "correct_answer": "Italy",
+    "incorrect_answers": ["China", "Spain", "France"],
+    "explanation": "Italy has 58 UNESCO World Heritage Sites as of 2023."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the only sea without any coastline?",
+    "correct_answer": "Sargasso Sea",
+    "incorrect_answers": ["Dead Sea", "Aral Sea", "Salton Sea"],
+    "explanation": "The Sargasso Sea is defined by ocean currents in the North Atlantic."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which African country has Spanish as an official language?",
+    "correct_answer": "Equatorial Guinea",
+    "incorrect_answers": ["Western Sahara", "Morocco", "Angola"],
+    "explanation": "Equatorial Guinea is the only African country with Spanish as an official language."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the most remote inhabited island in the world?",
+    "correct_answer": "Tristan da Cunha",
+    "incorrect_answers": ["Easter Island", "Pitcairn Islands", "St. Helena"],
+    "explanation": "Tristan da Cunha is 2,400 km from the nearest inhabited land."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which country has the highest percentage of its land covered by forests?",
+    "correct_answer": "Suriname",
+    "incorrect_answers": ["Finland", "Gabon", "Sweden"],
+    "explanation": "About 93% of Suriname is covered by forests."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the only country that lies entirely above 1,000 meters elevation?",
+    "correct_answer": "Lesotho",
+    "incorrect_answers": ["Bhutan", "Andorra", "Nepal"],
+    "explanation": "Lesotho is the only country entirely above 1,000 meters."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which strait separates New Zealand's North and South Islands?",
+    "correct_answer": "Cook Strait",
+    "incorrect_answers": ["Bass Strait", "Torres Strait", "Foveaux Strait"],
+    "explanation": "Cook Strait was named after Captain James Cook."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the largest landlocked country in the world?",
+    "correct_answer": "Kazakhstan",
+    "incorrect_answers": ["Mongolia", "Chad", "Niger"],
+    "explanation": "Kazakhstan has an area of 2.7 million km² with no ocean access."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which country has the most islands?",
+    "correct_answer": "Sweden",
+    "incorrect_answers": ["Finland", "Norway", "Canada"],
+    "explanation": "Sweden has approximately 267,570 islands."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the only country with a non-rectangular flag?",
+    "correct_answer": "Nepal",
+    "incorrect_answers": ["Switzerland", "Vatican City", "Monaco"],
+    "explanation": "Nepal's flag consists of two stacked triangular pennants."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which river has the largest drainage basin?",
+    "correct_answer": "Amazon River",
+    "incorrect_answers": ["Congo River", "Mississippi River", "Nile River"],
+    "explanation": "The Amazon basin covers about 7 million km²."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the lowest point on Earth's land surface?",
+    "correct_answer": "Dead Sea shore",
+    "incorrect_answers": ["Death Valley", "Lake Assal", "Turpan Depression"],
+    "explanation": "The Dead Sea shore is 430 meters below sea level."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which country has the longest land border with China?",
+    "correct_answer": "Mongolia",
+    "incorrect_answers": ["Russia", "India", "Kazakhstan"],
+    "explanation": "Mongolia shares a 4,677 km border with China."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the only country that borders both the Caspian Sea and the Persian Gulf?",
+    "correct_answer": "Iran",
+    "incorrect_answers": ["Azerbaijan", "Turkmenistan", "Iraq"],
+    "explanation": "Iran has coastlines on both the Caspian Sea and Persian Gulf."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which European country has the most lakes?",
+    "correct_answer": "Finland",
+    "incorrect_answers": ["Sweden", "Norway", "Russia"],
+    "explanation": "Finland has about 188,000 lakes larger than 500 m²."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the largest atoll in the world?",
+    "correct_answer": "Kwajalein Atoll",
+    "incorrect_answers": ["Maldives Atoll", "Rangiroa", "Aldabra"],
+    "explanation": "Kwajalein Atoll in the Marshall Islands has a land area of 16.4 km²."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which country has the most pyramids?",
+    "correct_answer": "Sudan",
+    "incorrect_answers": ["Egypt", "Mexico", "Peru"],
+    "explanation": "Sudan has approximately 255 pyramids, more than Egypt."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the only river that flows both north and south of the equator?",
+    "correct_answer": "Congo River",
+    "incorrect_answers": ["Amazon River", "Nile River", "Niger River"],
+    "explanation": "The Congo River crosses the equator twice."
+  },
+  {
+    "category": "Geography",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which country has the highest number of active volcanoes per square kilometer?",
+    "correct_answer": "Iceland",
+    "incorrect_answers": ["Japan", "Indonesia", "Philippines"],
+    "explanation": "Iceland has about 30 active volcanic systems in a relatively small area."
+  }
+
+// Statistics:
+// History: 20 easy, 20 medium, 20 hard (Total: 60)
+// Geography: 20 easy, 20 medium, 20 hard (Total: 60)
+// GRAND TOTAL: 120 questions

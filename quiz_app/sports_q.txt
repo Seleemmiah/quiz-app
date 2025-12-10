@@ -1,0 +1,507 @@
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many points is a touchdown worth in American football?",
+    "correct_answer": "6",
+    "incorrect_answers": ["7", "3", "8"],
+    "explanation": "A touchdown is worth 6 points in American football."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does NBA stand for?",
+    "correct_answer": "National Basketball Association",
+    "incorrect_answers": ["National Baseball Association", "North American Basketball", "National Ball Association"],
+    "explanation": "NBA stands for National Basketball Association."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In soccer, what body part can't touch the ball?",
+    "correct_answer": "Hands",
+    "incorrect_answers": ["Feet", "Head", "Chest"],
+    "explanation": "In soccer, players (except goalkeepers in their area) cannot touch the ball with their hands."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is a soccer field called?",
+    "correct_answer": "Pitch",
+    "incorrect_answers": ["Court", "Field", "Arena"],
+    "explanation": "A soccer field is called a pitch."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many teams are in the NFL?",
+    "correct_answer": "32",
+    "incorrect_answers": ["30", "28", "36"],
+    "explanation": "There are 32 teams in the National Football League."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the diameter of a basketball hoop in inches?",
+    "correct_answer": "18",
+    "incorrect_answers": ["16", "20", "22"],
+    "explanation": "A basketball hoop has a diameter of 18 inches."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In which sport would you perform a slam dunk?",
+    "correct_answer": "Basketball",
+    "incorrect_answers": ["Volleyball", "American Football", "Tennis"],
+    "explanation": "A slam dunk is performed in basketball."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many players are on a baseball team on the field?",
+    "correct_answer": "9",
+    "incorrect_answers": ["10", "11", "8"],
+    "explanation": "A baseball team has 9 players on the field."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the highest score in a single frame of bowling?",
+    "correct_answer": "30",
+    "incorrect_answers": ["20", "10", "300"],
+    "explanation": "The highest score in a single frame of bowling is 30 (a strike)."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many holes are played in a standard round of golf?",
+    "correct_answer": "18",
+    "incorrect_answers": ["9", "27", "36"],
+    "explanation": "A standard round of golf consists of 18 holes."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What sport is known as 'the beautiful game'?",
+    "correct_answer": "Soccer",
+    "incorrect_answers": ["Basketball", "Tennis", "Cricket"],
+    "explanation": "Soccer is often called 'the beautiful game'."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many rings are on the Olympic flag?",
+    "correct_answer": "5",
+    "incorrect_answers": ["4", "6", "7"],
+    "explanation": "The Olympic flag has 5 interlocking rings representing the five continents."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In tennis, what is a score of zero called?",
+    "correct_answer": "Love",
+    "incorrect_answers": ["Nil", "Zero", "Nothing"],
+    "explanation": "In tennis, a score of zero is called 'love'."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many players are on an ice hockey team on the ice?",
+    "correct_answer": "6",
+    "incorrect_answers": ["5", "7", "8"],
+    "explanation": "An ice hockey team has 6 players on the ice at a time."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the term for three strikes in a row in bowling?",
+    "correct_answer": "Turkey",
+    "incorrect_answers": ["Eagle", "Hat-trick", "Triple"],
+    "explanation": "Three strikes in a row in bowling is called a turkey."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In American football, how many points is a field goal worth?",
+    "correct_answer": "3",
+    "incorrect_answers": ["2", "6", "7"],
+    "explanation": "A field goal is worth 3 points in American football."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What color is the center of an archery target?",
+    "correct_answer": "Yellow",
+    "incorrect_answers": ["Red", "Blue", "Gold"],
+    "explanation": "The center of an archery target is yellow (or gold)."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many Grand Slam tournaments are there in tennis?",
+    "correct_answer": "4",
+    "incorrect_answers": ["3", "5", "6"],
+    "explanation": "There are 4 Grand Slam tournaments in tennis: Australian Open, French Open, Wimbledon, and US Open."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the maximum number of players on a soccer team including substitutes?",
+    "correct_answer": "11 on field",
+    "incorrect_answers": ["10", "12", "9"],
+    "explanation": "A soccer team has 11 players on the field at a time."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the name of the Super Bowl trophy?",
+    "correct_answer": "Lombardi Trophy",
+    "incorrect_answers": ["Vince Trophy", "NFL Trophy", "Championship Trophy"],
+    "explanation": "The Super Bowl trophy is called the Lombardi Trophy, named after legendary coach Vince Lombardi."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which team won the first Super Bowl?",
+    "correct_answer": "Green Bay Packers",
+    "incorrect_answers": ["Kansas City Chiefs", "Dallas Cowboys", "Pittsburgh Steelers"],
+    "explanation": "The Green Bay Packers won the first Super Bowl in 1967."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "How many personal fouls before ejection in NBA?",
+    "correct_answer": "6",
+    "incorrect_answers": ["5", "7", "4"],
+    "explanation": "An NBA player is ejected after committing 6 personal fouls."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is the all-time leading scorer in NBA history?",
+    "correct_answer": "LeBron James",
+    "incorrect_answers": ["Kareem Abdul-Jabbar", "Michael Jordan", "Kobe Bryant"],
+    "explanation": "LeBron James became the NBA's all-time leading scorer in 2023."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which country won the first FIFA World Cup in 1930?",
+    "correct_answer": "Uruguay",
+    "incorrect_answers": ["Brazil", "Argentina", "Italy"],
+    "explanation": "Uruguay won the first FIFA World Cup held in 1930."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which country won the 2022 FIFA World Cup?",
+    "correct_answer": "Argentina",
+    "incorrect_answers": ["France", "Brazil", "Germany"],
+    "explanation": "Argentina won the 2022 FIFA World Cup in Qatar."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the nickname of the Brazilian national soccer team?",
+    "correct_answer": "Seleção",
+    "incorrect_answers": ["Canarinhos", "Verde-Amarela", "Pentacampe\u00e3o"],
+    "explanation": "The Brazilian national team is nicknamed Seleção."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "How many players line up on offense in American football?",
+    "correct_answer": "11",
+    "incorrect_answers": ["10", "12", "9"],
+    "explanation": "11 players line up on offense in American football."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What team owns the longest winning streak in NBA history?",
+    "correct_answer": "Los Angeles Lakers",
+    "incorrect_answers": ["Golden State Warriors", "Chicago Bulls", "Boston Celtics"],
+    "explanation": "The Los Angeles Lakers hold the longest winning streak in NBA history with 33 consecutive wins."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "In ice hockey, what is a hat-trick?",
+    "correct_answer": "Three goals by one player in one game",
+    "incorrect_answers": ["Three assists", "Three wins in a row", "Three penalties"],
+    "explanation": "A hat-trick in ice hockey is when a single player scores three goals in one game."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which country has won the most FIFA World Cups?",
+    "correct_answer": "Brazil",
+    "incorrect_answers": ["Germany", "Italy", "Argentina"],
+    "explanation": "Brazil has won the most FIFA World Cups with 5 titles."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the maximum break in snooker?",
+    "correct_answer": "147",
+    "incorrect_answers": ["180", "100", "200"],
+    "explanation": "The maximum break in snooker is 147 points."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "In golf, what is an albatross?",
+    "correct_answer": "Three under par",
+    "incorrect_answers": ["Two under par", "One under par", "Hole in one"],
+    "explanation": "An albatross (or double eagle) is three strokes under par on a hole."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "How many minutes are in a regulation NBA game?",
+    "correct_answer": "48",
+    "incorrect_answers": ["40", "60", "45"],
+    "explanation": "An NBA game consists of 48 minutes of regulation play (4 quarters of 12 minutes)."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the term for a perfect game in bowling?",
+    "correct_answer": "300",
+    "incorrect_answers": ["100", "200", "250"],
+    "explanation": "A perfect game in bowling scores 300 points (12 strikes)."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which tennis player has won the most Grand Slam titles?",
+    "correct_answer": "Novak Djokovic",
+    "incorrect_answers": ["Roger Federer", "Rafael Nadal", "Pete Sampras"],
+    "explanation": "Novak Djokovic holds the record for most Grand Slam singles titles."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "In cricket, what is a century?",
+    "correct_answer": "100 runs by one batsman",
+    "incorrect_answers": ["100 wickets", "100 matches", "100 overs"],
+    "explanation": "A century in cricket is when a batsman scores 100 or more runs in a single innings."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which team went undefeated in the 1972 NFL season?",
+    "correct_answer": "Miami Dolphins",
+    "incorrect_answers": ["Pittsburgh Steelers", "Dallas Cowboys", "Green Bay Packers"],
+    "explanation": "The 1972 Miami Dolphins went undefeated for the entire season, including the Super Bowl."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which NFL player was nicknamed 'Sweetness'?",
+    "correct_answer": "Walter Payton",
+    "incorrect_answers": ["Barry Sanders", "Emmitt Smith", "Jim Brown"],
+    "explanation": "Walter Payton, the Hall of Fame running back, was nicknamed 'Sweetness'."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which two teams have won the most Super Bowls?",
+    "correct_answer": "Patriots and Steelers",
+    "incorrect_answers": ["Cowboys and 49ers", "Packers and Giants", "Broncos and Raiders"],
+    "explanation": "The New England Patriots and Pittsburgh Steelers have each won 6 Super Bowls."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who holds the record for most points in a single NBA game?",
+    "correct_answer": "Wilt Chamberlain",
+    "incorrect_answers": ["Kobe Bryant", "Michael Jordan", "LeBron James"],
+    "explanation": "Wilt Chamberlain scored 100 points in a single game in 1962."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first WNBA player to dunk in a playoff game?",
+    "correct_answer": "Brittney Griner",
+    "incorrect_answers": ["Lisa Leslie", "Candace Parker", "Elena Delle Donne"],
+    "explanation": "Brittney Griner was the first WNBA player to dunk in a playoff game."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which player has won the most NBA MVP awards?",
+    "correct_answer": "Kareem Abdul-Jabbar",
+    "incorrect_answers": ["Michael Jordan", "LeBron James", "Bill Russell"],
+    "explanation": "Kareem Abdul-Jabbar won 6 NBA MVP awards, the most in history."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who scored the 'Hand of God' goal in 1986?",
+    "correct_answer": "Diego Maradona",
+    "incorrect_answers": ["Pel\u00e9", "Lionel Messi", "Ronaldo"],
+    "explanation": "Diego Maradona scored the famous 'Hand of God' goal in the 1986 World Cup."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What was the fastest goal in World Cup history?",
+    "correct_answer": "Hakan Şükür in 10.8 seconds",
+    "incorrect_answers": ["Clint Dempsey in 29 seconds", "Bryan Robson in 27 seconds", "Vaclav Masek in 15 seconds"],
+    "explanation": "Hakan Şükür scored the fastest World Cup goal in 10.8 seconds for Turkey in 2002."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which country has played in every FIFA World Cup?",
+    "correct_answer": "Brazil",
+    "incorrect_answers": ["Germany", "Argentina", "Italy"],
+    "explanation": "Brazil is the only country to have played in every FIFA World Cup tournament."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who won the first NBA game in 1946?",
+    "correct_answer": "New York Knicks",
+    "incorrect_answers": ["Boston Celtics", "Philadelphia Warriors", "Chicago Stags"],
+    "explanation": "The New York Knicks won the first NBA game in 1946."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the only Grand Slam played on grass?",
+    "correct_answer": "Wimbledon",
+    "incorrect_answers": ["US Open", "French Open", "Australian Open"],
+    "explanation": "Wimbledon is the only Grand Slam tournament played on grass courts."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who has won the most Tour de France titles?",
+    "correct_answer": "Lance Armstrong (stripped), Eddy Merckx, Jacques Anquetil, Bernard Hinault, Miguel Indurain",
+    "incorrect_answers": ["Chris Froome", "Alberto Contador", "Greg LeMond"],
+    "explanation": "Five cyclists have won the Tour de France 5 times each (Lance Armstrong's titles were stripped)."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "In Formula 1, who holds the record for most World Championships?",
+    "correct_answer": "Lewis Hamilton and Michael Schumacher",
+    "incorrect_answers": ["Sebastian Vettel", "Alain Prost", "Juan Manuel Fangio"],
+    "explanation": "Lewis Hamilton and Michael Schumacher each have 7 Formula 1 World Championships."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the Fosbury Flop?",
+    "correct_answer": "High jump technique",
+    "incorrect_answers": ["Pole vault technique", "Long jump technique", "Triple jump technique"],
+    "explanation": "The Fosbury Flop is a high jump technique where the jumper goes over the bar backwards."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first athlete to run a mile in under 4 minutes?",
+    "correct_answer": "Roger Bannister",
+    "incorrect_answers": ["Sebastian Coe", "Steve Ovett", "Hicham El Guerrouj"],
+    "explanation": "Roger Bannister was the first to run a mile in under 4 minutes in 1954."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "In boxing, what does TKO stand for?",
+    "correct_answer": "Technical Knockout",
+    "incorrect_answers": ["Total Knockout", "Timed Knockout", "Tactical Knockout"],
+    "explanation": "TKO stands for Technical Knockout, when a referee stops a fight."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the maximum weight for a heavyweight boxer?",
+    "correct_answer": "No limit",
+    "incorrect_answers": ["250 lbs", "200 lbs", "225 lbs"],
+    "explanation": "There is no maximum weight limit for the heavyweight division in boxing."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who holds the record for most Olympic gold medals?",
+    "correct_answer": "Michael Phelps",
+    "incorrect_answers": ["Usain Bolt", "Carl Lewis", "Mark Spitz"],
+    "explanation": "Michael Phelps won 23 Olympic gold medals, the most in history."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a perfect score in gymnastics?",
+    "correct_answer": "10.0",
+    "incorrect_answers": ["9.0", "100", "15.0"],
+    "explanation": "A perfect score in gymnastics is 10.0 (though the scoring system has changed)."
+  },
+  {
+    "category": "Sports",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "In baseball, what is an immaculate inning?",
+    "correct_answer": "Nine pitches, three strikeouts",
+    "incorrect_answers": ["Three home runs", "No hits allowed", "Perfect game"],
+    "explanation": "An immaculate inning is when a pitcher strikes out all three batters on nine pitches."
+  }
+
+// Generated 56 Sports questions
+// Sports: 19 easy, 17 medium, 20 hard

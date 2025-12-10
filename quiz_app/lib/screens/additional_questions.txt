@@ -1,0 +1,48 @@
+// Additional questions to ensure each category has at least 20 questions per difficulty level
+
+// General Knowledge - needs 17 easy, 19 medium, 20 hard
+  {
+    "category": "General Knowledge",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the smallest country in the world?",
+    "correct_answer": "Vatican City",
+    "incorrect_answers": ["Monaco", "San Marino", "Liechtenstein"],
+    "explanation": "Vatican City is the smallest country in the world by both area and population, covering just 44 hectares (110 acres)."
+  },
+  {
+    "category": "General Knowledge",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the tallest mammal on Earth?",
+    "correct_answer": "Giraffe",
+    "incorrect_answers": ["Elephant", "Camel", "Horse"],
+    "explanation": "Giraffes are the tallest mammals on Earth, with males reaching heights of up to 18 feet (5.5 meters)."
+  },
+  {
+    "category": "General Knowledge",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many continents are there?",
+    "correct_answer": "7",
+    "incorrect_answers": ["5", "6", "8"],
+    "explanation": "There are seven continents: Africa, Antarctica, Asia, Australia/Oceania, Europe, North America, and South America."
+  },
+  {
+    "category": "General Knowledge",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the fastest land animal?",
+    "correct_answer": "Cheetah",
+    "incorrect_answers": ["Lion", "Leopard", "Tiger"],
+    "explanation": "The cheetah is the fastest land animal, capable of reaching speeds of up to 70 mph (112 km/h) in short bursts."
+  },
+  {
+    "category": "General Knowledge",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the largest mammal in the world?",
+    "correct_answer": "Blue Whale",
+    "incorrect_answers": ["African Elephant", "Giraffe", "Polar Bear"],
+    "explanation": "The blue whale is the largest animal ever known to have lived on Earth, reaching lengths of up to 100 feet and weights of up to 200 tons."
+  },

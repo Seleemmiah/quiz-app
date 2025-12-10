@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/firestore_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class JoinQuizScreen extends StatefulWidget {
   const JoinQuizScreen({super.key});
@@ -39,6 +40,20 @@ class _JoinQuizScreenState extends State<JoinQuizScreen> {
         setState(() => _isLoading = false);
 
         if (quiz != null) {
+          // Check if user has already taken this quiz
+          final user = FirebaseAuth.instance.currentUser;
+          if (user != null) {
+            final hasTaken =
+                await _firestoreService.hasUserTakenQuiz(user.uid, quiz.id);
+            if (hasTaken) {
+              setState(() {
+                _isLoading = false;
+                _error = 'You have already taken this quiz.';
+              });
+              return;
+            }
+          }
+
           // Navigate to quiz
           Navigator.pushNamed(
             context,

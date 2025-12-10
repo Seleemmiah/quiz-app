@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quiz_app/services/firestore_service.dart';
+import 'package:quiz_app/services/professional_notification_service.dart';
+import 'package:quiz_app/services/background_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -22,6 +24,8 @@ class AuthService {
     required String email,
     required String password,
     required String username,
+    String role = 'student',
+    String? matricNumber,
   }) async {
     try {
       print('🔐 Starting signup for: $email');
@@ -46,7 +50,8 @@ class AuthService {
       if (credential.user != null) {
         print('📝 Saving user to Firestore...');
         await _firestoreService
-            .saveUser(credential.user!, username: username)
+            .saveUser(credential.user!,
+                username: username, role: role, matricNumber: matricNumber)
             .timeout(
           const Duration(seconds: 30),
           onTimeout: () {
@@ -60,6 +65,20 @@ class AuthService {
         print('👤 Updating display name...');
         await credential.user!.updateDisplayName(username);
         print('✅ Display name updated');
+
+        // Send Welcome Notification
+        try {
+          final notificationService = ProfessionalNotificationService();
+          await notificationService.sendWelcomeNotification(
+            credential.user!.uid,
+            username,
+          );
+        } catch (e) {
+          print('Failed to send welcome notification: $e');
+        }
+
+        // Save User ID for Background Service
+        await BackgroundService.saveUserId(credential.user!.uid);
       }
 
       return credential;
@@ -78,10 +97,14 @@ class AuthService {
     required String password,
   }) async {
     try {
-      return await _auth.signInWithEmailAndPassword(
+      final credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      if (credential.user != null) {
+        await BackgroundService.saveUserId(credential.user!.uid);
+      }
+      return credential;
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
     } catch (e) {
@@ -97,6 +120,20 @@ class AuthService {
 
       if (googleUser == null) {
         throw Exception('Google sign-in was cancelled');
+      }
+
+      // Enforce Academic Email
+      final email = googleUser.email.toLowerCase();
+      final isAcademic = email.endsWith('.edu') ||
+          email.endsWith('.ac.uk') ||
+          email.endsWith('.edu.ng') ||
+          email.endsWith('.edu.sg') ||
+          email.endsWith('.edu.au');
+
+      if (!isAcademic) {
+        await _googleSignIn.signOut();
+        throw Exception(
+            'Access Restricted: Please sign in with your school email (.edu, .ac.uk, etc.)');
       }
 
       // Obtain the auth details from the request
@@ -118,6 +155,8 @@ class AuthService {
           userCredential.user!,
           username: userCredential.user!.displayName ?? 'User',
         );
+
+        await BackgroundService.saveUserId(userCredential.user!.uid);
       }
 
       return userCredential;
@@ -125,6 +164,26 @@ class AuthService {
       throw _handleAuthException(e);
     } catch (e) {
       throw Exception('Google sign-in failed: $e');
+    }
+  }
+
+  // Sign in anonymously (Guest)
+  Future<UserCredential> signInAnonymously() async {
+    try {
+      final credential = await _auth.signInAnonymously();
+      // Save guest user to Firestore
+      if (credential.user != null) {
+        await _firestoreService.saveUser(
+          credential.user!,
+          username: 'Guest',
+          role: 'guest',
+        );
+      }
+      return credential;
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      throw Exception('Guest sign-in failed: $e');
     }
   }
 
@@ -173,15 +232,19 @@ class AuthService {
       case 'weak-password':
         return Exception('The password provided is too weak.');
       case 'email-already-in-use':
-        return Exception('The account already exists for that email.');
+        return Exception(
+            'The account already exists for that email. Go to Login instead.');
       case 'user-not-found':
-        return Exception('No user found for that email.');
+        return Exception(
+            'No account found with this email. Please Sign Up first.');
       case 'wrong-password':
-        return Exception('Wrong password provided for that user.');
+        return Exception('Incorrect password. Please try again.');
       case 'invalid-email':
-        return Exception('The email address is badly formatted.');
+        return Exception(
+            'The email address is invalid. Please check for typos.');
       default:
-        return Exception(e.message ?? 'Authentication failed.');
+        return Exception(
+            e.message ?? 'Authentication failed. Please try again.');
     }
   }
 }

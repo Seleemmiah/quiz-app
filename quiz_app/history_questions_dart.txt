@@ -1,0 +1,548 @@
+// Generated History questions - Add these to local_questions.dart
+// Copy the content below and paste it into the localQuestions list
+
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In which year did World War I begin?",
+    "correct_answer": "1914",
+    "incorrect_answers": ["1918", "1939", "1945"],
+    "explanation": "World War I began in 1914 after the assassination of Archduke Franz Ferdinand."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first woman to fly solo across the Atlantic Ocean?",
+    "correct_answer": "Amelia Earhart",
+    "incorrect_answers": ["Bessie Coleman", "Harriet Quimby", "Jacqueline Cochran"],
+    "explanation": "Amelia Earhart became the first woman to fly solo across the Atlantic in 1932."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What ancient wonder of the world still stands today?",
+    "correct_answer": "Great Pyramid of Giza",
+    "incorrect_answers": ["Hanging Gardens of Babylon", "Colossus of Rhodes", "Lighthouse of Alexandria"],
+    "explanation": "The Great Pyramid of Giza is the only ancient wonder still standing."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who invented the telephone?",
+    "correct_answer": "Alexander Graham Bell",
+    "incorrect_answers": ["Thomas Edison", "Nikola Tesla", "Guglielmo Marconi"],
+    "explanation": "Alexander Graham Bell is credited with inventing the telephone in 1876."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What year did the Berlin Wall fall?",
+    "correct_answer": "1989",
+    "incorrect_answers": ["1985", "1991", "1987"],
+    "explanation": "The Berlin Wall fell on November 9, 1989, marking the end of the Cold War era."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first person to set foot on the moon?",
+    "correct_answer": "Neil Armstrong",
+    "incorrect_answers": ["Buzz Aldrin", "Yuri Gagarin", "John Glenn"],
+    "explanation": "Neil Armstrong was the first person to walk on the moon on July 20, 1969."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In which city was the Declaration of Independence signed?",
+    "correct_answer": "Philadelphia",
+    "incorrect_answers": ["Boston", "New York", "Washington D.C."],
+    "explanation": "The Declaration of Independence was signed in Philadelphia in 1776."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was known as the 'Iron Lady'?",
+    "correct_answer": "Margaret Thatcher",
+    "incorrect_answers": ["Queen Victoria", "Golda Meir", "Indira Gandhi"],
+    "explanation": "Margaret Thatcher, the British Prime Minister, was known as the 'Iron Lady'."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What year did Christopher Columbus first reach the Americas?",
+    "correct_answer": "1492",
+    "incorrect_answers": ["1776", "1620", "1607"],
+    "explanation": "Christopher Columbus reached the Americas in 1492."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first emperor of China?",
+    "correct_answer": "Qin Shi Huang",
+    "incorrect_answers": ["Kublai Khan", "Emperor Wu", "Confucius"],
+    "explanation": "Qin Shi Huang unified China and became its first emperor in 221 BC."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What ancient civilization built Machu Picchu?",
+    "correct_answer": "Inca",
+    "incorrect_answers": ["Maya", "Aztec", "Olmec"],
+    "explanation": "Machu Picchu was built by the Inca civilization in the 15th century."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who wrote the 95 Theses?",
+    "correct_answer": "Martin Luther",
+    "incorrect_answers": ["John Calvin", "Henry VIII", "Pope Leo X"],
+    "explanation": "Martin Luther wrote the 95 Theses in 1517, sparking the Protestant Reformation."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What year did the Titanic sink?",
+    "correct_answer": "1912",
+    "incorrect_answers": ["1910", "1915", "1920"],
+    "explanation": "The RMS Titanic sank on April 15, 1912, after hitting an iceberg."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first President of South Africa after apartheid?",
+    "correct_answer": "Nelson Mandela",
+    "incorrect_answers": ["Desmond Tutu", "F.W. de Klerk", "Thabo Mbeki"],
+    "explanation": "Nelson Mandela became the first President of South Africa after apartheid in 1994."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What ancient city was buried by the eruption of Mount Vesuvius?",
+    "correct_answer": "Pompeii",
+    "incorrect_answers": ["Herculaneum", "Rome", "Athens"],
+    "explanation": "Pompeii was buried by the eruption of Mount Vesuvius in 79 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the longest-reigning British monarch before Elizabeth II?",
+    "correct_answer": "Queen Victoria",
+    "incorrect_answers": ["King George III", "Queen Elizabeth I", "King Henry VIII"],
+    "explanation": "Queen Victoria reigned for 63 years before being surpassed by Elizabeth II."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What year did India gain independence from Britain?",
+    "correct_answer": "1947",
+    "incorrect_answers": ["1945", "1950", "1942"],
+    "explanation": "India gained independence from Britain on August 15, 1947."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first female Prime Minister of the United Kingdom?",
+    "correct_answer": "Margaret Thatcher",
+    "incorrect_answers": ["Theresa May", "Queen Elizabeth II", "Indira Gandhi"],
+    "explanation": "Margaret Thatcher became the UK's first female Prime Minister in 1979."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What ancient empire was ruled by Julius Caesar?",
+    "correct_answer": "Roman Empire",
+    "incorrect_answers": ["Greek Empire", "Persian Empire", "Egyptian Empire"],
+    "explanation": "Julius Caesar was a leader of the Roman Empire."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who discovered America for Spain?",
+    "correct_answer": "Christopher Columbus",
+    "incorrect_answers": ["Amerigo Vespucci", "Ferdinand Magellan", "Hern\u00e1n Cort\u00e9s"],
+    "explanation": "Christopher Columbus discovered America for Spain in 1492."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What year did the French Revolution begin?",
+    "correct_answer": "1789",
+    "incorrect_answers": ["1776", "1799", "1804"],
+    "explanation": "The French Revolution began in 1789 with the storming of the Bastille."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the last Tsar of Russia?",
+    "correct_answer": "Nicholas II",
+    "incorrect_answers": ["Alexander III", "Peter the Great", "Ivan the Terrible"],
+    "explanation": "Nicholas II was the last Tsar of Russia, executed in 1918."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What treaty ended World War I?",
+    "correct_answer": "Treaty of Versailles",
+    "incorrect_answers": ["Treaty of Paris", "Treaty of Ghent", "Treaty of Tordesillas"],
+    "explanation": "The Treaty of Versailles ended World War I in 1919."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who led the Mongol Empire at its peak?",
+    "correct_answer": "Genghis Khan",
+    "incorrect_answers": ["Kublai Khan", "Tamerlane", "Attila the Hun"],
+    "explanation": "Genghis Khan founded and led the Mongol Empire to its greatest extent."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What year did the American Civil War end?",
+    "correct_answer": "1865",
+    "incorrect_answers": ["1861", "1870", "1877"],
+    "explanation": "The American Civil War ended in 1865 with the surrender at Appomattox."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the first Holy Roman Emperor?",
+    "correct_answer": "Charlemagne",
+    "incorrect_answers": ["Otto I", "Frederick Barbarossa", "Napoleon"],
+    "explanation": "Charlemagne was crowned the first Holy Roman Emperor in 800 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What ancient library was destroyed by fire?",
+    "correct_answer": "Library of Alexandria",
+    "incorrect_answers": ["Library of Pergamum", "Library of Ephesus", "Library of Athens"],
+    "explanation": "The Library of Alexandria was one of the largest libraries of the ancient world, destroyed by fire."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who led the Haitian Revolution?",
+    "correct_answer": "Toussaint Louverture",
+    "incorrect_answers": ["Jean-Jacques Dessalines", "Henri Christophe", "Alexandre P\u00e9tion"],
+    "explanation": "Toussaint Louverture led the Haitian Revolution against French colonial rule."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What year did the Ottoman Empire fall?",
+    "correct_answer": "1922",
+    "incorrect_answers": ["1918", "1920", "1924"],
+    "explanation": "The Ottoman Empire officially ended in 1922 after World War I."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the first woman to win a Nobel Prize?",
+    "correct_answer": "Marie Curie",
+    "incorrect_answers": ["Mother Teresa", "Jane Addams", "Bertha von Suttner"],
+    "explanation": "Marie Curie was the first woman to win a Nobel Prize in 1903."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What ancient civilization invented paper?",
+    "correct_answer": "China",
+    "incorrect_answers": ["Egypt", "Mesopotamia", "India"],
+    "explanation": "Paper was invented in ancient China around 105 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the youngest US President?",
+    "correct_answer": "Theodore Roosevelt",
+    "incorrect_answers": ["John F. Kennedy", "Bill Clinton", "Barack Obama"],
+    "explanation": "Theodore Roosevelt became president at age 42 after McKinley's assassination."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What year did the Spanish Armada attempt to invade England?",
+    "correct_answer": "1588",
+    "incorrect_answers": ["1492", "1600", "1620"],
+    "explanation": "The Spanish Armada attempted to invade England in 1588 but was defeated."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the first woman to serve as Prime Minister of India?",
+    "correct_answer": "Indira Gandhi",
+    "incorrect_answers": ["Benazir Bhutto", "Sirimavo Bandaranaike", "Golda Meir"],
+    "explanation": "Indira Gandhi became India's first female Prime Minister in 1966."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What ancient trade route connected East and West?",
+    "correct_answer": "Silk Road",
+    "incorrect_answers": ["Spice Route", "Amber Road", "Incense Route"],
+    "explanation": "The Silk Road was an ancient network of trade routes connecting East and West."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who wrote 'The Communist Manifesto'?",
+    "correct_answer": "Karl Marx",
+    "incorrect_answers": ["Vladimir Lenin", "Joseph Stalin", "Leon Trotsky"],
+    "explanation": "Karl Marx and Friedrich Engels wrote 'The Communist Manifesto' in 1848."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What year did the Suez Canal open?",
+    "correct_answer": "1869",
+    "incorrect_answers": ["1859", "1879", "1889"],
+    "explanation": "The Suez Canal opened in 1869, connecting the Mediterranean and Red Seas."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the first woman in space?",
+    "correct_answer": "Valentina Tereshkova",
+    "incorrect_answers": ["Sally Ride", "Mae Jemison", "Svetlana Savitskaya"],
+    "explanation": "Valentina Tereshkova became the first woman in space in 1963."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What ancient city was the capital of the Byzantine Empire?",
+    "correct_answer": "Constantinople",
+    "incorrect_answers": ["Rome", "Athens", "Alexandria"],
+    "explanation": "Constantinople (modern Istanbul) was the capital of the Byzantine Empire."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who led the Protestant Reformation in Switzerland?",
+    "correct_answer": "John Calvin",
+    "incorrect_answers": ["Martin Luther", "Huldrych Zwingli", "John Knox"],
+    "explanation": "John Calvin was a key figure in the Protestant Reformation in Switzerland."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year was the Battle of Hastings?",
+    "correct_answer": "1066",
+    "incorrect_answers": ["1215", "1415", "1588"],
+    "explanation": "The Battle of Hastings in 1066 led to the Norman conquest of England."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first Caliph after Muhammad's death?",
+    "correct_answer": "Abu Bakr",
+    "incorrect_answers": ["Umar", "Uthman", "Ali"],
+    "explanation": "Abu Bakr became the first Caliph after Prophet Muhammad's death in 632 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What treaty divided the New World between Spain and Portugal?",
+    "correct_answer": "Treaty of Tordesillas",
+    "incorrect_answers": ["Treaty of Utrecht", "Treaty of Westphalia", "Treaty of Paris"],
+    "explanation": "The Treaty of Tordesillas in 1494 divided the New World between Spain and Portugal."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the Byzantine Emperor during the construction of Hagia Sophia?",
+    "correct_answer": "Justinian I",
+    "incorrect_answers": ["Constantine I", "Theodosius I", "Heraclius"],
+    "explanation": "Justinian I commissioned the construction of Hagia Sophia in 537 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year did the Hundred Years' War begin?",
+    "correct_answer": "1337",
+    "incorrect_answers": ["1215", "1415", "1453"],
+    "explanation": "The Hundred Years' War between England and France began in 1337."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first Ming Dynasty emperor?",
+    "correct_answer": "Hongwu Emperor",
+    "incorrect_answers": ["Yongle Emperor", "Kangxi Emperor", "Qianlong Emperor"],
+    "explanation": "The Hongwu Emperor founded the Ming Dynasty in 1368."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What ancient battle is considered the turning point of the Persian Wars?",
+    "correct_answer": "Battle of Salamis",
+    "incorrect_answers": ["Battle of Marathon", "Battle of Thermopylae", "Battle of Plataea"],
+    "explanation": "The Battle of Salamis in 480 BC was the decisive naval battle of the Persian Wars."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the last Western Roman Emperor?",
+    "correct_answer": "Romulus Augustulus",
+    "incorrect_answers": ["Constantine XI", "Justinian I", "Theodosius I"],
+    "explanation": "Romulus Augustulus was the last Western Roman Emperor, deposed in 476 AD."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year did the Taiping Rebellion begin in China?",
+    "correct_answer": "1850",
+    "incorrect_answers": ["1839", "1860", "1870"],
+    "explanation": "The Taiping Rebellion, one of the deadliest conflicts in history, began in 1850."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first Shogun of Japan?",
+    "correct_answer": "Minamoto no Yoritomo",
+    "incorrect_answers": ["Tokugawa Ieyasu", "Oda Nobunaga", "Toyotomi Hideyoshi"],
+    "explanation": "Minamoto no Yoritomo became the first Shogun of Japan in 1192."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What ancient civilization created the first known writing system?",
+    "correct_answer": "Sumerians",
+    "incorrect_answers": ["Egyptians", "Phoenicians", "Chinese"],
+    "explanation": "The Sumerians created cuneiform, the first known writing system, around 3400 BC."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who led the Zulu Kingdom during the Anglo-Zulu War?",
+    "correct_answer": "Cetshwayo",
+    "incorrect_answers": ["Shaka", "Dingane", "Mpande"],
+    "explanation": "Cetshwayo led the Zulu Kingdom during the Anglo-Zulu War of 1879."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year was the Edict of Milan issued?",
+    "correct_answer": "313 AD",
+    "incorrect_answers": ["325 AD", "380 AD", "395 AD"],
+    "explanation": "The Edict of Milan in 313 AD granted religious tolerance to Christians in the Roman Empire."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first Mughal Emperor of India?",
+    "correct_answer": "Babur",
+    "incorrect_answers": ["Akbar", "Humayun", "Shah Jahan"],
+    "explanation": "Babur founded the Mughal Empire in India in 1526."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What ancient city-state was led by Pericles during its Golden Age?",
+    "correct_answer": "Athens",
+    "incorrect_answers": ["Sparta", "Thebes", "Corinth"],
+    "explanation": "Pericles led Athens during its Golden Age in the 5th century BC."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first Pharaoh of unified Egypt?",
+    "correct_answer": "Narmer",
+    "incorrect_answers": ["Khufu", "Ramesses II", "Tutankhamun"],
+    "explanation": "Narmer (also known as Menes) is credited with unifying Egypt around 3100 BC."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year did the Glorious Revolution occur in England?",
+    "correct_answer": "1688",
+    "incorrect_answers": ["1642", "1660", "1707"],
+    "explanation": "The Glorious Revolution of 1688 overthrew King James II of England."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the founder of the Achaemenid Persian Empire?",
+    "correct_answer": "Cyrus the Great",
+    "incorrect_answers": ["Darius I", "Xerxes I", "Artaxerxes I"],
+    "explanation": "Cyrus the Great founded the Achaemenid Persian Empire in 550 BC."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year did the War of the Roses begin?",
+    "correct_answer": "1455",
+    "incorrect_answers": ["1399", "1485", "1509"],
+    "explanation": "The War of the Roses began in 1455 between the Houses of Lancaster and York."
+  },
+  {
+    "category": "History",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the last emperor of the Aztec Empire?",
+    "correct_answer": "Cuauhtémoc",
+    "incorrect_answers": ["Moctezuma II", "Cuitl\u00e1huac", "Itzcoatl"],
+    "explanation": "Cuauhtémoc was the last Aztec emperor, defeated by Cortés in 1521."
+  }
+
+// Total questions generated: 60
+// History Easy: 20 questions
+// History Medium: 20 questions
+// History Hard: 20 questions

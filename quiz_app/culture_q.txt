@@ -1,0 +1,1352 @@
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who painted the portrait of Rose in 'Titanic'?",
+    "correct_answer": "James Cameron",
+    "incorrect_answers": ["Leonardo DiCaprio", "Kate Winslet", "Billy Zane"],
+    "explanation": "Director James Cameron actually drew the sketch of Rose wearing the Heart of the Ocean."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What was the first feature-length animated movie?",
+    "correct_answer": "Snow White and the Seven Dwarfs",
+    "incorrect_answers": ["Fantasia", "Bambi", "Pinocchio"],
+    "explanation": "Released in 1937, Snow White and the Seven Dwarfs was the first full-length cel-animated feature."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In 'Finding Nemo', what type of fish is Nemo?",
+    "correct_answer": "Clownfish",
+    "incorrect_answers": ["Goldfish", "Pufferfish", "Blue Tang"],
+    "explanation": "Nemo and his father Marlin are clownfish."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the name of the cowboy in 'Toy Story'?",
+    "correct_answer": "Woody",
+    "incorrect_answers": ["Buzz", "Andy", "Sid"],
+    "explanation": "Sheriff Woody is the cowboy doll and Andy's favorite toy."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who played the character of Harry Potter?",
+    "correct_answer": "Daniel Radcliffe",
+    "incorrect_answers": ["Rupert Grint", "Tom Felton", "Elijah Wood"],
+    "explanation": "Daniel Radcliffe played the title character in the Harry Potter film series."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What color is the pill that Neo takes in 'The Matrix'?",
+    "correct_answer": "Red",
+    "incorrect_answers": ["Blue", "Green", "Yellow"],
+    "explanation": "Neo takes the red pill to see how deep the rabbit hole goes."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which movie features a character named Darth Vader?",
+    "correct_answer": "Star Wars",
+    "incorrect_answers": ["Star Trek", "Alien", "Blade Runner"],
+    "explanation": "Darth Vader is the primary antagonist in the original Star Wars trilogy."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What animal is the main character in 'Ratatouille'?",
+    "correct_answer": "Rat",
+    "incorrect_answers": ["Mouse", "Hamster", "Guinea Pig"],
+    "explanation": "Remy, the main character in Ratatouille, is a rat who dreams of becoming a chef."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the voice of the Genie in 'Aladdin' (1992)?",
+    "correct_answer": "Robin Williams",
+    "incorrect_answers": ["Eddie Murphy", "Will Smith", "Jim Carrey"],
+    "explanation": "Robin Williams provided the iconic voice for the Genie."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the name of Shrek's wife?",
+    "correct_answer": "Fiona",
+    "incorrect_answers": ["Farquaad", "Dragon", "Snow White"],
+    "explanation": "Princess Fiona is Shrek's wife."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In 'The Lion King', who is Simba's father?",
+    "correct_answer": "Mufasa",
+    "incorrect_answers": ["Scar", "Timon", "Rafiki"],
+    "explanation": "Mufasa is the King of the Pride Lands and Simba's father."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which superhero is known as the 'Man of Steel'?",
+    "correct_answer": "Superman",
+    "incorrect_answers": ["Batman", "Iron Man", "Spider-Man"],
+    "explanation": "Superman is often referred to as the Man of Steel."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What kind of dinosaur is the main attraction in 'Jurassic Park'?",
+    "correct_answer": "T-Rex",
+    "incorrect_answers": ["Velociraptor", "Triceratops", "Brachiosaurus"],
+    "explanation": "The Tyrannosaurus Rex is the most fearsome dinosaur in the park."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who directed 'E.T. the Extra-Terrestrial'?",
+    "correct_answer": "Steven Spielberg",
+    "incorrect_answers": ["George Lucas", "James Cameron", "Tim Burton"],
+    "explanation": "Steven Spielberg directed the 1982 classic E.T."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the name of the hobbit played by Elijah Wood?",
+    "correct_answer": "Frodo Baggins",
+    "incorrect_answers": ["Samwise Gamgee", "Bilbo Baggins", "Merry Brandybuck"],
+    "explanation": "Elijah Wood plays Frodo Baggins in The Lord of the Rings trilogy."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which movie features the song 'Let It Go'?",
+    "correct_answer": "Frozen",
+    "incorrect_answers": ["Moana", "Tangled", "Brave"],
+    "explanation": "Let It Go is the hit song from Disney's Frozen."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who plays Jack Sparrow in 'Pirates of the Caribbean'?",
+    "correct_answer": "Johnny Depp",
+    "incorrect_answers": ["Orlando Bloom", "Brad Pitt", "Tom Cruise"],
+    "explanation": "Johnny Depp famously portrays Captain Jack Sparrow."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the name of the fictional country in 'Black Panther'?",
+    "correct_answer": "Wakanda",
+    "incorrect_answers": ["Zamunda", "Genosha", "Latveria"],
+    "explanation": "Black Panther is set in the technologically advanced African nation of Wakanda."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In 'Back to the Future', what type of car is the time machine?",
+    "correct_answer": "DeLorean",
+    "incorrect_answers": ["Mustang", "Corvette", "Ferrari"],
+    "explanation": "Doc Brown builds a time machine out of a DeLorean DMC-12."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What are the dying words of Charles Foster Kane?",
+    "correct_answer": "Rosebud",
+    "incorrect_answers": ["Xanadu", "Susan", "Mother"],
+    "explanation": "Kane's dying word, 'Rosebud', drives the plot of Citizen Kane."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What 1927 musical was the first 'talkie'?",
+    "correct_answer": "The Jazz Singer",
+    "incorrect_answers": ["Singin' in the Rain", "The Wizard of Oz", "Metropolis"],
+    "explanation": "The Jazz Singer was the first feature-length motion picture with synchronized dialogue."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What fictional mineral was sought in 'Avatar'?",
+    "correct_answer": "Unobtainium",
+    "incorrect_answers": ["Kryptonite", "Vibranium", "Adamantium"],
+    "explanation": "The humans in Avatar are mining for a mineral called Unobtainium."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "In which film do people stop aging at 25?",
+    "correct_answer": "In Time",
+    "incorrect_answers": ["Looper", "Surrogates", "Gattaca"],
+    "explanation": "In the movie In Time, time is currency and people stop aging at 25."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who directed 'Pulp Fiction'?",
+    "correct_answer": "Quentin Tarantino",
+    "incorrect_answers": ["Martin Scorsese", "Stanley Kubrick", "Francis Ford Coppola"],
+    "explanation": "Quentin Tarantino directed the 1994 cult classic Pulp Fiction."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which movie won the first Best Animated Feature Oscar?",
+    "correct_answer": "Shrek",
+    "incorrect_answers": ["Toy Story", "Monsters, Inc.", "Ice Age"],
+    "explanation": "Shrek won the first Academy Award for Best Animated Feature in 2001."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the name of the island in 'Jurassic Park'?",
+    "correct_answer": "Isla Nublar",
+    "incorrect_answers": ["Isla Sorna", "Skull Island", "Shutter Island"],
+    "explanation": "Jurassic Park is built on the fictional island of Isla Nublar."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who played the Joker in 'The Dark Knight'?",
+    "correct_answer": "Heath Ledger",
+    "incorrect_answers": ["Jack Nicholson", "Jared Leto", "Joaquin Phoenix"],
+    "explanation": "Heath Ledger won a posthumous Oscar for his portrayal of the Joker."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the highest-grossing film of all time (unadjusted)?",
+    "correct_answer": "Avatar",
+    "incorrect_answers": ["Avengers: Endgame", "Titanic", "Star Wars: The Force Awakens"],
+    "explanation": "Avatar holds the record for the highest-grossing film worldwide."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "In 'The Matrix', what is the name of the ship?",
+    "correct_answer": "Nebuchadnezzar",
+    "incorrect_answers": ["Enterprise", "Millennium Falcon", "Serenity"],
+    "explanation": "Morpheus captains the hovercraft Nebuchadnezzar."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which film features the quote 'You can't handle the truth!'?",
+    "correct_answer": "A Few Good Men",
+    "incorrect_answers": ["Top Gun", "Rain Man", "The Firm"],
+    "explanation": "Jack Nicholson delivers this famous line in A Few Good Men."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who directed 'The Godfather'?",
+    "correct_answer": "Francis Ford Coppola",
+    "incorrect_answers": ["Martin Scorsese", "Sergio Leone", "Brian De Palma"],
+    "explanation": "Francis Ford Coppola directed the crime masterpiece The Godfather."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the name of the hotel in 'The Shining'?",
+    "correct_answer": "Overlook Hotel",
+    "incorrect_answers": ["Bates Motel", "Hotel California", "Grand Budapest Hotel"],
+    "explanation": "The Shining takes place at the isolated Overlook Hotel."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which movie stars Tom Hanks as a castaway?",
+    "correct_answer": "Cast Away",
+    "incorrect_answers": ["The Terminal", "Captain Phillips", "Sully"],
+    "explanation": "Tom Hanks plays a FedEx employee stranded on an island in Cast Away."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the name of the fictional company in 'RoboCop'?",
+    "correct_answer": "OCP",
+    "incorrect_answers": ["Cyberdyne", "Weyland-Yutani", "Umbrella Corp"],
+    "explanation": "Omni Consumer Products (OCP) is the mega-corporation in RoboCop."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who played the lead role in 'Forrest Gump'?",
+    "correct_answer": "Tom Hanks",
+    "incorrect_answers": ["Robin Williams", "Kevin Costner", "John Travolta"],
+    "explanation": "Tom Hanks won an Oscar for his role as Forrest Gump."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which film is set in the fictional city of Metropolis?",
+    "correct_answer": "Metropolis",
+    "incorrect_answers": ["Blade Runner", "Dark City", "Brazil"],
+    "explanation": "Fritz Lang's 1927 masterpiece is set in the futuristic city of Metropolis (also Superman's home)."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What was the first horror movie to win Best Picture?",
+    "correct_answer": "The Silence of the Lambs",
+    "incorrect_answers": ["The Exorcist", "Jaws", "Get Out"],
+    "explanation": "The Silence of the Lambs (1991) is the only horror film to win the Best Picture Oscar."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What was the first sports film to win Best Picture?",
+    "correct_answer": "Rocky",
+    "incorrect_answers": ["Chariots of Fire", "Million Dollar Baby", "Raging Bull"],
+    "explanation": "Rocky (1976) was the first sports movie to win the Academy Award for Best Picture."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the number on the bus roof in 'Speed'?",
+    "correct_answer": "2525",
+    "incorrect_answers": ["101", "33", "5050"],
+    "explanation": "The number 2525 is visible on the roof of the bus in the movie Speed."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which director has won the most Best Director Oscars?",
+    "correct_answer": "John Ford",
+    "incorrect_answers": ["Steven Spielberg", "Frank Capra", "William Wyler"],
+    "explanation": "John Ford won the Academy Award for Best Director four times."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first film critic to win a Pulitzer Prize?",
+    "correct_answer": "Roger Ebert",
+    "incorrect_answers": ["Gene Siskel", "Pauline Kael", "Leonard Maltin"],
+    "explanation": "Roger Ebert became the first film critic to win the Pulitzer Prize for Criticism in 1975."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the sled in 'Citizen Kane'?",
+    "correct_answer": "Rosebud",
+    "incorrect_answers": ["Snowy", "Lightning", "Thunder"],
+    "explanation": "Rosebud is the trade name of the sled Kane had as a child."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which film won the 'Big Five' Academy Awards in 1975?",
+    "correct_answer": "One Flew Over the Cuckoo's Nest",
+    "incorrect_answers": ["The Godfather Part II", "Network", "Chinatown"],
+    "explanation": "It won Best Picture, Director, Actor, Actress, and Screenplay."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who is the only actor to win three Best Actor Oscars?",
+    "correct_answer": "Daniel Day-Lewis",
+    "incorrect_answers": ["Jack Nicholson", "Marlon Brando", "Tom Hanks"],
+    "explanation": "Daniel Day-Lewis won Best Actor for My Left Foot, There Will Be Blood, and Lincoln."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What was the first PG-13 movie?",
+    "correct_answer": "Red Dawn",
+    "incorrect_answers": ["Indiana Jones and the Temple of Doom", "Gremlins", "Ghostbusters"],
+    "explanation": "Red Dawn (1984) was the first film released with the PG-13 rating."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who voiced the computer HAL 9000 in '2001: A Space Odyssey'?",
+    "correct_answer": "Douglas Rain",
+    "incorrect_answers": ["Arthur C. Clarke", "Stanley Kubrick", "Keir Dullea"],
+    "explanation": "Douglas Rain provided the calm, chilling voice of HAL 9000."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "In 'Casablanca', what is the name of the cafe?",
+    "correct_answer": "Rick's Café Américain",
+    "incorrect_answers": ["The Blue Parrot", "La Belle Aurore", "Caf\u00e9 de Paris"],
+    "explanation": "Humphrey Bogart's character owns Rick's Café Américain."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which film features the 'Odessa Steps' sequence?",
+    "correct_answer": "Battleship Potemkin",
+    "incorrect_answers": ["October", "Strike", "Mother"],
+    "explanation": "Sergei Eisenstein's Battleship Potemkin features the famous montage on the Odessa Steps."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who directed 'The Seventh Seal'?",
+    "correct_answer": "Ingmar Bergman",
+    "incorrect_answers": ["Federico Fellini", "Akira Kurosawa", "Jean-Luc Godard"],
+    "explanation": "Swedish director Ingmar Bergman directed The Seventh Seal."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the demon in 'The Exorcist'?",
+    "correct_answer": "Pazuzu",
+    "incorrect_answers": ["Azazel", "Beelzebub", "Mammon"],
+    "explanation": "The demon that possesses Regan MacNeil is named Pazuzu."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which movie was falsely advertised as a true story?",
+    "correct_answer": "Fargo",
+    "incorrect_answers": ["The Blair Witch Project", "Paranormal Activity", "Texas Chainsaw Massacre"],
+    "explanation": "The Coen Brothers' Fargo claims to be a true story, but it is entirely fictional."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who played the Wicked Witch of the West in 'The Wizard of Oz'?",
+    "correct_answer": "Margaret Hamilton",
+    "incorrect_answers": ["Judy Garland", "Billie Burke", "Agnes Moorehead"],
+    "explanation": "Margaret Hamilton played the iconic villain."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the fictional language in 'Avatar'?",
+    "correct_answer": "Na'vi",
+    "incorrect_answers": ["Klingon", "Elvish", "Dothraki"],
+    "explanation": "The language spoken by the indigenous people of Pandora is Na'vi."
+  },
+  {
+    "category": "Entertainment: Film",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which Alfred Hitchcock film was shot to look like one continuous take?",
+    "correct_answer": "Rope",
+    "incorrect_answers": ["Rear Window", "Vertigo", "Psycho"],
+    "explanation": "Rope (1948) was edited to appear as a single continuous shot."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first American Idol winner?",
+    "correct_answer": "Kelly Clarkson",
+    "incorrect_answers": ["Carrie Underwood", "Fantasia", "Ruben Studdard"],
+    "explanation": "Kelly Clarkson won the first season of American Idol in 2002."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which British band recorded 'Hey Jude'?",
+    "correct_answer": "The Beatles",
+    "incorrect_answers": ["The Rolling Stones", "The Who", "Queen"],
+    "explanation": "The Beatles released 'Hey Jude' in 1968."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who sings 'Man! I Feel Like a Woman'?",
+    "correct_answer": "Shania Twain",
+    "incorrect_answers": ["Faith Hill", "Dolly Parton", "Reba McEntire"],
+    "explanation": "Shania Twain released this hit country-pop song in 1999."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which country are ABBA from?",
+    "correct_answer": "Sweden",
+    "incorrect_answers": ["Norway", "Denmark", "Germany"],
+    "explanation": "ABBA is a Swedish pop supergroup formed in Stockholm."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is known as the 'King of Pop'?",
+    "correct_answer": "Michael Jackson",
+    "incorrect_answers": ["Elvis Presley", "Prince", "Madonna"],
+    "explanation": "Michael Jackson is globally referred to as the King of Pop."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many strings does a standard guitar have?",
+    "correct_answer": "6",
+    "incorrect_answers": ["4", "5", "7"],
+    "explanation": "A standard guitar has 6 strings."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who sang 'I Will Always Love You' in 'The Bodyguard'?",
+    "correct_answer": "Whitney Houston",
+    "incorrect_answers": ["Mariah Carey", "Celine Dion", "Dolly Parton"],
+    "explanation": "Whitney Houston's cover became one of the best-selling singles of all time."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which band performs 'Bohemian Rhapsody'?",
+    "correct_answer": "Queen",
+    "incorrect_answers": ["Led Zeppelin", "Pink Floyd", "The Beatles"],
+    "explanation": "Queen released the operatic rock masterpiece 'Bohemian Rhapsody'."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the lead singer of U2?",
+    "correct_answer": "Bono",
+    "incorrect_answers": ["The Edge", "Sting", "Mick Jagger"],
+    "explanation": "Bono is the lead vocalist of the Irish rock band U2."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What instrument does Lizzo play?",
+    "correct_answer": "Flute",
+    "incorrect_answers": ["Violin", "Piano", "Saxophone"],
+    "explanation": "Lizzo is a classically trained flutist."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who released the album '1989'?",
+    "correct_answer": "Taylor Swift",
+    "incorrect_answers": ["Katy Perry", "Adele", "Ariana Grande"],
+    "explanation": "Taylor Swift released the pop album '1989' in 2014."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which Beatle was known as 'The Cute One'?",
+    "correct_answer": "Paul McCartney",
+    "incorrect_answers": ["John Lennon", "George Harrison", "Ringo Starr"],
+    "explanation": "Paul McCartney was often called 'The Cute One' by fans and press."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the name of the spice girl known as 'Baby Spice'?",
+    "correct_answer": "Emma Bunton",
+    "incorrect_answers": ["Geri Halliwell", "Victoria Beckham", "Mel B"],
+    "explanation": "Emma Bunton is known as Baby Spice."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who sang 'Rolling in the Deep'?",
+    "correct_answer": "Adele",
+    "incorrect_answers": ["Beyonc\u00e9", "Rihanna", "Lady Gaga"],
+    "explanation": "Adele had a massive global hit with 'Rolling in the Deep'."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What genre of music is Bob Marley associated with?",
+    "correct_answer": "Reggae",
+    "incorrect_answers": ["Jazz", "Blues", "Rock"],
+    "explanation": "Bob Marley is the most famous pioneer of Reggae music."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which pop star is known as the 'Material Girl'?",
+    "correct_answer": "Madonna",
+    "incorrect_answers": ["Cyndi Lauper", "Cher", "Britney Spears"],
+    "explanation": "Madonna is often referred to as the Material Girl after her hit song."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the rapper behind 'Lose Yourself'?",
+    "correct_answer": "Eminem",
+    "incorrect_answers": ["Jay-Z", "Kanye West", "Drake"],
+    "explanation": "Eminem won an Oscar for 'Lose Yourself' from the movie 8 Mile."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What was Freddie Mercury's real name?",
+    "correct_answer": "Farrokh Bulsara",
+    "incorrect_answers": ["Rami Malek", "Brian May", "Roger Taylor"],
+    "explanation": "Freddie Mercury was born Farrokh Bulsara in Zanzibar."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What was the first music video on MTV?",
+    "correct_answer": "Video Killed the Radio Star",
+    "incorrect_answers": ["Money for Nothing", "Take on Me", "Thriller"],
+    "explanation": "The Buggles' 'Video Killed the Radio Star' launched MTV in 1981."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Stevie Nicks is a member of which band?",
+    "correct_answer": "Fleetwood Mac",
+    "incorrect_answers": ["Heart", "The Bangles", "Blondie"],
+    "explanation": "Stevie Nicks joined Fleetwood Mac in 1975."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is Beyoncé's fanbase called?",
+    "correct_answer": "The Beyhive",
+    "incorrect_answers": ["The Navy", "Little Monsters", "Swifties"],
+    "explanation": "Beyoncé's dedicated fans are known as the Beyhive."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which band released the album 'Dark Side of the Moon'?",
+    "correct_answer": "Pink Floyd",
+    "incorrect_answers": ["Led Zeppelin", "The Doors", "The Who"],
+    "explanation": "Pink Floyd's 'Dark Side of the Moon' is one of the best-selling albums ever."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is the drummer for The Beatles?",
+    "correct_answer": "Ringo Starr",
+    "incorrect_answers": ["John Bonham", "Keith Moon", "Charlie Watts"],
+    "explanation": "Ringo Starr was the drummer for The Beatles."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which artist is known as 'The Boss'?",
+    "correct_answer": "Bruce Springsteen",
+    "incorrect_answers": ["Billy Joel", "Tom Petty", "Bob Seger"],
+    "explanation": "Bruce Springsteen is nicknamed 'The Boss'."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the real name of Lady Gaga?",
+    "correct_answer": "Stefani Germanotta",
+    "incorrect_answers": ["Katheryn Hudson", "Robyn Fenty", "Onika Maraj"],
+    "explanation": "Lady Gaga was born Stefani Joanne Angelina Germanotta."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which city is considered the birthplace of Jazz?",
+    "correct_answer": "New Orleans",
+    "incorrect_answers": ["Chicago", "New York", "Memphis"],
+    "explanation": "New Orleans is widely recognized as the birthplace of Jazz."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who wrote the song 'Hallelujah'?",
+    "correct_answer": "Leonard Cohen",
+    "incorrect_answers": ["Jeff Buckley", "Bob Dylan", "Paul Simon"],
+    "explanation": "Leonard Cohen wrote and originally performed 'Hallelujah'."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which band has a logo featuring a tongue and lips?",
+    "correct_answer": "The Rolling Stones",
+    "incorrect_answers": ["KISS", "Aerosmith", "Nirvana"],
+    "explanation": "The 'Tongue and Lips' logo is synonymous with The Rolling Stones."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who was the lead singer of Nirvana?",
+    "correct_answer": "Kurt Cobain",
+    "incorrect_answers": ["Dave Grohl", "Eddie Vedder", "Chris Cornell"],
+    "explanation": "Kurt Cobain was the frontman of the grunge band Nirvana."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the best-selling album of all time?",
+    "correct_answer": "Thriller",
+    "incorrect_answers": ["Back in Black", "The Bodyguard", "Eagles' Greatest Hits"],
+    "explanation": "Michael Jackson's 'Thriller' is the best-selling album in history."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which classical composer was deaf in his later years?",
+    "correct_answer": "Ludwig van Beethoven",
+    "incorrect_answers": ["Wolfgang Amadeus Mozart", "Johann Sebastian Bach", "Frederic Chopin"],
+    "explanation": "Beethoven composed some of his greatest works while almost completely deaf."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is the 'Godfather of Soul'?",
+    "correct_answer": "James Brown",
+    "incorrect_answers": ["Ray Charles", "Otis Redding", "Sam Cooke"],
+    "explanation": "James Brown is known as the Godfather of Soul."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the first woman inducted into the Rock and Roll Hall of Fame?",
+    "correct_answer": "Aretha Franklin",
+    "incorrect_answers": ["Janis Joplin", "Tina Turner", "Diana Ross"],
+    "explanation": "Aretha Franklin was the first woman inducted in 1987."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What artists made up The Traveling Wilburys?",
+    "correct_answer": "Harrison, Orbison, Lynne, Petty, Dylan",
+    "incorrect_answers": ["Lennon, McCartney, Starr, Harrison", "Jagger, Richards, Watts, Wood", "Bono, Edge, Clayton, Mullen"],
+    "explanation": "The supergroup consisted of George Harrison, Roy Orbison, Jeff Lynne, Tom Petty, and Bob Dylan."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What was the first band to have a billboard album ad?",
+    "correct_answer": "The Doors",
+    "incorrect_answers": ["The Beatles", "The Rolling Stones", "The Who"],
+    "explanation": "The Doors were the first band to advertise an album on a billboard in LA."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who taught Paul McCartney 'everything he knows'?",
+    "correct_answer": "Little Richard",
+    "incorrect_answers": ["Chuck Berry", "Buddy Holly", "Elvis Presley"],
+    "explanation": "Paul McCartney has credited Little Richard as a major influence."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the only band to have a diamond album in 4 different decades?",
+    "correct_answer": "Aerosmith",
+    "incorrect_answers": ["The Rolling Stones", "U2", "Metallica"],
+    "explanation": "Aerosmith has had diamond or multi-platinum success across four decades."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which composer wrote 'The Four Seasons'?",
+    "correct_answer": "Antonio Vivaldi",
+    "incorrect_answers": ["Johann Sebastian Bach", "George Frideric Handel", "Claudio Monteverdi"],
+    "explanation": "Vivaldi wrote the famous violin concertos 'The Four Seasons'."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the scale with five notes?",
+    "correct_answer": "Pentatonic",
+    "incorrect_answers": ["Diatonic", "Chromatic", "Whole Tone"],
+    "explanation": "The pentatonic scale consists of five notes per octave."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the original drummer for The Beatles before Ringo?",
+    "correct_answer": "Pete Best",
+    "incorrect_answers": ["Stuart Sutcliffe", "Andy White", "Jimmy Nicol"],
+    "explanation": "Pete Best was the drummer before being replaced by Ringo Starr."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which Pink Floyd album features a flying pig on the cover?",
+    "correct_answer": "Animals",
+    "incorrect_answers": ["The Wall", "Wish You Were Here", "Meddle"],
+    "explanation": "The cover of 'Animals' depicts a pig floating between the chimneys of Battersea Power Station."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who is the only artist to have a number one single in six consecutive decades?",
+    "correct_answer": "Cher",
+    "incorrect_answers": ["Madonna", "Elton John", "Barbra Streisand"],
+    "explanation": "Cher has had a #1 single on a Billboard chart in six consecutive decades."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the longest-running Broadway show?",
+    "correct_answer": "The Phantom of the Opera",
+    "incorrect_answers": ["Chicago", "The Lion King", "Cats"],
+    "explanation": "The Phantom of the Opera is the longest-running show in Broadway history."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which rapper's real name is Marshall Mathers?",
+    "correct_answer": "Eminem",
+    "incorrect_answers": ["50 Cent", "Dr. Dre", "Snoop Dogg"],
+    "explanation": "Eminem's birth name is Marshall Bruce Mathers III."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who composed the 'Ring Cycle' operas?",
+    "correct_answer": "Richard Wagner",
+    "incorrect_answers": ["Giuseppe Verdi", "Giacomo Puccini", "Richard Strauss"],
+    "explanation": "Richard Wagner composed the epic four-opera cycle 'Der Ring des Nibelungen'."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What year was Woodstock held?",
+    "correct_answer": "1969",
+    "incorrect_answers": ["1967", "1970", "1971"],
+    "explanation": "The Woodstock Music & Art Fair took place in August 1969."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the bassist for Metallica who died in 1986?",
+    "correct_answer": "Cliff Burton",
+    "incorrect_answers": ["Jason Newsted", "Robert Trujillo", "Dave Mustaine"],
+    "explanation": "Cliff Burton died in a tragic bus accident in Sweden."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which jazz musician was nicknamed 'Bird'?",
+    "correct_answer": "Charlie Parker",
+    "incorrect_answers": ["Dizzy Gillespie", "Miles Davis", "John Coltrane"],
+    "explanation": "Saxophonist Charlie Parker was known as 'Bird' or 'Yardbird'."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the final unfinished symphony by Mozart?",
+    "correct_answer": "Requiem",
+    "incorrect_answers": ["Symphony No. 40", "The Magic Flute", "Don Giovanni"],
+    "explanation": "Mozart died before completing his Requiem Mass in D minor."
+  },
+  {
+    "category": "Music",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who recorded the best-selling jazz album of all time, 'Kind of Blue'?",
+    "correct_answer": "Miles Davis",
+    "incorrect_answers": ["John Coltrane", "Dave Brubeck", "Duke Ellington"],
+    "explanation": "Miles Davis's 'Kind of Blue' is the best-selling jazz record ever."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who painted the 'Mona Lisa'?",
+    "correct_answer": "Leonardo da Vinci",
+    "incorrect_answers": ["Michelangelo", "Raphael", "Donatello"],
+    "explanation": "Leonardo da Vinci painted the Mona Lisa in the early 16th century."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "In which city is The Louvre museum located?",
+    "correct_answer": "Paris",
+    "incorrect_answers": ["London", "Rome", "New York"],
+    "explanation": "The Louvre is located in Paris, France."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who painted 'The Starry Night'?",
+    "correct_answer": "Vincent van Gogh",
+    "incorrect_answers": ["Claude Monet", "Pablo Picasso", "Salvador Dal\u00ed"],
+    "explanation": "Vincent van Gogh painted The Starry Night in 1889."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which artist is known for painting Campbell's Soup Cans?",
+    "correct_answer": "Andy Warhol",
+    "incorrect_answers": ["Jackson Pollock", "Roy Lichtenstein", "Keith Haring"],
+    "explanation": "Andy Warhol is a leading figure in the Pop Art movement."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who sculpted the statue of David?",
+    "correct_answer": "Michelangelo",
+    "incorrect_answers": ["Bernini", "Rodin", "Donatello"],
+    "explanation": "Michelangelo created the marble statue of David."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What art style is Pablo Picasso famous for co-founding?",
+    "correct_answer": "Cubism",
+    "incorrect_answers": ["Impressionism", "Surrealism", "Realism"],
+    "explanation": "Picasso co-founded the Cubist movement."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who painted the ceiling of the Sistine Chapel?",
+    "correct_answer": "Michelangelo",
+    "incorrect_answers": ["Leonardo da Vinci", "Raphael", "Botticelli"],
+    "explanation": "Michelangelo painted the Sistine Chapel ceiling between 1508 and 1512."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the primary color mixed with red to make orange?",
+    "correct_answer": "Yellow",
+    "incorrect_answers": ["Blue", "Green", "White"],
+    "explanation": "Red and yellow are primary colors that mix to create orange."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which Mexican artist is known for her self-portraits?",
+    "correct_answer": "Frida Kahlo",
+    "incorrect_answers": ["Diego Rivera", "Georgia O'Keeffe", "Mary Cassatt"],
+    "explanation": "Frida Kahlo is famous for her many self-portraits."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the name of the famous screaming figure painting?",
+    "correct_answer": "The Scream",
+    "incorrect_answers": ["The Cry", "The Shout", "The Fear"],
+    "explanation": "Edvard Munch painted The Scream."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who painted 'The Last Supper'?",
+    "correct_answer": "Leonardo da Vinci",
+    "incorrect_answers": ["Michelangelo", "Rembrandt", "Caravaggio"],
+    "explanation": "Leonardo da Vinci painted The Last Supper mural."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What flower did Vincent van Gogh paint a series of?",
+    "correct_answer": "Sunflowers",
+    "incorrect_answers": ["Roses", "Lilies", "Tulips"],
+    "explanation": "Van Gogh is famous for his series of Sunflowers."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which artist cut off part of his own ear?",
+    "correct_answer": "Vincent van Gogh",
+    "incorrect_answers": ["Paul Gauguin", "Claude Monet", "Salvador Dal\u00ed"],
+    "explanation": "Van Gogh famously severed part of his left ear."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the art of folding paper called?",
+    "correct_answer": "Origami",
+    "incorrect_answers": ["Kirigami", "Calligraphy", "Ikebana"],
+    "explanation": "Origami is the Japanese art of paper folding."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who painted 'The Birth of Venus'?",
+    "correct_answer": "Sandro Botticelli",
+    "incorrect_answers": ["Titian", "Caravaggio", "Masaccio"],
+    "explanation": "Botticelli painted The Birth of Venus."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is a painting of a person's face called?",
+    "correct_answer": "Portrait",
+    "incorrect_answers": ["Landscape", "Still Life", "Abstract"],
+    "explanation": "A painting of a person's face is called a portrait."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which artist is known for melting clocks?",
+    "correct_answer": "Salvador Dalí",
+    "incorrect_answers": ["Ren\u00e9 Magritte", "Max Ernst", "Joan Mir\u00f3"],
+    "explanation": "Dalí's 'The Persistence of Memory' features melting clocks."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What color do you get when you mix blue and yellow?",
+    "correct_answer": "Green",
+    "incorrect_answers": ["Purple", "Orange", "Brown"],
+    "explanation": "Blue and yellow mix to create green."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which painting features a farmer holding a pitchfork?",
+    "correct_answer": "American Gothic",
+    "incorrect_answers": ["The Gleaners", "Nighthawks", "Whistler's Mother"],
+    "explanation": "Grant Wood painted American Gothic."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is known for his 'Water Lilies' series?",
+    "correct_answer": "Claude Monet",
+    "incorrect_answers": ["Edouard Manet", "Pierre-Auguste Renoir", "Edgar Degas"],
+    "explanation": "Monet painted approximately 250 oil paintings of water lilies."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What technique uses tiny dots to create an image?",
+    "correct_answer": "Pointillism",
+    "incorrect_answers": ["Cubism", "Fauvism", "Dadaism"],
+    "explanation": "Pointillism uses small, distinct dots of color applied in patterns."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who painted 'Girl with a Pearl Earring'?",
+    "correct_answer": "Johannes Vermeer",
+    "incorrect_answers": ["Rembrandt", "Jan van Eyck", "Peter Paul Rubens"],
+    "explanation": "Vermeer painted the Girl with a Pearl Earring."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which artist is known for his drip paintings?",
+    "correct_answer": "Jackson Pollock",
+    "incorrect_answers": ["Mark Rothko", "Willem de Kooning", "Franz Kline"],
+    "explanation": "Jackson Pollock was a major figure in the abstract expressionist movement."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the name of the statue without arms in the Louvre?",
+    "correct_answer": "Venus de Milo",
+    "incorrect_answers": ["Winged Victory", "The Thinker", "Discobolus"],
+    "explanation": "The Venus de Milo is an ancient Greek statue depicting Aphrodite."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who painted 'Guernica'?",
+    "correct_answer": "Pablo Picasso",
+    "incorrect_answers": ["Salvador Dal\u00ed", "Francisco Goya", "Joan Mir\u00f3"],
+    "explanation": "Picasso painted Guernica as a response to the bombing of Guernica."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which art movement is Claude Monet associated with?",
+    "correct_answer": "Impressionism",
+    "incorrect_answers": ["Expressionism", "Romanticism", "Baroque"],
+    "explanation": "Monet was a founder of French Impressionist painting."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who created the mobile as a type of kinetic sculpture?",
+    "correct_answer": "Alexander Calder",
+    "incorrect_answers": ["Henry Moore", "Alberto Giacometti", "Constantin Brancusi"],
+    "explanation": "Calder is known for inventing the mobile."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the term for a painting of inanimate objects?",
+    "correct_answer": "Still Life",
+    "incorrect_answers": ["Landscape", "Portrait", "Genre"],
+    "explanation": "A still life depicts mostly inanimate subject matter."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which artist is known for his graffiti-inspired works?",
+    "correct_answer": "Jean-Michel Basquiat",
+    "incorrect_answers": ["Keith Haring", "Banksy", "Shepard Fairey"],
+    "explanation": "Basquiat started as a graffiti artist before becoming a neo-expressionist painter."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What was Sandro Botticelli's birth name?",
+    "correct_answer": "Alessandro di Mariano di Vanni Filipepi",
+    "incorrect_answers": ["Leonardo da Vinci", "Michelangelo Buonarroti", "Raffaello Sanzio"],
+    "explanation": "Botticelli was born Alessandro di Mariano di Vanni Filipepi."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What exotic pet did Salvador Dalí own?",
+    "correct_answer": "Ocelot",
+    "incorrect_answers": ["Tiger", "Cheetah", "Leopard"],
+    "explanation": "Dalí had a pet ocelot named Babou."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "How many times has the Mona Lisa been stolen?",
+    "correct_answer": "Once",
+    "incorrect_answers": ["Twice", "Three times", "Never"],
+    "explanation": "It was stolen once in 1911 by Vincenzo Peruggia."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who designed the Statue of Liberty?",
+    "correct_answer": "Frédéric Auguste Bartholdi",
+    "incorrect_answers": ["Gustave Eiffel", "Auguste Rodin", "Claude Monet"],
+    "explanation": "Bartholdi designed the statue, while Eiffel designed the framework."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which artist is known for 'The Garden of Earthly Delights'?",
+    "correct_answer": "Hieronymus Bosch",
+    "incorrect_answers": ["Pieter Bruegel the Elder", "Jan van Eyck", "Albrecht D\u00fcrer"],
+    "explanation": "Bosch painted the famous triptych."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who painted 'The Night Watch'?",
+    "correct_answer": "Rembrandt",
+    "incorrect_answers": ["Vermeer", "Frans Hals", "Rubens"],
+    "explanation": "Rembrandt painted The Night Watch in 1642."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the technique used by Da Vinci to create a smoky effect?",
+    "correct_answer": "Sfumato",
+    "incorrect_answers": ["Chiaroscuro", "Impasto", "Tenebrism"],
+    "explanation": "Sfumato is the technique of allowing tones and colors to shade gradually into one another."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which artist created the 'Campbell's Soup Cans' series?",
+    "correct_answer": "Andy Warhol",
+    "incorrect_answers": ["Roy Lichtenstein", "Jasper Johns", "Robert Rauschenberg"],
+    "explanation": "Warhol created the series in 1962."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who painted 'Las Meninas'?",
+    "correct_answer": "Diego Velázquez",
+    "incorrect_answers": ["Francisco Goya", "El Greco", "Bartolom\u00e9 Esteban Murillo"],
+    "explanation": "Velázquez painted Las Meninas, a complex and enigmatic composition."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which artist is associated with the 'Blue Period'?",
+    "correct_answer": "Pablo Picasso",
+    "incorrect_answers": ["Henri Matisse", "Vincent van Gogh", "Paul C\u00e9zanne"],
+    "explanation": "Picasso's Blue Period lasted from 1901 to 1904."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who created the sculpture 'The Thinker'?",
+    "correct_answer": "Auguste Rodin",
+    "incorrect_answers": ["Camille Claudel", "Constantin Brancusi", "Alberto Giacometti"],
+    "explanation": "Rodin created The Thinker."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What movement was Salvador Dalí a part of?",
+    "correct_answer": "Surrealism",
+    "incorrect_answers": ["Dada", "Futurism", "Constructivism"],
+    "explanation": "Dalí was a prominent figure in the Surrealist group."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who painted 'The School of Athens'?",
+    "correct_answer": "Raphael",
+    "incorrect_answers": ["Michelangelo", "Leonardo da Vinci", "Donatello"],
+    "explanation": "Raphael painted this fresco in the Vatican."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which artist is known for his large-scale photorealistic portraits?",
+    "correct_answer": "Chuck Close",
+    "incorrect_answers": ["Richard Estes", "Ralph Goings", "Audrey Flack"],
+    "explanation": "Chuck Close is famous for his massive photorealistic portraits."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who painted 'Nighthawks'?",
+    "correct_answer": "Edward Hopper",
+    "incorrect_answers": ["Grant Wood", "Andrew Wyeth", "Thomas Hart Benton"],
+    "explanation": "Edward Hopper painted the famous diner scene Nighthawks."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the art movement founded by Piet Mondrian?",
+    "correct_answer": "De Stijl",
+    "incorrect_answers": ["Bauhaus", "Suprematism", "Constructivism"],
+    "explanation": "Mondrian was a key member of the De Stijl movement."
+  },
+  {
+    "category": "Art",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who painted 'The Kiss' (1907-1908)?",
+    "correct_answer": "Gustav Klimt",
+    "incorrect_answers": ["Egon Schiele", "Oskar Kokoschka", "Edvard Munch"],
+    "explanation": "Gustav Klimt painted the golden masterpiece The Kiss."
+  }
+
+// Generated 150 Culture questions

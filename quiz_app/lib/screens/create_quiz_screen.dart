@@ -8,7 +8,9 @@ import 'package:uuid/uuid.dart';
 import 'dart:math';
 
 class CreateQuizScreen extends StatefulWidget {
-  const CreateQuizScreen({super.key});
+  final bool isForExam;
+
+  const CreateQuizScreen({super.key, this.isForExam = false});
 
   @override
   State<CreateQuizScreen> createState() => _CreateQuizScreenState();
@@ -96,9 +98,13 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Quiz created successfully!')),
+          SnackBar(
+              content: Text(widget.isForExam
+                  ? 'Questions created!'
+                  : 'Quiz created successfully!')),
         );
-        Navigator.pop(context);
+        // Return quiz ID if this is for an exam
+        Navigator.pop(context, widget.isForExam ? quiz.id : null);
       }
     } catch (e) {
       if (mounted) {
@@ -115,7 +121,8 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create New Quiz'),
+        title: Text(
+            widget.isForExam ? 'Create Exam Questions' : 'Create New Quiz'),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
@@ -130,84 +137,92 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
           children: [
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Quiz Title',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: widget.isForExam
+                    ? 'Question Set Title (for your reference)'
+                    : 'Quiz Title',
+                border: const OutlineInputBorder(),
               ),
               validator: (value) =>
                   value?.isEmpty ?? true ? 'Please enter a title' : null,
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _difficulty,
-                    decoration: const InputDecoration(labelText: 'Difficulty'),
-                    items: ['Easy', 'Medium', 'Hard']
-                        .map((d) => DropdownMenuItem(value: d, child: Text(d)))
-                        .toList(),
-                    onChanged: (value) => setState(() => _difficulty = value!),
-                  ),
+            if (!widget.isForExam) ...[
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _category,
-                    decoration: const InputDecoration(labelText: 'Category'),
-                    items: ['General', 'Science', 'History', 'Math', 'Coding']
-                        .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                        .toList(),
-                    onChanged: (value) => setState(() => _category = value!),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            SwitchListTile(
-              title: const Text('Public Quiz'),
-              subtitle:
-                  const Text('Allow other users to find and play this quiz'),
-              value: _isPublic,
-              onChanged: (value) => setState(() => _isPublic = value),
-            ),
-            const Divider(),
-            SwitchListTile(
-              title: const Text('Blind Mode'),
-              subtitle: const Text(
-                  'Students won\'t see correct/incorrect answers during quiz'),
-              value: _isBlindMode,
-              onChanged: (value) => setState(() => _isBlindMode = value),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<int?>(
-              value: _timeLimitMinutes,
-              decoration: const InputDecoration(
-                labelText: 'Time Limit (Teacher-Set)',
-                border: OutlineInputBorder(),
-                helperText: 'Set a specific time limit for this quiz',
+                maxLines: 3,
               ),
-              items: const [
-                DropdownMenuItem(value: null, child: Text('No Limit')),
-                DropdownMenuItem(value: 5, child: Text('5 minutes')),
-                DropdownMenuItem(value: 10, child: Text('10 minutes')),
-                DropdownMenuItem(value: 15, child: Text('15 minutes')),
-                DropdownMenuItem(value: 20, child: Text('20 minutes')),
-                DropdownMenuItem(value: 30, child: Text('30 minutes')),
-                DropdownMenuItem(value: 45, child: Text('45 minutes')),
-                DropdownMenuItem(value: 60, child: Text('60 minutes')),
-              ],
-              onChanged: (value) => setState(() => _timeLimitMinutes = value),
-            ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      value: _difficulty,
+                      decoration:
+                          const InputDecoration(labelText: 'Difficulty'),
+                      items: ['Easy', 'Medium', 'Hard']
+                          .map(
+                              (d) => DropdownMenuItem(value: d, child: Text(d)))
+                          .toList(),
+                      onChanged: (value) =>
+                          setState(() => _difficulty = value!),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      value: _category,
+                      decoration: const InputDecoration(labelText: 'Category'),
+                      items: ['General', 'Science', 'History', 'Math', 'Coding']
+                          .map(
+                              (c) => DropdownMenuItem(value: c, child: Text(c)))
+                          .toList(),
+                      onChanged: (value) => setState(() => _category = value!),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SwitchListTile(
+                title: const Text('Public Quiz'),
+                subtitle:
+                    const Text('Allow other users to find and play this quiz'),
+                value: _isPublic,
+                onChanged: (value) => setState(() => _isPublic = value),
+              ),
+              const Divider(),
+              SwitchListTile(
+                title: const Text('Blind Mode'),
+                subtitle: const Text(
+                    'Students won\'t see correct/incorrect answers during quiz'),
+                value: _isBlindMode,
+                onChanged: (value) => setState(() => _isBlindMode = value),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<int?>(
+                value: _timeLimitMinutes,
+                decoration: const InputDecoration(
+                  labelText: 'Time Limit (Teacher-Set)',
+                  border: OutlineInputBorder(),
+                  helperText: 'Set a specific time limit for this quiz',
+                ),
+                items: const [
+                  DropdownMenuItem(value: null, child: Text('No Limit')),
+                  DropdownMenuItem(value: 5, child: Text('5 minutes')),
+                  DropdownMenuItem(value: 10, child: Text('10 minutes')),
+                  DropdownMenuItem(value: 15, child: Text('15 minutes')),
+                  DropdownMenuItem(value: 20, child: Text('20 minutes')),
+                  DropdownMenuItem(value: 30, child: Text('30 minutes')),
+                  DropdownMenuItem(value: 45, child: Text('45 minutes')),
+                  DropdownMenuItem(value: 60, child: Text('60 minutes')),
+                ],
+                onChanged: (value) => setState(() => _timeLimitMinutes = value),
+              ),
+            ],
             const Divider(height: 32),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

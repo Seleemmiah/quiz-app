@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:quiz_app/services/auth_service.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -45,7 +46,7 @@ class WelcomeScreen extends StatelessWidget {
                 FadeInUp(
                   delay: const Duration(milliseconds: 200),
                   child: const Text(
-                    'Quiz Master',
+                    'Mindly',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 48,
@@ -146,6 +147,38 @@ class WelcomeScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Guest Button
+                FadeInUp(
+                  delay: const Duration(milliseconds: 1200),
+                  child: TextButton.icon(
+                    onPressed: () async {
+                      try {
+                        await AuthService().signInAnonymously();
+                        if (context.mounted) {
+                          Navigator.pushReplacementNamed(context, '/home');
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Guest login failed: $e')),
+                          );
+                        }
+                      }
+                    },
+                    icon:
+                        const Icon(Icons.person_outline, color: Colors.white70),
+                    label: const Text(
+                      'Continue as Guest',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
                       ),
                     ),
                   ),

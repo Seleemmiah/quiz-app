@@ -10,6 +10,11 @@ import 'package:quiz_app/services/auth_service.dart';
 import 'package:quiz_app/settings.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:quiz_app/models/theme_preset.dart';
+import 'package:quiz_app/widgets/glass_card.dart';
+import 'package:quiz_app/widgets/glass_dialog.dart';
+
+import 'package:quiz_app/services/gamification_service.dart';
+import 'package:quiz_app/services/voice_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -25,6 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final BookmarkService _bookmarkService = BookmarkService();
   final PreferencesService _preferencesService = PreferencesService();
   final ApiService _apiService = ApiService();
+  final GamificationService _gamificationService = GamificationService();
 
   double _fontSize = 1.0;
   Difficulty _defaultDifficulty = Difficulty.easy;
@@ -32,6 +38,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String? _defaultCategory;
   int _defaultTimeLimit = 5;
   List<String> _categories = [];
+  int _userLevel = 1;
+
+  // Voice Settings
+  double _voiceSpeed = 0.5;
+  double _voicePitch = 1.0;
+  double _voiceVolume = 1.0;
+  final VoiceService _voiceService = VoiceService();
+
+  bool _studyRemindersEnabled = true;
 
   @override
   void initState() {
@@ -43,13 +58,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // Load categories first
     try {
       final categories = await _apiService.fetchCategories();
+      final xp = await _gamificationService.getTotalXP();
+      final level = _gamificationService.getLevel(xp);
+
       if (mounted) {
         setState(() {
           _categories = categories;
+          _userLevel = level;
+
+          // Initialize voice settings
+          _voiceSpeed = _voiceService.speechRate;
+          _voicePitch = _voiceService.pitch;
+          _voiceVolume = _voiceService.volume;
         });
       }
     } catch (e) {
-      debugPrint('Error loading categories: $e');
+      debugPrint('Error loading data: $e');
     }
 
     await _loadPreferences();
@@ -60,7 +84,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final difficulty = await _preferencesService.getDefaultDifficulty();
     final length = await _preferencesService.getQuizLength();
     final category = await _preferencesService.getDefaultCategory();
-    final timeLimit = await _preferencesService.getDefaultTimeLimit();
+    int timeLimit = await _preferencesService.getDefaultTimeLimit();
+    final studyReminders = await _preferencesService.getStudyRemindersEnabled();
+
+    // Define valid time limits
+    const validTimeLimits = [2, 5, 10, 30];
+    // If the loaded time limit is not in our valid list, reset to a default.
+    if (!validTimeLimits.contains(timeLimit)) {
+      timeLimit = 5; // Default to 5 minutes
+    }
 
     if (mounted) {
       setState(() {
@@ -69,6 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _quizLength = length;
         _defaultCategory = category;
         _defaultTimeLimit = timeLimit;
+        _studyRemindersEnabled = studyReminders;
       });
     }
   }
@@ -144,12 +177,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showAboutDialog() {
     showAboutDialog(
       context: context,
-      applicationName: 'Quiz App',
+      applicationName: 'Mindly',
       applicationVersion: '1.0.0',
       applicationIcon: const Icon(Icons.school, size: 48, color: Colors.indigo),
       children: [
         const Text(
-            'A comprehensive quiz application with statistics tracking, achievements, and bookmarking features.'),
+            'A comprehensive quiz application with statistics tracking, achievements, and bookmarking features. Test your knowledge and track your progress!'),
         const SizedBox(height: 16),
         const Text('Features:'),
         const Text('• Multiple difficulty levels'),
@@ -164,7 +197,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _shareApp() {
     Share.share(
-      'Check out Quiz App! Test your knowledge across multiple categories and difficulty levels. Track your progress and unlock achievements!',
+      'Check out Mindly! Test your knowledge across multiple categories and difficulty levels. Track your progress and unlock achievements!',
     );
   }
 
@@ -250,28 +283,140 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ListTile(
                 leading: const Icon(Icons.palette),
                 title: const Text('Color Theme'),
-                subtitle:
-                    Text(myAppState?.currentThemePreset.name ?? 'Default'),
-                trailing: DropdownButton<ThemePreset>(
-                  value: myAppState?.currentThemePreset,
-                  underline: const SizedBox(),
-                  items: ThemePreset.presets.map((preset) {
-                    return DropdownMenuItem(
-                      value: preset,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(preset.emoji),
-                          const SizedBox(width: 8),
-                          Text(preset.name),
+                subtitle: Text(
+                  '${myAppState?.currentThemePreset.emoji ?? ''} ${myAppState?.currentThemePreset.name ?? 'Default'}',
+                ),
+                trailing: PopupMenuButton<ThemePreset>(
+                  icon: const Icon(Icons.arrow_drop_down),
+                  onSelected: (ThemePreset preset) {
+                    final requiredLevel = preset.unlockLevel;
+                    if (_userLevel < requiredLevel) {
+                      GlassDialog.show(
+                        context: context,
+                        title: '🔒 Theme Locked',
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.lock_outline,
+                              size: 64,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'Reach Level $requiredLevel to unlock',
+                              style: Theme.of(context).textTheme.titleMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              '${preset.emoji} ${preset.name} Theme',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'Keep playing quizzes to earn XP and level up!',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Colors.grey[600],
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(
+                              'Got it!',
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ],
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (ThemePreset? preset) {
-                    if (preset != null) {
-                      myAppState?.changeThemePreset(preset);
+                      );
+                      return;
                     }
+                    myAppState?.changeThemePreset(preset);
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return ThemePreset.presets.map((preset) {
+                      final requiredLevel = preset.unlockLevel;
+                      final isLocked = _userLevel < requiredLevel;
+                      final isSelected =
+                          myAppState?.currentThemePreset == preset;
+
+                      return PopupMenuItem<ThemePreset>(
+                        value: preset,
+                        enabled: !isLocked,
+                        child: Row(
+                          children: [
+                            Text(
+                              preset.emoji,
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        preset.name,
+                                        style: TextStyle(
+                                          fontWeight: isSelected
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          color: isLocked ? Colors.grey : null,
+                                        ),
+                                      ),
+                                      if (isLocked) ...[
+                                        const SizedBox(width: 8),
+                                        const Icon(Icons.lock,
+                                            size: 14, color: Colors.grey),
+                                      ],
+                                      if (isSelected) ...[
+                                        const SizedBox(width: 8),
+                                        Icon(Icons.check,
+                                            size: 16,
+                                            color:
+                                                Theme.of(context).primaryColor),
+                                      ],
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    isLocked
+                                        ? 'Unlock at Level $requiredLevel'
+                                        : preset.description,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: isLocked
+                                          ? Colors.grey
+                                          : Colors.grey[600],
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList();
                   },
                 ),
               ),
@@ -392,7 +537,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     DropdownMenuItem(value: 2, child: Text('2 min')),
                     DropdownMenuItem(value: 5, child: Text('5 min')),
                     DropdownMenuItem(value: 10, child: Text('10 min')),
-                    DropdownMenuItem(value: 15, child: Text('15 min')),
                     DropdownMenuItem(value: 30, child: Text('30 min')),
                   ],
                   onChanged: (int? value) async {
@@ -404,6 +548,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     }
                   },
                 ),
+              ),
+              SwitchListTile(
+                secondary: const Icon(Icons.notifications_active,
+                    color: Colors.orange),
+                title: const Text('Study Reminders'),
+                subtitle: const Text('Get notified when cards are due'),
+                value: _studyRemindersEnabled,
+                onChanged: (bool value) async {
+                  await _preferencesService.setStudyRemindersEnabled(value);
+                  setState(() {
+                    _studyRemindersEnabled = value;
+                  });
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.speed, color: Colors.orange),
@@ -427,6 +584,85 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         _defaultDifficulty = value;
                       });
                     }
+                  },
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.notifications_outlined,
+                    color: Colors.deepPurple),
+                title: const Text('Notification Preferences'),
+                subtitle: const Text('Manage notification settings'),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  Navigator.pushNamed(context, '/notification_preferences');
+                },
+              ),
+            ],
+          ),
+
+          // Voice Settings Section
+          _buildSectionCard(
+            context,
+            'Voice Settings',
+            [
+              ListTile(
+                leading: const Icon(Icons.speed, color: Colors.purple),
+                title: const Text('Speech Rate'),
+                subtitle: Slider(
+                  value: _voiceSpeed,
+                  min: 0.1,
+                  max: 1.0,
+                  divisions: 9,
+                  label: _voiceSpeed.toStringAsFixed(1),
+                  onChanged: (value) {
+                    setState(() {
+                      _voiceSpeed = value;
+                    });
+                    _voiceService.setSpeed(value);
+                  },
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.music_note, color: Colors.pink),
+                title: const Text('Pitch'),
+                subtitle: Slider(
+                  value: _voicePitch,
+                  min: 0.5,
+                  max: 2.0,
+                  divisions: 15,
+                  label: _voicePitch.toStringAsFixed(1),
+                  onChanged: (value) {
+                    setState(() {
+                      _voicePitch = value;
+                    });
+                    _voiceService.setPitch(value);
+                  },
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.volume_up, color: Colors.teal),
+                title: const Text('Volume'),
+                subtitle: Slider(
+                  value: _voiceVolume,
+                  min: 0.0,
+                  max: 1.0,
+                  divisions: 10,
+                  label: _voiceVolume.toStringAsFixed(1),
+                  onChanged: (value) {
+                    setState(() {
+                      _voiceVolume = value;
+                    });
+                    _voiceService.setVolume(value);
+                  },
+                ),
+              ),
+              ListTile(
+                title: const Text('Test Voice'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.play_arrow),
+                  onPressed: () {
+                    _voiceService
+                        .speak('This is a test of the voice settings.');
                   },
                 ),
               ),
@@ -505,15 +741,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
             [
               ListTile(
                 leading: const Icon(Icons.info_outline, color: Colors.blue),
-                title: const Text('About Quiz App'),
+                title: const Text('About Mindly'),
                 subtitle: const Text('Version 1.0.0'),
                 onTap: _showAboutDialog,
               ),
               ListTile(
                 leading: const Icon(Icons.share, color: Colors.green),
                 title: const Text('Share App'),
-                subtitle: const Text('Tell your friends about Quiz App'),
+                subtitle: const Text('Tell your friends about Mindly'),
                 onTap: _shareApp,
+              ),
+              ListTile(
+                leading:
+                    const Icon(Icons.bug_report_outlined, color: Colors.orange),
+                title: const Text('Report a Bug'),
+                subtitle: const Text('Help us improve'),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Bug reporting feature coming soon!'),
+                    ),
+                  );
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.logout, color: Colors.red),
@@ -557,19 +806,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   }
                 },
               ),
-              ListTile(
-                leading:
-                    const Icon(Icons.bug_report_outlined, color: Colors.orange),
-                title: const Text('Report a Bug'),
-                subtitle: const Text('Help us improve'),
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Bug reporting feature coming soon!'),
-                    ),
-                  );
-                },
-              ),
             ],
           ),
 
@@ -605,10 +841,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildSectionCard(
       BuildContext context, String title, List<Widget> children) {
-    return Card(
-      elevation: 2,
+    return GlassCard(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -3,9 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/models/class_model.dart';
 import 'package:quiz_app/models/class_member.dart';
 import 'package:quiz_app/services/class_service.dart';
+import 'package:intl/intl.dart';
 
 class ClassDetailScreen extends StatefulWidget {
-  const ClassDetailScreen({super.key});
+  final ClassModel classModel;
+
+  const ClassDetailScreen({
+    super.key,
+    required this.classModel,
+  });
 
   @override
   State<ClassDetailScreen> createState() => _ClassDetailScreenState();
@@ -17,13 +23,15 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
   final User? _currentUser = FirebaseAuth.instance.currentUser;
 
   late TabController _tabController;
-  late ClassModel _classModel;
+  ClassModel? _classModel;
 
   bool _isTeacher = false;
   List<ClassMember> _members = [];
   List<Map<String, dynamic>> _leaderboard = [];
+  List<Map<String, dynamic>> _upcomingEvents = [];
   bool _isLoadingMembers = true;
   bool _isLoadingLeaderboard = true;
+  bool _isLoadingEvents = true;
 
   String? _selectedCategory;
   String? _selectedDifficulty;
@@ -31,16 +39,18 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
+    _classModel = widget.classModel;
+    _checkTeacherStatus();
+    _loadMembers();
+    _loadLeaderboard();
+    _loadUpcomingEvents();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _classModel = ModalRoute.of(context)!.settings.arguments as ClassModel;
-    _checkTeacherStatus();
-    _loadMembers();
-    _loadLeaderboard();
+    // Logic moved to initState as we now have direct access to classModel
   }
 
   @override
@@ -50,9 +60,10 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
   }
 
   Future<void> _checkTeacherStatus() async {
+    if (_classModel == null) return;
     if (_currentUser != null) {
       final isTeacher = await _classService.isTeacher(
-        _classModel.classId,
+        _classModel!.classId,
         _currentUser!.uid,
       );
       if (mounted) {
@@ -62,9 +73,10 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
   }
 
   Future<void> _loadMembers() async {
+    if (_classModel == null) return;
     setState(() => _isLoadingMembers = true);
     try {
-      final members = await _classService.getClassMembers(_classModel.classId);
+      final members = await _classService.getClassMembers(_classModel!.classId);
       if (mounted) {
         setState(() {
           _members = members;
@@ -82,10 +94,11 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
   }
 
   Future<void> _loadLeaderboard() async {
+    if (_classModel == null) return;
     setState(() => _isLoadingLeaderboard = true);
     try {
       final leaderboard = await _classService.getClassLeaderboard(
-        classId: _classModel.classId,
+        classId: _classModel!.classId,
         category: _selectedCategory,
         difficulty: _selectedDifficulty,
       );
@@ -106,6 +119,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
   }
 
   Future<void> _leaveClass() async {
+    if (_classModel == null) return;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -113,7 +127,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
         content: Text(
           _isTeacher
               ? 'Are you sure you want to leave this class? As the teacher, this will affect all students.'
-              : 'Are you sure you want to leave "${_classModel.className}"?',
+              : 'Are you sure you want to leave "${_classModel!.className}"?',
         ),
         actions: [
           TextButton(
@@ -132,7 +146,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
     if (confirmed == true && _currentUser != null) {
       try {
         await _classService.leaveClass(
-          classId: _classModel.classId,
+          classId: _classModel!.classId,
           userId: _currentUser!.uid,
         );
         if (mounted) {
@@ -153,9 +167,15 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (_classModel == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(_classModel.className),
+        title: Text(_classModel!.className),
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app),
@@ -168,6 +188,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
           tabs: const [
             Tab(text: 'Leaderboard', icon: Icon(Icons.leaderboard)),
             Tab(text: 'Members', icon: Icon(Icons.people)),
+            Tab(text: 'Schedule', icon: Icon(Icons.event)),
           ],
         ),
       ),
@@ -188,7 +209,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      _classModel.classCode,
+                      _classModel!.classCode,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -198,17 +219,17 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                     ),
                   ],
                 ),
-                if (_classModel.subject != null) ...[
+                if (_classModel!.subject != null) ...[
                   const SizedBox(height: 4),
-                  Text('Subject: ${_classModel.subject}'),
+                  Text('Subject: ${_classModel!.subject}'),
                 ],
-                if (_classModel.description != null) ...[
+                if (_classModel!.description != null) ...[
                   const SizedBox(height: 4),
-                  Text(_classModel.description!),
+                  Text(_classModel!.description!),
                 ],
                 const SizedBox(height: 4),
                 Text(
-                  'Teacher: ${_classModel.teacherName} • ${_classModel.memberCount} members',
+                  'Teacher: ${_classModel!.teacherName} • ${_classModel!.memberCount} members',
                   style: const TextStyle(fontSize: 12),
                 ),
               ],
@@ -222,6 +243,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
               children: [
                 _buildLeaderboardTab(),
                 _buildMembersTab(),
+                _buildScheduleTab(),
               ],
             ),
           ),
@@ -399,5 +421,216 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
               );
             },
           );
+  }
+
+  Future<void> _loadUpcomingEvents() async {
+    if (_classModel == null) return;
+    debugPrint('Loading events for class: ${_classModel!.classId}');
+    setState(() => _isLoadingEvents = true);
+    try {
+      final events = await _classService.getClassEvents(_classModel!.classId);
+      debugPrint('Loaded ${events.length} events');
+      for (var event in events) {
+        debugPrint('Event: ${event['title']} - ${event['scheduledAt']}');
+      }
+      if (mounted) {
+        setState(() {
+          _upcomingEvents = events;
+          _isLoadingEvents = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading events: $e');
+      if (mounted) {
+        setState(() => _isLoadingEvents = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading events: $e')),
+        );
+      }
+    }
+  }
+
+  Widget _buildScheduleTab() {
+    return Column(
+      children: [
+        if (_isTeacher)
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  '/schedule_class',
+                  arguments: _classModel,
+                ).then((_) => _loadUpcomingEvents());
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('Schedule New Event'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 48),
+              ),
+            ),
+          ),
+        Expanded(
+          child: _isLoadingEvents
+              ? const Center(child: CircularProgressIndicator())
+              : _upcomingEvents.isEmpty
+                  ? const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.event_busy, size: 64, color: Colors.grey),
+                          SizedBox(height: 16),
+                          Text(
+                            'No upcoming events',
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: _upcomingEvents.length,
+                      itemBuilder: (context, index) {
+                        final event = _upcomingEvents[index];
+                        final scheduledAt = DateTime.fromMillisecondsSinceEpoch(
+                            event['scheduledAt'] as int);
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              child:
+                                  const Icon(Icons.event, color: Colors.white),
+                            ),
+                            title: Text(
+                              event['title'] as String,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (event['description'] != null)
+                                  Text(event['description'] as String),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.access_time, size: 16),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '${DateFormat.yMMMd().format(scheduledAt)} at ${DateFormat.jm().format(scheduledAt)}',
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            isThreeLine: event['description'] != null,
+                            trailing: _isTeacher
+                                ? PopupMenuButton<String>(
+                                    onSelected: (value) async {
+                                      if (value == 'edit') {
+                                        final eventId = event['id'] as String?;
+                                        if (eventId != null) {
+                                          Navigator.pushNamed(
+                                            context,
+                                            '/schedule_class',
+                                            arguments: {
+                                              'classModel': _classModel,
+                                              'existingEvent': event,
+                                              'eventId': eventId,
+                                            },
+                                          ).then((_) => _loadUpcomingEvents());
+                                        }
+                                      } else if (value == 'delete') {
+                                        final confirmed =
+                                            await showDialog<bool>(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: const Text('Delete Event?'),
+                                            content: Text(
+                                                'Are you sure you want to delete "${event['title']}"?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, false),
+                                                child: const Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, true),
+                                                style: TextButton.styleFrom(
+                                                    foregroundColor:
+                                                        Colors.red),
+                                                child: const Text('Delete'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+
+                                        if (confirmed == true) {
+                                          try {
+                                            await _classService.deleteEvent(
+                                              eventId: event['id'] as String,
+                                              classId: _classModel!.classId,
+                                              eventTitle:
+                                                  event['title'] as String,
+                                            );
+                                            _loadUpcomingEvents();
+                                            if (mounted) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                    content: Text(
+                                                        'Event deleted successfully')),
+                                              );
+                                            }
+                                          } catch (e) {
+                                            if (mounted) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                    content: Text('Error: $e')),
+                                              );
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    itemBuilder: (context) => [
+                                      const PopupMenuItem(
+                                        value: 'edit',
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.edit, size: 20),
+                                            SizedBox(width: 8),
+                                            Text('Edit'),
+                                          ],
+                                        ),
+                                      ),
+                                      const PopupMenuItem(
+                                        value: 'delete',
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.delete,
+                                                size: 20, color: Colors.red),
+                                            SizedBox(width: 8),
+                                            Text('Delete',
+                                                style: TextStyle(
+                                                    color: Colors.red)),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : null,
+                          ),
+                        );
+                      },
+                    ),
+        ),
+      ],
+    );
   }
 }

@@ -1,0 +1,1955 @@
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the powerhouse of the cell?",
+    "correct_answer": "Mitochondria",
+    "incorrect_answers": ["Nucleus", "Ribosome", "Golgi Apparatus"],
+    "explanation": "Mitochondria generate most of the chemical energy needed to power the cell's biochemical reactions."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the largest organ in the human body?",
+    "correct_answer": "Skin",
+    "incorrect_answers": ["Liver", "Heart", "Lungs"],
+    "explanation": "The skin is the body's largest organ, protecting it from the external environment."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What process do plants use to make food?",
+    "correct_answer": "Photosynthesis",
+    "incorrect_answers": ["Respiration", "Digestion", "Fermentation"],
+    "explanation": "Photosynthesis is the process by which plants use sunlight to synthesize foods from carbon dioxide and water."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the genetic material in humans?",
+    "correct_answer": "DNA",
+    "incorrect_answers": ["RNA", "Protein", "Lipid"],
+    "explanation": "Deoxyribonucleic acid (DNA) carries genetic instructions for development and function."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many chambers does the human heart have?",
+    "correct_answer": "4",
+    "incorrect_answers": ["2", "3", "5"],
+    "explanation": "The human heart has four chambers: two atria and two ventricles."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What gas do humans breathe out?",
+    "correct_answer": "Carbon Dioxide",
+    "incorrect_answers": ["Oxygen", "Nitrogen", "Hydrogen"],
+    "explanation": "Humans exhale carbon dioxide as a waste product of cellular respiration."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the basic unit of life?",
+    "correct_answer": "Cell",
+    "incorrect_answers": ["Atom", "Molecule", "Tissue"],
+    "explanation": "The cell is the smallest structural and functional unit of an organism."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which animal is known as the 'King of the Jungle'?",
+    "correct_answer": "Lion",
+    "incorrect_answers": ["Tiger", "Elephant", "Gorilla"],
+    "explanation": "The lion is traditionally called the King of the Jungle."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What do bees collect from flowers?",
+    "correct_answer": "Nectar",
+    "incorrect_answers": ["Honey", "Wax", "Seeds"],
+    "explanation": "Bees collect nectar to make honey."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the largest land animal?",
+    "correct_answer": "African Elephant",
+    "incorrect_answers": ["Blue Whale", "Giraffe", "Hippopotamus"],
+    "explanation": "The African elephant is the largest living land animal."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which blood cells fight infection?",
+    "correct_answer": "White blood cells",
+    "incorrect_answers": ["Red blood cells", "Platelets", "Plasma"],
+    "explanation": "White blood cells are part of the immune system and fight infection."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the hard outer covering of an insect called?",
+    "correct_answer": "Exoskeleton",
+    "incorrect_answers": ["Endoskeleton", "Shell", "Skin"],
+    "explanation": "Insects have a tough outer covering called an exoskeleton."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What do caterpillars turn into?",
+    "correct_answer": "Butterflies",
+    "incorrect_answers": ["Moths", "Beetles", "Flies"],
+    "explanation": "Caterpillars metamorphose into butterflies."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which organ pumps blood around the body?",
+    "correct_answer": "Heart",
+    "incorrect_answers": ["Brain", "Liver", "Kidney"],
+    "explanation": "The heart pumps blood through the circulatory system."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What green pigment allows plants to absorb sunlight?",
+    "correct_answer": "Chlorophyll",
+    "incorrect_answers": ["Melanin", "Hemoglobin", "Carotene"],
+    "explanation": "Chlorophyll is the green pigment essential for photosynthesis."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the fastest land animal?",
+    "correct_answer": "Cheetah",
+    "incorrect_answers": ["Lion", "Gazelle", "Leopard"],
+    "explanation": "The cheetah is the fastest land animal, capable of reaching speeds up to 70 mph."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "How many chromosomes do humans typically have?",
+    "correct_answer": "46",
+    "incorrect_answers": ["23", "44", "48"],
+    "explanation": "Humans typically have 23 pairs of chromosomes, for a total of 46."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the study of fungi called?",
+    "correct_answer": "Mycology",
+    "incorrect_answers": ["Botany", "Zoology", "Virology"],
+    "explanation": "Mycology is the branch of biology concerned with the study of fungi."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which part of the brain controls balance?",
+    "correct_answer": "Cerebellum",
+    "incorrect_answers": ["Cerebrum", "Brainstem", "Thalamus"],
+    "explanation": "The cerebellum plays an important role in motor control and balance."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the largest bone in the human body?",
+    "correct_answer": "Femur",
+    "incorrect_answers": ["Tibia", "Humerus", "Pelvis"],
+    "explanation": "The femur, or thigh bone, is the longest and strongest bone in the human body."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which vitamin is produced when skin is exposed to sunlight?",
+    "correct_answer": "Vitamin D",
+    "incorrect_answers": ["Vitamin C", "Vitamin A", "Vitamin B12"],
+    "explanation": "The skin produces Vitamin D when exposed to ultraviolet B (UVB) radiation."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the scientific name for the voice box?",
+    "correct_answer": "Larynx",
+    "incorrect_answers": ["Pharynx", "Trachea", "Esophagus"],
+    "explanation": "The larynx is commonly known as the voice box."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which blood type is the universal donor?",
+    "correct_answer": "O Negative",
+    "incorrect_answers": ["A Positive", "AB Negative", "O Positive"],
+    "explanation": "O Negative blood can be transfused to almost any patient."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the process of cell division called?",
+    "correct_answer": "Mitosis",
+    "incorrect_answers": ["Meiosis", "Fusion", "Fission"],
+    "explanation": "Mitosis is the process where a single cell divides into two identical daughter cells."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which organ produces insulin?",
+    "correct_answer": "Pancreas",
+    "incorrect_answers": ["Liver", "Kidney", "Spleen"],
+    "explanation": "The pancreas produces insulin to regulate blood sugar levels."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the main function of red blood cells?",
+    "correct_answer": "Transport oxygen",
+    "incorrect_answers": ["Fight infection", "Clot blood", "Regulate temperature"],
+    "explanation": "Red blood cells carry oxygen from the lungs to the rest of the body."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which animal has the longest lifespan?",
+    "correct_answer": "Greenland Shark",
+    "incorrect_answers": ["Blue Whale", "Galapagos Tortoise", "Bowhead Whale"],
+    "explanation": "Greenland sharks can live for upwards of 400 years."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the term for animals that eat both plants and meat?",
+    "correct_answer": "Omnivores",
+    "incorrect_answers": ["Carnivores", "Herbivores", "Insectivores"],
+    "explanation": "Omnivores consume both plant and animal matter."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the smallest bone in the human body?",
+    "correct_answer": "Stapes",
+    "incorrect_answers": ["Incus", "Malleus", "Phalanges"],
+    "explanation": "The stapes, located in the middle ear, is the smallest bone."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the term for the creation of light by living organisms?",
+    "correct_answer": "Bioluminescence",
+    "incorrect_answers": ["Fluorescence", "Phosphorescence", "Incandescence"],
+    "explanation": "Bioluminescence is the production and emission of light by a living organism."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the programmed cell death called?",
+    "correct_answer": "Apoptosis",
+    "incorrect_answers": ["Necrosis", "Lysis", "Mitosis"],
+    "explanation": "Apoptosis is a form of programmed cell death that occurs in multicellular organisms."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which scientist is known as the father of genetics?",
+    "correct_answer": "Gregor Mendel",
+    "incorrect_answers": ["Charles Darwin", "Louis Pasteur", "James Watson"],
+    "explanation": "Gregor Mendel's experiments with pea plants established many of the rules of heredity."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the protein that makes up hair and nails?",
+    "correct_answer": "Keratin",
+    "incorrect_answers": ["Collagen", "Elastin", "Actin"],
+    "explanation": "Keratin is a fibrous structural protein that makes up hair, nails, and the outer layer of skin."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which part of the cell contains digestive enzymes?",
+    "correct_answer": "Lysosome",
+    "incorrect_answers": ["Ribosome", "Vacuole", "Endoplasmic Reticulum"],
+    "explanation": "Lysosomes contain enzymes that break down waste materials and cellular debris."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the largest artery in the human body?",
+    "correct_answer": "Aorta",
+    "incorrect_answers": ["Carotid", "Femoral", "Pulmonary"],
+    "explanation": "The aorta is the main artery that carries blood away from the heart."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which phylum do insects belong to?",
+    "correct_answer": "Arthropoda",
+    "incorrect_answers": ["Mollusca", "Chordata", "Annelida"],
+    "explanation": "Insects belong to the phylum Arthropoda."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the scientific name for the common cold virus?",
+    "correct_answer": "Rhinovirus",
+    "incorrect_answers": ["Influenza", "Coronavirus", "Adenovirus"],
+    "explanation": "Rhinovirus is the most common viral infectious agent in humans."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which enzyme breaks down starch in the mouth?",
+    "correct_answer": "Amylase",
+    "incorrect_answers": ["Pepsin", "Lipase", "Trypsin"],
+    "explanation": "Amylase is found in saliva and begins the digestion of starch."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the term for the symbiotic relationship where both organisms benefit?",
+    "correct_answer": "Mutualism",
+    "incorrect_answers": ["Commensalism", "Parasitism", "Amensalism"],
+    "explanation": "Mutualism is a relationship where both species benefit."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which part of the eye controls the amount of light entering?",
+    "correct_answer": "Iris",
+    "incorrect_answers": ["Cornea", "Retina", "Lens"],
+    "explanation": "The iris adjusts the size of the pupil to control light entry."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the rarest blood type in the US?",
+    "correct_answer": "AB Negative",
+    "incorrect_answers": ["B Negative", "O Negative", "A Negative"],
+    "explanation": "AB Negative is the rarest blood type in the United States."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which molecule carries amino acids to the ribosome?",
+    "correct_answer": "tRNA",
+    "incorrect_answers": ["mRNA", "rRNA", "DNA"],
+    "explanation": "Transfer RNA (tRNA) brings amino acids to the ribosome during protein synthesis."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the study of insects called?",
+    "correct_answer": "Entomology",
+    "incorrect_answers": ["Etymology", "Ornithology", "Herpetology"],
+    "explanation": "Entomology is the scientific study of insects."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which hormone regulates sleep-wake cycles?",
+    "correct_answer": "Melatonin",
+    "incorrect_answers": ["Serotonin", "Dopamine", "Cortisol"],
+    "explanation": "Melatonin is a hormone that regulates the sleep-wake cycle."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the largest internal organ?",
+    "correct_answer": "Liver",
+    "incorrect_answers": ["Lungs", "Heart", "Stomach"],
+    "explanation": "The liver is the largest internal organ in the human body."
+  },
+  {
+    "category": "Science: Biology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which scientist proposed the theory of evolution by natural selection?",
+    "correct_answer": "Charles Darwin",
+    "incorrect_answers": ["Alfred Russel Wallace", "Jean-Baptiste Lamarck", "Stephen Jay Gould"],
+    "explanation": "Charles Darwin published his theory of evolution in 'On the Origin of Species'."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the chemical formula for water?",
+    "correct_answer": "H2O",
+    "incorrect_answers": ["CO2", "O2", "NaCl"],
+    "explanation": "Water is composed of two hydrogen atoms and one oxygen atom."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the chemical symbol for Oxygen?",
+    "correct_answer": "O",
+    "incorrect_answers": ["Ox", "Og", "Om"],
+    "explanation": "The symbol for Oxygen is O."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the chemical symbol for Gold?",
+    "correct_answer": "Au",
+    "incorrect_answers": ["Ag", "Fe", "Cu"],
+    "explanation": "The symbol for Gold is Au, from the Latin 'aurum'."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the pH of pure water?",
+    "correct_answer": "7",
+    "incorrect_answers": ["0", "14", "1"],
+    "explanation": "Pure water is neutral, with a pH of 7."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which gas do plants absorb from the atmosphere?",
+    "correct_answer": "Carbon Dioxide",
+    "incorrect_answers": ["Oxygen", "Nitrogen", "Helium"],
+    "explanation": "Plants absorb carbon dioxide for photosynthesis."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the most abundant gas in Earth's atmosphere?",
+    "correct_answer": "Nitrogen",
+    "incorrect_answers": ["Oxygen", "Carbon Dioxide", "Argon"],
+    "explanation": "Nitrogen makes up about 78% of Earth's atmosphere."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the center of an atom called?",
+    "correct_answer": "Nucleus",
+    "incorrect_answers": ["Proton", "Electron", "Shell"],
+    "explanation": "The nucleus is the central part of an atom."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What charge does a proton have?",
+    "correct_answer": "Positive",
+    "incorrect_answers": ["Negative", "Neutral", "Variable"],
+    "explanation": "Protons have a positive electric charge."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What charge does an electron have?",
+    "correct_answer": "Negative",
+    "incorrect_answers": ["Positive", "Neutral", "Variable"],
+    "explanation": "Electrons have a negative electric charge."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the chemical symbol for Sodium?",
+    "correct_answer": "Na",
+    "incorrect_answers": ["So", "Sd", "Nu"],
+    "explanation": "The symbol for Sodium is Na, from the Latin 'natrium'."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the common name for Sodium Chloride?",
+    "correct_answer": "Table Salt",
+    "incorrect_answers": ["Sugar", "Baking Soda", "Vinegar"],
+    "explanation": "Sodium Chloride is commonly known as table salt."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which element is a diamond made of?",
+    "correct_answer": "Carbon",
+    "incorrect_answers": ["Silicon", "Iron", "Gold"],
+    "explanation": "Diamonds are made of pure carbon arranged in a crystal lattice."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the lightest element?",
+    "correct_answer": "Hydrogen",
+    "incorrect_answers": ["Helium", "Lithium", "Oxygen"],
+    "explanation": "Hydrogen is the lightest and first element on the periodic table."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What state of matter is ice?",
+    "correct_answer": "Solid",
+    "incorrect_answers": ["Liquid", "Gas", "Plasma"],
+    "explanation": "Ice is the solid state of water."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What happens when you mix an acid and a base?",
+    "correct_answer": "Neutralization",
+    "incorrect_answers": ["Explosion", "Evaporation", "Sublimation"],
+    "explanation": "Mixing an acid and a base results in a neutralization reaction."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the chemical symbol for Iron?",
+    "correct_answer": "Fe",
+    "incorrect_answers": ["Ir", "In", "Io"],
+    "explanation": "The symbol for Iron is Fe, from the Latin 'ferrum'."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which gas makes balloons float?",
+    "correct_answer": "Helium",
+    "incorrect_answers": ["Hydrogen", "Oxygen", "Nitrogen"],
+    "explanation": "Helium is lighter than air, causing balloons to float."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What are electrons in the outer shell called?",
+    "correct_answer": "Valence electrons",
+    "incorrect_answers": ["Core electrons", "Free electrons", "Orbital electrons"],
+    "explanation": "Valence electrons are involved in chemical bonding."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the only metal that is liquid at room temperature?",
+    "correct_answer": "Mercury",
+    "incorrect_answers": ["Gallium", "Bromine", "Francium"],
+    "explanation": "Mercury is the only metal that is liquid at standard room temperature."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the atomic number of Carbon?",
+    "correct_answer": "6",
+    "incorrect_answers": ["12", "14", "8"],
+    "explanation": "Carbon has an atomic number of 6."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the term for atoms of the same element with different neutrons?",
+    "correct_answer": "Isotopes",
+    "incorrect_answers": ["Isomers", "Ions", "Allotropes"],
+    "explanation": "Isotopes have the same number of protons but different numbers of neutrons."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which element is known as 'quicksilver'?",
+    "correct_answer": "Mercury",
+    "incorrect_answers": ["Silver", "Lead", "Tin"],
+    "explanation": "Mercury was historically referred to as quicksilver."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the main component of natural gas?",
+    "correct_answer": "Methane",
+    "incorrect_answers": ["Ethane", "Propane", "Butane"],
+    "explanation": "Methane (CH4) is the primary component of natural gas."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the chemical formula for Sulfuric Acid?",
+    "correct_answer": "H2SO4",
+    "incorrect_answers": ["HCl", "HNO3", "H2O"],
+    "explanation": "H2SO4 is the formula for sulfuric acid."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which noble gas is used in light bulbs?",
+    "correct_answer": "Argon",
+    "incorrect_answers": ["Neon", "Helium", "Xenon"],
+    "explanation": "Argon is often used in incandescent light bulbs to prevent the filament from oxidizing."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the process of a solid turning directly into a gas?",
+    "correct_answer": "Sublimation",
+    "incorrect_answers": ["Evaporation", "Condensation", "Deposition"],
+    "explanation": "Sublimation is the transition from solid to gas without passing through the liquid phase."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the most reactive group of metals?",
+    "correct_answer": "Alkali metals",
+    "incorrect_answers": ["Alkaline earth metals", "Transition metals", "Noble gases"],
+    "explanation": "Alkali metals (Group 1) are highly reactive."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who created the periodic table?",
+    "correct_answer": "Dmitri Mendeleev",
+    "incorrect_answers": ["Marie Curie", "Albert Einstein", "Isaac Newton"],
+    "explanation": "Mendeleev published the first recognizable periodic table in 1869."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the chemical formula for Ozone?",
+    "correct_answer": "O3",
+    "incorrect_answers": ["O2", "O", "O4"],
+    "explanation": "Ozone is a molecule composed of three oxygen atoms."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which acid is found in the human stomach?",
+    "correct_answer": "Hydrochloric acid",
+    "incorrect_answers": ["Sulfuric acid", "Nitric acid", "Acetic acid"],
+    "explanation": "The stomach produces hydrochloric acid to aid digestion."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the hardest natural substance?",
+    "correct_answer": "Diamond",
+    "incorrect_answers": ["Graphite", "Quartz", "Corundum"],
+    "explanation": "Diamond is the hardest known natural material."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the chemical symbol for Potassium?",
+    "correct_answer": "K",
+    "incorrect_answers": ["P", "Po", "Pt"],
+    "explanation": "The symbol for Potassium is K, from the Latin 'kalium'."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the most abundant element in the universe?",
+    "correct_answer": "Hydrogen",
+    "incorrect_answers": ["Helium", "Oxygen", "Carbon"],
+    "explanation": "Hydrogen is the most abundant chemical substance in the universe."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the process used to make ammonia?",
+    "correct_answer": "Haber process",
+    "incorrect_answers": ["Contact process", "Ostwald process", "Solvay process"],
+    "explanation": "The Haber process synthesizes ammonia from nitrogen and hydrogen."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which element has the highest melting point?",
+    "correct_answer": "Tungsten",
+    "incorrect_answers": ["Carbon", "Titanium", "Platinum"],
+    "explanation": "Tungsten has the highest melting point of all metals."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the chemical name for 'laughing gas'?",
+    "correct_answer": "Nitrous Oxide",
+    "incorrect_answers": ["Nitric Oxide", "Nitrogen Dioxide", "Ammonia"],
+    "explanation": "Nitrous Oxide (N2O) is commonly known as laughing gas."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the rarest naturally occurring element?",
+    "correct_answer": "Astatine",
+    "incorrect_answers": ["Francium", "Polonium", "Radium"],
+    "explanation": "Astatine is the rarest naturally occurring element in the Earth's crust."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which law states that pressure and volume are inversely proportional?",
+    "correct_answer": "Boyle's Law",
+    "incorrect_answers": ["Charles's Law", "Avogadro's Law", "Dalton's Law"],
+    "explanation": "Boyle's Law describes the inverse relationship between pressure and volume."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the main ore of aluminum?",
+    "correct_answer": "Bauxite",
+    "incorrect_answers": ["Hematite", "Magnetite", "Galena"],
+    "explanation": "Bauxite is the primary ore from which aluminum is extracted."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the chemical formula for Table Sugar?",
+    "correct_answer": "C12H22O11",
+    "incorrect_answers": ["C6H12O6", "NaCl", "CH3COOH"],
+    "explanation": "Sucrose (table sugar) has the formula C12H22O11."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who discovered Radium and Polonium?",
+    "correct_answer": "Marie Curie",
+    "incorrect_answers": ["Pierre Curie", "Henri Becquerel", "Ernest Rutherford"],
+    "explanation": "Marie Curie discovered both elements and won Nobel Prizes for her work."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the term for a solution that resists changes in pH?",
+    "correct_answer": "Buffer",
+    "incorrect_answers": ["Acid", "Base", "Solvent"],
+    "explanation": "A buffer solution resists changes in pH when acid or alkali is added."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which element is essential for thyroid function?",
+    "correct_answer": "Iodine",
+    "incorrect_answers": ["Iron", "Calcium", "Zinc"],
+    "explanation": "Iodine is required for the production of thyroid hormones."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the shape of a methane molecule?",
+    "correct_answer": "Tetrahedral",
+    "incorrect_answers": ["Linear", "Trigonal planar", "Octahedral"],
+    "explanation": "Methane (CH4) has a tetrahedral molecular geometry."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the heaviest naturally occurring element?",
+    "correct_answer": "Uranium",
+    "incorrect_answers": ["Plutonium", "Lead", "Gold"],
+    "explanation": "Uranium is the heaviest naturally occurring element found in significant quantities."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which gas is produced when metals react with acid?",
+    "correct_answer": "Hydrogen",
+    "incorrect_answers": ["Oxygen", "Carbon Dioxide", "Nitrogen"],
+    "explanation": "Metals react with acids to produce hydrogen gas and a salt."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the chemical name for Vitamin C?",
+    "correct_answer": "Ascorbic acid",
+    "incorrect_answers": ["Citric acid", "Folic acid", "Acetic acid"],
+    "explanation": "Vitamin C is also known as ascorbic acid."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the most electronegative element?",
+    "correct_answer": "Fluorine",
+    "incorrect_answers": ["Oxygen", "Chlorine", "Nitrogen"],
+    "explanation": "Fluorine is the most electronegative element on the periodic table."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which polymer is used to make non-stick pans?",
+    "correct_answer": "Teflon",
+    "incorrect_answers": ["Nylon", "Polyester", "PVC"],
+    "explanation": "Polytetrafluoroethylene (PTFE) is best known by the brand name Teflon."
+  },
+  {
+    "category": "Chemistry",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the study of carbon compounds called?",
+    "correct_answer": "Organic Chemistry",
+    "incorrect_answers": ["Inorganic Chemistry", "Physical Chemistry", "Analytical Chemistry"],
+    "explanation": "Organic chemistry is the study of the structure, properties, and reactions of carbon-containing compounds."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the SI unit of force?",
+    "correct_answer": "Newton",
+    "incorrect_answers": ["Joule", "Watt", "Pascal"],
+    "explanation": "The Newton (N) is the SI unit of force."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What keeps planets in orbit around the sun?",
+    "correct_answer": "Gravity",
+    "incorrect_answers": ["Magnetism", "Friction", "Inertia"],
+    "explanation": "Gravity is the force that keeps planets in orbit."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the speed of light?",
+    "correct_answer": "299,792,458 m/s",
+    "incorrect_answers": ["300,000 km/h", "1,000 m/s", "Sound speed"],
+    "explanation": "The speed of light in a vacuum is approximately 300,000 km/s."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is famous for the equation E=mc²?",
+    "correct_answer": "Albert Einstein",
+    "incorrect_answers": ["Isaac Newton", "Galileo Galilei", "Nikola Tesla"],
+    "explanation": "Albert Einstein formulated the mass-energy equivalence equation."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the unit of electric current?",
+    "correct_answer": "Ampere",
+    "incorrect_answers": ["Volt", "Ohm", "Watt"],
+    "explanation": "The Ampere (Amp) is the unit of electric current."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What pulls objects toward the Earth?",
+    "correct_answer": "Gravity",
+    "incorrect_answers": ["Magnetism", "Wind", "Electricity"],
+    "explanation": "Gravity attracts objects with mass towards each other."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the freezing point of water in Celsius?",
+    "correct_answer": "0°C",
+    "incorrect_answers": ["100\u00b0C", "32\u00b0C", "-273\u00b0C"],
+    "explanation": "Water freezes at 0 degrees Celsius."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the boiling point of water in Celsius?",
+    "correct_answer": "100°C",
+    "incorrect_answers": ["0\u00b0C", "212\u00b0C", "50\u00b0C"],
+    "explanation": "Water boils at 100 degrees Celsius at sea level."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the unit of power?",
+    "correct_answer": "Watt",
+    "incorrect_answers": ["Joule", "Newton", "Volt"],
+    "explanation": "The Watt is the unit of power."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which state of matter has no fixed shape or volume?",
+    "correct_answer": "Gas",
+    "incorrect_answers": ["Solid", "Liquid", "Plasma"],
+    "explanation": "A gas has no fixed shape or volume and fills its container."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What instrument measures temperature?",
+    "correct_answer": "Thermometer",
+    "incorrect_answers": ["Barometer", "Speedometer", "Voltmeter"],
+    "explanation": "A thermometer is used to measure temperature."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the force that opposes motion?",
+    "correct_answer": "Friction",
+    "incorrect_answers": ["Gravity", "Tension", "Thrust"],
+    "explanation": "Friction is the force that resists relative motion between surfaces."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who discovered the laws of motion?",
+    "correct_answer": "Isaac Newton",
+    "incorrect_answers": ["Albert Einstein", "Galileo Galilei", "Johannes Kepler"],
+    "explanation": "Isaac Newton formulated the three laws of motion."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the flow of electrons called?",
+    "correct_answer": "Electricity",
+    "incorrect_answers": ["Magnetism", "Heat", "Light"],
+    "explanation": "Electricity is the flow of electric charge, carried by electrons."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the unit of energy?",
+    "correct_answer": "Joule",
+    "incorrect_answers": ["Watt", "Newton", "Pascal"],
+    "explanation": "The Joule is the SI unit of energy."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is Newton's first law also known as?",
+    "correct_answer": "Law of Inertia",
+    "incorrect_answers": ["Law of Acceleration", "Law of Action-Reaction", "Law of Gravity"],
+    "explanation": "Newton's First Law states that an object at rest stays at rest unless acted upon."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the rate of change of velocity?",
+    "correct_answer": "Acceleration",
+    "incorrect_answers": ["Speed", "Momentum", "Force"],
+    "explanation": "Acceleration is the rate at which an object changes its velocity."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the SI unit of pressure?",
+    "correct_answer": "Pascal",
+    "incorrect_answers": ["Newton", "Joule", "Watt"],
+    "explanation": "The Pascal (Pa) is the SI unit of pressure."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who discovered X-rays?",
+    "correct_answer": "Wilhelm Röntgen",
+    "incorrect_answers": ["Marie Curie", "Nikola Tesla", "Thomas Edison"],
+    "explanation": "Wilhelm Röntgen discovered X-rays in 1895."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the term for energy in motion?",
+    "correct_answer": "Kinetic Energy",
+    "incorrect_answers": ["Potential Energy", "Thermal Energy", "Chemical Energy"],
+    "explanation": "Kinetic energy is the energy an object possesses due to its motion."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the unit of electrical resistance?",
+    "correct_answer": "Ohm",
+    "incorrect_answers": ["Volt", "Ampere", "Watt"],
+    "explanation": "The Ohm is the unit of electrical resistance."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the bending of light called?",
+    "correct_answer": "Refraction",
+    "incorrect_answers": ["Reflection", "Diffraction", "Dispersion"],
+    "explanation": "Refraction is the bending of light as it passes from one medium to another."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which particle has a positive charge?",
+    "correct_answer": "Proton",
+    "incorrect_answers": ["Electron", "Neutron", "Photon"],
+    "explanation": "Protons are positively charged subatomic particles."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the measure of disorder in a system?",
+    "correct_answer": "Entropy",
+    "incorrect_answers": ["Enthalpy", "Energy", "Heat"],
+    "explanation": "Entropy is a measure of the disorder or randomness in a system."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the SI unit of magnetic flux?",
+    "correct_answer": "Weber",
+    "incorrect_answers": ["Tesla", "Gauss", "Henry"],
+    "explanation": "The Weber (Wb) is the SI unit of magnetic flux."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the theoretical coldest possible temperature?",
+    "correct_answer": "Absolute Zero",
+    "incorrect_answers": ["Freezing Point", "Triple Point", "Critical Point"],
+    "explanation": "Absolute Zero (0 Kelvin) is the lowest theoretical temperature."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who proposed the uncertainty principle?",
+    "correct_answer": "Werner Heisenberg",
+    "incorrect_answers": ["Niels Bohr", "Erwin Schr\u00f6dinger", "Max Planck"],
+    "explanation": "Heisenberg's uncertainty principle states you cannot know both position and momentum precisely."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What particle mediates the electromagnetic force?",
+    "correct_answer": "Photon",
+    "incorrect_answers": ["Gluon", "Boson", "Graviton"],
+    "explanation": "Photons are the elementary particles of light and the force carrier for electromagnetism."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the study of motion without considering forces?",
+    "correct_answer": "Kinematics",
+    "incorrect_answers": ["Dynamics", "Statics", "Mechanics"],
+    "explanation": "Kinematics describes motion without reference to the forces that cause it."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who discovered the electron?",
+    "correct_answer": "J.J. Thomson",
+    "incorrect_answers": ["Ernest Rutherford", "Niels Bohr", "James Chadwick"],
+    "explanation": "J.J. Thomson discovered the electron in 1897."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the SI unit of capacitance?",
+    "correct_answer": "Farad",
+    "incorrect_answers": ["Henry", "Ohm", "Volt"],
+    "explanation": "The Farad is the unit of capacitance."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What phenomenon causes the sky to appear blue?",
+    "correct_answer": "Rayleigh Scattering",
+    "incorrect_answers": ["Refraction", "Reflection", "Diffraction"],
+    "explanation": "Rayleigh scattering of sunlight by the atmosphere causes the blue color."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the speed of sound in air at 20°C?",
+    "correct_answer": "343 m/s",
+    "incorrect_answers": ["299,792 km/s", "1,235 km/h", "100 m/s"],
+    "explanation": "The speed of sound is approximately 343 meters per second at 20°C."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which force holds the nucleus together?",
+    "correct_answer": "Strong Nuclear Force",
+    "incorrect_answers": ["Weak Nuclear Force", "Electromagnetic Force", "Gravity"],
+    "explanation": "The strong nuclear force binds protons and neutrons in the nucleus."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the unit of frequency?",
+    "correct_answer": "Hertz",
+    "incorrect_answers": ["Decibel", "Watt", "Second"],
+    "explanation": "The Hertz (Hz) is the unit of frequency, equal to one cycle per second."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who formulated the laws of planetary motion?",
+    "correct_answer": "Johannes Kepler",
+    "incorrect_answers": ["Nicolaus Copernicus", "Tycho Brahe", "Galileo Galilei"],
+    "explanation": "Kepler described the motion of planets around the sun."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the antiparticle of the electron?",
+    "correct_answer": "Positron",
+    "incorrect_answers": ["Proton", "Neutron", "Neutrino"],
+    "explanation": "The positron is the antiparticle of the electron."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the term for a material with zero electrical resistance?",
+    "correct_answer": "Superconductor",
+    "incorrect_answers": ["Semiconductor", "Insulator", "Conductor"],
+    "explanation": "Superconductors conduct electricity with zero resistance."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the SI unit of luminous intensity?",
+    "correct_answer": "Candela",
+    "incorrect_answers": ["Lumen", "Lux", "Watt"],
+    "explanation": "The Candela is the base unit of luminous intensity."
+  },
+  {
+    "category": "Physics",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which physicist developed the exclusion principle?",
+    "correct_answer": "Wolfgang Pauli",
+    "incorrect_answers": ["Enrico Fermi", "Paul Dirac", "Max Born"],
+    "explanation": "The Pauli Exclusion Principle states that no two fermions can occupy the same quantum state."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the largest planet in our solar system?",
+    "correct_answer": "Jupiter",
+    "incorrect_answers": ["Saturn", "Neptune", "Earth"],
+    "explanation": "Jupiter is the largest planet in the Solar System."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which planet is known as the 'Red Planet'?",
+    "correct_answer": "Mars",
+    "incorrect_answers": ["Venus", "Mercury", "Jupiter"],
+    "explanation": "Mars appears red due to iron oxide on its surface."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What star is at the center of our solar system?",
+    "correct_answer": "The Sun",
+    "incorrect_answers": ["Proxima Centauri", "Sirius", "Betelgeuse"],
+    "explanation": "The Sun is the star around which Earth and other planets orbit."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the name of our galaxy?",
+    "correct_answer": "Milky Way",
+    "incorrect_answers": ["Andromeda", "Triangulum", "Whirlpool"],
+    "explanation": "We live in the Milky Way galaxy."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which planet has the most prominent rings?",
+    "correct_answer": "Saturn",
+    "incorrect_answers": ["Jupiter", "Uranus", "Neptune"],
+    "explanation": "Saturn is famous for its extensive ring system."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the closest planet to the Sun?",
+    "correct_answer": "Mercury",
+    "incorrect_answers": ["Venus", "Earth", "Mars"],
+    "explanation": "Mercury is the innermost planet in the Solar System."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the natural satellite of Earth?",
+    "correct_answer": "The Moon",
+    "incorrect_answers": ["Titan", "Europa", "Phobos"],
+    "explanation": "The Moon is Earth's only natural satellite."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which planet is known as the 'Morning Star'?",
+    "correct_answer": "Venus",
+    "incorrect_answers": ["Mars", "Mercury", "Jupiter"],
+    "explanation": "Venus is often visible in the morning or evening sky."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many planets are in our solar system?",
+    "correct_answer": "8",
+    "incorrect_answers": ["9", "7", "10"],
+    "explanation": "There are 8 recognized planets (Pluto is a dwarf planet)."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What causes the tides on Earth?",
+    "correct_answer": "The Moon's gravity",
+    "incorrect_answers": ["The Sun's gravity", "Earth's rotation", "Ocean currents"],
+    "explanation": "The gravitational pull of the Moon is the primary cause of tides."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is a shooting star?",
+    "correct_answer": "Meteor",
+    "incorrect_answers": ["Comet", "Asteroid", "Star"],
+    "explanation": "A shooting star is a meteor burning up in Earth's atmosphere."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which planet is the hottest?",
+    "correct_answer": "Venus",
+    "incorrect_answers": ["Mercury", "Mars", "Jupiter"],
+    "explanation": "Venus is the hottest planet due to its thick greenhouse atmosphere."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What do we call a group of stars forming a pattern?",
+    "correct_answer": "Constellation",
+    "incorrect_answers": ["Galaxy", "Nebula", "Cluster"],
+    "explanation": "A constellation is a recognizable pattern of stars."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who was the first person to walk on the Moon?",
+    "correct_answer": "Neil Armstrong",
+    "incorrect_answers": ["Buzz Aldrin", "Yuri Gagarin", "John Glenn"],
+    "explanation": "Neil Armstrong was the first human to step on the Moon in 1969."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the Great Red Spot on Jupiter?",
+    "correct_answer": "A storm",
+    "incorrect_answers": ["A volcano", "A crater", "A lake"],
+    "explanation": "The Great Red Spot is a giant storm that has raged for centuries."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the nearest star to Earth besides the Sun?",
+    "correct_answer": "Proxima Centauri",
+    "incorrect_answers": ["Alpha Centauri A", "Sirius", "Barnard's Star"],
+    "explanation": "Proxima Centauri is the closest star to the Solar System."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which planet rotates on its side?",
+    "correct_answer": "Uranus",
+    "incorrect_answers": ["Neptune", "Saturn", "Venus"],
+    "explanation": "Uranus has an axial tilt of 98 degrees, effectively rotating on its side."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What are planets outside our solar system called?",
+    "correct_answer": "Exoplanets",
+    "incorrect_answers": ["Dwarf planets", "Rogue planets", "Protoplanets"],
+    "explanation": "Exoplanets are planets that orbit stars other than our Sun."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the name of the galaxy closest to the Milky Way?",
+    "correct_answer": "Andromeda",
+    "incorrect_answers": ["Triangulum", "Magellanic Clouds", "Whirlpool"],
+    "explanation": "The Andromeda Galaxy is the nearest major galaxy to the Milky Way."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the boundary of a black hole called?",
+    "correct_answer": "Event Horizon",
+    "incorrect_answers": ["Singularity", "Accretion Disk", "Photon Sphere"],
+    "explanation": "The event horizon is the point of no return around a black hole."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which planet has the most moons?",
+    "correct_answer": "Saturn",
+    "incorrect_answers": ["Jupiter", "Uranus", "Neptune"],
+    "explanation": "Saturn currently holds the record for the most confirmed moons."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the largest moon in the solar system?",
+    "correct_answer": "Ganymede",
+    "incorrect_answers": ["Titan", "Callisto", "Io"],
+    "explanation": "Ganymede, a moon of Jupiter, is the largest moon."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is a light-year a measure of?",
+    "correct_answer": "Distance",
+    "incorrect_answers": ["Time", "Speed", "Brightness"],
+    "explanation": "A light-year is the distance light travels in one year."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which dwarf planet was formerly considered the ninth planet?",
+    "correct_answer": "Pluto",
+    "incorrect_answers": ["Eris", "Ceres", "Haumea"],
+    "explanation": "Pluto was reclassified as a dwarf planet in 2006."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the name of the first artificial satellite?",
+    "correct_answer": "Sputnik 1",
+    "incorrect_answers": ["Explorer 1", "Vostok 1", "Telstar"],
+    "explanation": "The Soviet Union launched Sputnik 1 in 1957."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "How old is the Universe believed to be?",
+    "correct_answer": "13.8 billion years",
+    "incorrect_answers": ["4.5 billion years", "10 billion years", "20 billion years"],
+    "explanation": "The Big Bang occurred approximately 13.8 billion years ago."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which planet has a hexagonal storm at its north pole?",
+    "correct_answer": "Saturn",
+    "incorrect_answers": ["Jupiter", "Uranus", "Neptune"],
+    "explanation": "Saturn features a persistent hexagonal cloud pattern at its north pole."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the largest volcano in the solar system?",
+    "correct_answer": "Olympus Mons",
+    "incorrect_answers": ["Mauna Loa", "Maxwell Montes", "Mount Everest"],
+    "explanation": "Olympus Mons on Mars is the largest volcano."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the theory describing the origin of the universe?",
+    "correct_answer": "Big Bang Theory",
+    "incorrect_answers": ["Steady State Theory", "String Theory", "Inflation Theory"],
+    "explanation": "The Big Bang Theory describes the early development of the Universe."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What type of star is the Sun?",
+    "correct_answer": "Yellow Dwarf",
+    "incorrect_answers": ["Red Giant", "White Dwarf", "Blue Supergiant"],
+    "explanation": "The Sun is a G-type main-sequence star, or yellow dwarf."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the term for the death of a massive star?",
+    "correct_answer": "Supernova",
+    "incorrect_answers": ["Nova", "Black Hole", "Nebula"],
+    "explanation": "A supernova is a powerful and luminous stellar explosion."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which moon of Saturn has a thick atmosphere?",
+    "correct_answer": "Titan",
+    "incorrect_answers": ["Enceladus", "Rhea", "Iapetus"],
+    "explanation": "Titan is the only moon known to have a dense atmosphere."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the cloud of icy objects surrounding the solar system?",
+    "correct_answer": "Oort Cloud",
+    "incorrect_answers": ["Kuiper Belt", "Asteroid Belt", "Scattered Disc"],
+    "explanation": "The Oort Cloud is a theoretical cloud of icy planetesimals."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who discovered the four largest moons of Jupiter?",
+    "correct_answer": "Galileo Galilei",
+    "incorrect_answers": ["Johannes Kepler", "Nicolaus Copernicus", "Tycho Brahe"],
+    "explanation": "Galileo discovered Io, Europa, Ganymede, and Callisto in 1610."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the density of Saturn compared to water?",
+    "correct_answer": "Less than water",
+    "incorrect_answers": ["More than water", "Equal to water", "Twice as dense"],
+    "explanation": "Saturn is the only planet less dense than water; it would float."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the first rover on Mars?",
+    "correct_answer": "Sojourner",
+    "incorrect_answers": ["Spirit", "Opportunity", "Curiosity"],
+    "explanation": "Sojourner was the first rover to operate on Mars in 1997."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the Chandrasekhar limit?",
+    "correct_answer": "Limit for white dwarf mass",
+    "incorrect_answers": ["Limit for black hole mass", "Limit for neutron star mass", "Speed of light limit"],
+    "explanation": "The Chandrasekhar limit is the maximum mass of a stable white dwarf star."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which planet has the fastest winds?",
+    "correct_answer": "Neptune",
+    "incorrect_answers": ["Jupiter", "Saturn", "Uranus"],
+    "explanation": "Neptune has the fastest winds in the solar system, reaching 1,300 mph."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the black hole at the center of our galaxy?",
+    "correct_answer": "Sagittarius A*",
+    "incorrect_answers": ["Cygnus X-1", "M87*", "Centaurus A"],
+    "explanation": "Sagittarius A* is the supermassive black hole at the Galactic Center."
+  },
+  {
+    "category": "Astronomy",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What phenomenon occurs when the Moon passes between Earth and Sun?",
+    "correct_answer": "Solar Eclipse",
+    "incorrect_answers": ["Lunar Eclipse", "Transit", "Occultation"],
+    "explanation": "A solar eclipse happens when the Moon blocks the Sun."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many bones are in the adult human body?",
+    "correct_answer": "206",
+    "incorrect_answers": ["200", "210", "250"],
+    "explanation": "An adult human has 206 bones."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the common name for the clavicle?",
+    "correct_answer": "Collarbone",
+    "incorrect_answers": ["Shoulder blade", "Breastbone", "Rib"],
+    "explanation": "The clavicle is commonly known as the collarbone."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which organ pumps blood?",
+    "correct_answer": "Heart",
+    "incorrect_answers": ["Liver", "Lungs", "Kidney"],
+    "explanation": "The heart pumps blood throughout the body."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the largest organ of the body?",
+    "correct_answer": "Skin",
+    "incorrect_answers": ["Liver", "Brain", "Lungs"],
+    "explanation": "The skin is the largest organ."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does a dentist treat?",
+    "correct_answer": "Teeth",
+    "incorrect_answers": ["Eyes", "Bones", "Skin"],
+    "explanation": "Dentists specialize in oral health and teeth."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the normal body temperature in Celsius?",
+    "correct_answer": "37°C",
+    "incorrect_answers": ["36\u00b0C", "38\u00b0C", "40\u00b0C"],
+    "explanation": "Normal body temperature is approximately 37 degrees Celsius."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What do you call a doctor who treats children?",
+    "correct_answer": "Pediatrician",
+    "incorrect_answers": ["Cardiologist", "Dermatologist", "Neurologist"],
+    "explanation": "Pediatricians specialize in the medical care of infants, children, and adolescents."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the medical term for a break in a bone?",
+    "correct_answer": "Fracture",
+    "incorrect_answers": ["Sprain", "Strain", "Bruise"],
+    "explanation": "A fracture is a broken bone."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which organ filters blood?",
+    "correct_answer": "Kidney",
+    "incorrect_answers": ["Stomach", "Pancreas", "Gallbladder"],
+    "explanation": "Kidneys filter waste products from the blood."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the main function of the lungs?",
+    "correct_answer": "Breathing",
+    "incorrect_answers": ["Digestion", "Circulation", "Thinking"],
+    "explanation": "Lungs are responsible for gas exchange (breathing)."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What instrument does a doctor use to listen to the heart?",
+    "correct_answer": "Stethoscope",
+    "incorrect_answers": ["Microscope", "Thermometer", "Otoscope"],
+    "explanation": "A stethoscope is used to listen to internal body sounds."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the common name for the patella?",
+    "correct_answer": "Kneecap",
+    "incorrect_answers": ["Elbow", "Wrist", "Ankle"],
+    "explanation": "The patella is the kneecap."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What causes the flu?",
+    "correct_answer": "Virus",
+    "incorrect_answers": ["Bacteria", "Fungus", "Parasite"],
+    "explanation": "Influenza is caused by a virus."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the fluid that circulates in the body?",
+    "correct_answer": "Blood",
+    "incorrect_answers": ["Lymph", "Bile", "Saliva"],
+    "explanation": "Blood transports oxygen and nutrients."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the medical term for high blood pressure?",
+    "correct_answer": "Hypertension",
+    "incorrect_answers": ["Hypotension", "Hyperglycemia", "Tachycardia"],
+    "explanation": "Hypertension is the medical term for high blood pressure."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What does DNA stand for?",
+    "correct_answer": "Deoxyribonucleic Acid",
+    "incorrect_answers": ["Ribonucleic Acid", "Deoxyribose Acid", "Dual Nitrogen Acid"],
+    "explanation": "DNA stands for Deoxyribonucleic Acid."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who developed the first polio vaccine?",
+    "correct_answer": "Jonas Salk",
+    "incorrect_answers": ["Louis Pasteur", "Alexander Fleming", "Edward Jenner"],
+    "explanation": "Jonas Salk developed the first successful polio vaccine."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the medical term for a heart attack?",
+    "correct_answer": "Myocardial Infarction",
+    "incorrect_answers": ["Cardiac Arrest", "Stroke", "Angina"],
+    "explanation": "Myocardial Infarction is the technical term for a heart attack."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which blood type is the universal recipient?",
+    "correct_answer": "AB Positive",
+    "incorrect_answers": ["O Negative", "A Positive", "B Negative"],
+    "explanation": "AB Positive individuals can receive blood from any type."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the inflammation of the liver called?",
+    "correct_answer": "Hepatitis",
+    "incorrect_answers": ["Gastritis", "Nephritis", "Dermatitis"],
+    "explanation": "Hepatitis is inflammation of the liver."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the largest part of the brain?",
+    "correct_answer": "Cerebrum",
+    "incorrect_answers": ["Cerebellum", "Brainstem", "Thalamus"],
+    "explanation": "The cerebrum is the largest part of the brain."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What condition is characterized by low blood sugar?",
+    "correct_answer": "Hypoglycemia",
+    "incorrect_answers": ["Hyperglycemia", "Diabetes", "Anemia"],
+    "explanation": "Hypoglycemia means low blood sugar."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the study of the skin called?",
+    "correct_answer": "Dermatology",
+    "incorrect_answers": ["Cardiology", "Neurology", "Oncology"],
+    "explanation": "Dermatology is the branch of medicine dealing with the skin."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which vitamin is essential for blood clotting?",
+    "correct_answer": "Vitamin K",
+    "incorrect_answers": ["Vitamin C", "Vitamin A", "Vitamin D"],
+    "explanation": "Vitamin K is necessary for blood clotting."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the medical term for the voice box?",
+    "correct_answer": "Larynx",
+    "incorrect_answers": ["Pharynx", "Trachea", "Esophagus"],
+    "explanation": "The larynx is the voice box."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the body's first line of defense against infection?",
+    "correct_answer": "Skin",
+    "incorrect_answers": ["White blood cells", "Antibodies", "Lymph nodes"],
+    "explanation": "The skin acts as a physical barrier against pathogens."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the medical term for the windpipe?",
+    "correct_answer": "Trachea",
+    "incorrect_answers": ["Esophagus", "Bronchus", "Larynx"],
+    "explanation": "The trachea is the windpipe."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who is known as the 'Father of Medicine'?",
+    "correct_answer": "Hippocrates",
+    "incorrect_answers": ["Galen", "Avicenna", "Paracelsus"],
+    "explanation": "Hippocrates is considered the father of medicine."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the term for inflammation of the joints?",
+    "correct_answer": "Arthritis",
+    "incorrect_answers": ["Osteoporosis", "Tendinitis", "Bursitis"],
+    "explanation": "Arthritis is the swelling and tenderness of joints."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the smallest bone in the human body?",
+    "correct_answer": "Stapes",
+    "incorrect_answers": ["Incus", "Malleus", "Hyoid"],
+    "explanation": "The stapes in the ear is the smallest bone."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which gland regulates metabolism?",
+    "correct_answer": "Thyroid",
+    "incorrect_answers": ["Pituitary", "Adrenal", "Pancreas"],
+    "explanation": "The thyroid gland produces hormones that regulate metabolism."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the medical term for the thigh bone?",
+    "correct_answer": "Femur",
+    "incorrect_answers": ["Tibia", "Fibula", "Humerus"],
+    "explanation": "The femur is the thigh bone."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What autoimmune disease affects the pancreas?",
+    "correct_answer": "Type 1 Diabetes",
+    "incorrect_answers": ["Type 2 Diabetes", "Lupus", "Multiple Sclerosis"],
+    "explanation": "Type 1 Diabetes is an autoimmune reaction that destroys insulin-producing cells."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the study of tumors called?",
+    "correct_answer": "Oncology",
+    "incorrect_answers": ["Pathology", "Radiology", "Hematology"],
+    "explanation": "Oncology is the study and treatment of tumors and cancer."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which part of the brain controls breathing?",
+    "correct_answer": "Medulla Oblongata",
+    "incorrect_answers": ["Cerebellum", "Hippocampus", "Amygdala"],
+    "explanation": "The medulla oblongata regulates breathing and heart rate."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the medical term for a stroke?",
+    "correct_answer": "Cerebrovascular Accident",
+    "incorrect_answers": ["Myocardial Infarction", "Pulmonary Embolism", "Aneurysm"],
+    "explanation": "A stroke is medically known as a Cerebrovascular Accident (CVA)."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the longest muscle in the body?",
+    "correct_answer": "Sartorius",
+    "incorrect_answers": ["Quadriceps", "Gluteus Maximus", "Biceps"],
+    "explanation": "The sartorius muscle in the thigh is the longest."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which scientist discovered penicillin?",
+    "correct_answer": "Alexander Fleming",
+    "incorrect_answers": ["Louis Pasteur", "Robert Koch", "Joseph Lister"],
+    "explanation": "Alexander Fleming discovered penicillin in 1928."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the master gland of the endocrine system?",
+    "correct_answer": "Pituitary Gland",
+    "incorrect_answers": ["Thyroid", "Adrenal", "Pineal"],
+    "explanation": "The pituitary gland controls many other glands."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the medical term for nearsightedness?",
+    "correct_answer": "Myopia",
+    "incorrect_answers": ["Hyperopia", "Presbyopia", "Astigmatism"],
+    "explanation": "Myopia is the condition of being nearsighted."
+  },
+  {
+    "category": "Medicine",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the hardest substance in the human body?",
+    "correct_answer": "Tooth Enamel",
+    "incorrect_answers": ["Bone", "Cartilage", "Nail"],
+    "explanation": "Tooth enamel is the hardest substance in the body."
+  }
+
+// Generated 217 Science questions

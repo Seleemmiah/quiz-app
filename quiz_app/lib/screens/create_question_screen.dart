@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/widgets/question_display.dart';
 import 'package:quiz_app/services/custom_quiz_service.dart';
 import 'package:quiz_app/settings.dart';
-
 import 'package:quiz_app/models/question_model.dart';
 
 class CreateQuestionScreen extends StatefulWidget {
@@ -123,6 +123,27 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
     }
   }
 
+  Widget _buildMathButton(String latex, String label) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: ActionChip(
+        label: Text(label),
+        onPressed: () {
+          final text = _questionController.text;
+          final selection = _questionController.selection;
+          final newText =
+              text.replaceRange(selection.start, selection.end, latex);
+          _questionController.value = TextEditingValue(
+            text: newText,
+            selection:
+                TextSelection.collapsed(offset: selection.start + latex.length),
+          );
+          setState(() {}); // Rebuild for preview
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,10 +168,11 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
               controller: _questionController,
               decoration: const InputDecoration(
                 labelText: 'Question',
-                hintText: 'Enter your question',
+                hintText: 'Enter your question (use \$\$ for math)',
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
+              onChanged: (value) => setState(() {}), // Rebuild for preview
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Please enter a question';
@@ -158,6 +180,41 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
                 return null;
               },
             ),
+
+            // Math Helper Toolbar
+            const SizedBox(height: 8),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _buildMathButton(r'$$ \frac{a}{b} $$', 'Fraction'),
+                  _buildMathButton(r'$$ \sqrt{x} $$', 'Sqrt'),
+                  _buildMathButton(r'$$ x^2 $$', 'Power'),
+                  _buildMathButton(r'$$ \sum $$', 'Sum'),
+                  _buildMathButton(r'$$ \int $$', 'Integral'),
+                  _buildMathButton(r'$$ \pi $$', 'Pi'),
+                  _buildMathButton(r'$$ \theta $$', 'Theta'),
+                  _buildMathButton(r'$$ \infty $$', 'Infinity'),
+                  _buildMathButton(r'$$ \approx $$', 'Approx'),
+                  _buildMathButton(r'$$ \ne $$', 'Not Equal'),
+                ],
+              ),
+            ),
+
+            // Live Preview (if math is detected)
+            if (_questionController.text.contains(r'$$')) ...[
+              const SizedBox(height: 12),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 200,
+                child: SingleChildScrollView(
+                  child: QuestionDisplay(
+                    questionText: _questionController.text,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
 
             // Image URL Field

@@ -1,6 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quiz_app/settings.dart';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 class QuizHistory {
   final DateTime date;
@@ -354,6 +357,83 @@ class StatisticsService {
           key == _quizHistoryKey) {
         await prefs.remove(key);
       }
+    }
+  }
+
+  // --- Missing Methods Implementation ---
+
+  // Fetch last 7 days activity (quiz counts)
+  Future<Map<DateTime, int>> getLast7DaysActivity() async {
+    final history = await getQuizHistory();
+    final now = DateTime.now();
+    final sevenDaysAgo = now.subtract(const Duration(days: 7));
+
+    final activity = <DateTime, int>{};
+
+    // Initialize last 7 days with 0
+    for (int i = 0; i < 7; i++) {
+      final date =
+          DateTime(now.year, now.month, now.day).subtract(Duration(days: i));
+      activity[date] = 0;
+    }
+
+    for (var quiz in history) {
+      if (quiz.date.isAfter(sevenDaysAgo)) {
+        final day = DateTime(quiz.date.year, quiz.date.month, quiz.date.day);
+        if (activity.containsKey(day)) {
+          activity[day] = (activity[day] ?? 0) + 1;
+        }
+      }
+    }
+
+    return activity;
+  }
+
+  // Fetch average score per category
+  Future<Map<String, double>> getCategoryPerformance() async {
+    final stats = await getStatistics();
+    return stats.categoryAverages;
+  }
+
+  // Fetch Spaced Repetition stats
+  Future<Map<String, int>> getSpacedRepetitionStats() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return {'due': 0, 'total': 0, 'mastered': 0};
+
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('spacedRepetition')
+          .get();
+
+      int due = 0;
+      int mastered = 0;
+      final now = DateTime.now();
+
+      for (var doc in snapshot.docs) {
+        final data = doc.data();
+        final nextReview = DateTime.parse(data['nextReview']);
+        final interval = data['interval'] as int;
+
+        if (nextReview.isBefore(now)) {
+          due++;
+        }
+
+        // Consider mastered if interval > 21 days
+        if (interval > 21) {
+          mastered++;
+        }
+      }
+
+      return {
+        'due': due,
+        'total': snapshot.docs.length,
+        'mastered': mastered,
+      };
+    } catch (e) {
+      debugPrint('Error fetching SR stats: $e');
+      return {'due': 0, 'total': 0, 'mastered': 0};
     }
   }
 }

@@ -1,0 +1,164 @@
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does CPU stand for?",
+    "correct_answer": "Central Processing Unit",
+    "incorrect_answers": ["Central Process Unit", "Computer Personal Unit", "Central Processor Unit"],
+    "explanation": "CPU stands for Central Processing Unit, the main processor of a computer."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does RAM stand for?",
+    "correct_answer": "Random Access Memory",
+    "incorrect_answers": ["Read Access Memory", "Random Application Memory", "Rapid Access Memory"],
+    "explanation": "RAM is Random Access Memory, used for temporary data storage."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the brain of the computer?",
+    "correct_answer": "CPU",
+    "incorrect_answers": ["RAM", "Hard Drive", "Motherboard"],
+    "explanation": "The CPU is often called the brain of the computer as it processes instructions."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does USB stand for?",
+    "correct_answer": "Universal Serial Bus",
+    "incorrect_answers": ["United Serial Bus", "Universal System Bus", "Uniform Serial Bus"],
+    "explanation": "USB stands for Universal Serial Bus, a standard for connecting devices."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the main circuit board of a computer called?",
+    "correct_answer": "Motherboard",
+    "incorrect_answers": ["Fatherboard", "Mainboard", "Systemboard"],
+    "explanation": "The motherboard is the main printed circuit board in a computer."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does HTML stand for?",
+    "correct_answer": "HyperText Markup Language",
+    "incorrect_answers": ["High Tech Modern Language", "Home Tool Markup Language", "Hyperlinks and Text Markup Language"],
+    "explanation": "HTML is HyperText Markup Language, used to create web pages."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is a byte composed of?",
+    "correct_answer": "8 bits",
+    "incorrect_answers": ["4 bits", "16 bits", "32 bits"],
+    "explanation": "A byte consists of 8 bits, the basic unit of computer storage."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does WWW stand for?",
+    "correct_answer": "World Wide Web",
+    "incorrect_answers": ["Wide World Web", "World Web Wide", "Web World Wide"],
+    "explanation": "WWW stands for World Wide Web, the information system on the Internet."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the smallest unit of data in a computer?",
+    "correct_answer": "Bit",
+    "incorrect_answers": ["Byte", "Nibble", "Word"],
+    "explanation": "A bit is the smallest unit of data, representing a 0 or 1."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does PDF stand for?",
+    "correct_answer": "Portable Document Format",
+    "incorrect_answers": ["Print Document Format", "Portable Data File", "Public Document Format"],
+    "explanation": "PDF stands for Portable Document Format, developed by Adobe."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is malware?",
+    "correct_answer": "Malicious software",
+    "incorrect_answers": ["Mail software", "Main software", "Manual software"],
+    "explanation": "Malware is malicious software designed to harm or exploit computers."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does URL stand for?",
+    "correct_answer": "Uniform Resource Locator",
+    "incorrect_answers": ["Universal Resource Locator", "Uniform Reference Link", "Universal Reference Locator"],
+    "explanation": "URL stands for Uniform Resource Locator, the address of a web resource."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the main function of an operating system?",
+    "correct_answer": "Manage computer resources",
+    "incorrect_answers": ["Create documents", "Browse the internet", "Play games"],
+    "explanation": "An operating system manages hardware and software resources."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does LAN stand for?",
+    "correct_answer": "Local Area Network",
+    "incorrect_answers": ["Large Area Network", "Long Access Network", "Limited Area Network"],
+    "explanation": "LAN stands for Local Area Network, a network in a limited area."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is a firewall used for?",
+    "correct_answer": "Network security",
+    "incorrect_answers": ["File storage", "Data backup", "Video editing"],
+    "explanation": "A firewall protects networks by controlling incoming and outgoing traffic."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does SSD stand for?",
+    "correct_answer": "Solid State Drive",
+    "incorrect_answers": ["Super Speed Drive", "Solid Storage Device", "System State Drive"],
+    "explanation": "SSD stands for Solid State Drive, a type of storage device."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is phishing?",
+    "correct_answer": "Fraudulent attempt to obtain sensitive information",
+    "incorrect_answers": ["A type of computer game", "A programming language", "A hardware component"],
+    "explanation": "Phishing is a cybercrime where attackers trick people into revealing sensitive data."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does GUI stand for?",
+    "correct_answer": "Graphical User Interface",
+    "incorrect_answers": ["General User Interface", "Graphical Utility Interface", "General Utility Interface"],
+    "explanation": "GUI stands for Graphical User Interface, allowing visual interaction with computers."
+  }
+
+// Generated 18 questions for Science: Computers

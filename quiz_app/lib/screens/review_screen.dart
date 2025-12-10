@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/models/question_model.dart';
 import 'package:quiz_app/services/bookmark_service.dart';
+import 'package:quiz_app/services/ai_service.dart';
+import 'package:quiz_app/screens/video_player_screen.dart';
+import 'package:quiz_app/services/video_service.dart';
+import 'package:quiz_app/models/video_explanation.dart';
 
 class ReviewScreen extends StatefulWidget {
   final List<Question> questions;
@@ -33,7 +37,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   Future<void> _loadBookmarkStates() async {
     for (int i = 0; i < widget.questions.length; i++) {
       final isBookmarked =
-          await _bookmarkService.isBookmarked(widget.questions[i]);
+          await _bookmarkService.isBookmarkedQuestion(widget.questions[i]);
       if (mounted) {
         setState(() {
           _bookmarkStates[i] = isBookmarked;
@@ -77,6 +81,154 @@ class _ReviewScreenState extends State<ReviewScreen> {
     setState(() {
       _reviewIndex = index;
     });
+  }
+
+  Future<void> _askAiTutor(
+      String question, String correctAnswer, String userAnswer) async {
+    // ... (existing code)
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      final explanation = await AIService().getExplanation(
+        question: question,
+        correctAnswer: correctAnswer,
+        userAnswer: userAnswer,
+      );
+
+      if (mounted) {
+        Navigator.pop(context); // Dismiss loading
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.auto_awesome, color: Colors.purple),
+                SizedBox(width: 8),
+                Text('AI Tutor'),
+              ],
+            ),
+            content: Text(explanation),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Thanks!'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); // Dismiss loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _watchExplanation(Question question) async {
+    if (question.videoUrl != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VideoPlayerScreen(
+            videoUrl: question.videoUrl!,
+            videoExplanation: VideoExplanation(
+              id: 'embedded',
+              questionId: '',
+              videoUrl: question.videoUrl!,
+              title: 'Explanation',
+              duration: 0,
+              uploader: 'Mindly',
+            ),
+          ),
+        ),
+      );
+    } else {
+      // Search for video
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      try {
+        // Search using category and a snippet of the question to be more relevant
+        final query =
+            '${question.category} ${question.question.length > 50 ? question.question.substring(0, 50) : question.question} explanation';
+        final videos = await VideoService().searchVideos(query);
+
+        if (mounted) {
+          Navigator.pop(context); // Dismiss loading
+          if (videos.isNotEmpty) {
+            _showVideoSelectionDialog(videos);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('No video explanation found.')),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error searching videos: $e')),
+          );
+        }
+      }
+    }
+  }
+
+  void _showVideoSelectionDialog(List<VideoExplanation> videos) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Video Explanation'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: videos.length,
+            itemBuilder: (context, index) {
+              final video = videos[index];
+              return ListTile(
+                leading: Image.network(video.thumbnailUrl ?? '',
+                    width: 80,
+                    fit: BoxFit.cover,
+                    errorBuilder: (c, o, s) => const Icon(Icons.video_library)),
+                title: Text(video.title,
+                    maxLines: 2, overflow: TextOverflow.ellipsis),
+                subtitle: Text(video.uploader),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VideoPlayerScreen(
+                        videoUrl: video.videoUrl,
+                        videoExplanation: video,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -248,12 +400,38 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Explanation:',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Explanation:',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () =>
+                                  _watchExplanation(currentQuestion),
+                              icon: const Icon(Icons.play_circle_filled,
+                                  color: Colors.red),
+                              tooltip: 'Watch Video Explanation',
+                            ),
+                            TextButton.icon(
+                              onPressed: () => _askAiTutor(
+                                currentQuestion.question,
+                                currentQuestion.correctAnswer,
+                                selectedAnswer ?? 'No Answer',
+                              ),
+                              icon: const Icon(Icons.psychology,
+                                  color: Colors.purple),
+                              label: const Text('Ask AI Tutor'),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8),
                     Text(

@@ -1,0 +1,313 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user is accessing their own data
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
+      
+      // Subcollections for users
+      match /spacedRepetition/{cardId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      match /streakData/{streakId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      match /dailyChallenges/{challengeId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /campaign_progress/{levelId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // User Results
+    match /user_results/{userId} {
+      allow read, write: if isOwner(userId);
+      
+      match /results/{resultId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Bookmarked Questions
+    match /bookmarked_questions/{userId} {
+      allow read, write: if isOwner(userId);
+      
+      match /questions/{questionId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Daily Challenges (Global)
+    match /daily_challenges/{date} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated(); 
+    }
+
+    // Lobbies for Multiplayer
+    match /lobbies/{lobbyId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      
+      // Players subcollection
+      match /players/{userId} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+    
+    // Classes (Root collection)
+    match /classes/{classId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      
+      // Subcollections (if used)
+      match /members/{userId} {
+        allow read, write: if isAuthenticated();
+      }
+      
+      match /quizzes/{quizId} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+
+    // Class Members (Root collection - used by ClassService)
+    match /class_members/{memberId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // Class Scores (Root collection - used by ClassService)
+    match /class_scores/{scoreId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // Class Events (Root collection - used by ClassService)
+    match /class_events/{eventId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+    
+    // Quizzes (Global/Public)
+    match /quizzes/{quizId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+    
+    // Exams (Created by teachers, readable by all authenticated users)
+    match /exams/{examCode} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated(); // Teachers create exams
+      allow update, delete: if isAuthenticated(); // Teachers can update/delete their exams
+    }
+
+    // Quiz Results (Students submit, teachers can read all)
+    match /quiz_results/{resultId} {
+      allow read: if isAuthenticated(); // Anyone authenticated can read
+      allow create: if isAuthenticated(); // Students create results
+      allow update, delete: if isAuthenticated(); // Allow updates/deletes
+    }
+
+    // User Preferences
+    match /user_preferences/{userId}/{document=**} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Notifications
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // Active Exam Sessions (for security)
+    match /active_exam_sessions/{sessionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+
+    // Exam Responses (Sharded collections - match any shard number)
+    match /exam_responses_shard_0/{responseId} {
+      allow read, create, update: if isAuthenticated();
+    }
+    match /exam_responses_shard_1/{responseId} {
+      allow read, create, update: if isAuthenticated();
+    }
+    match /exam_responses_shard_2/{responseId} {
+      allow read, create, update: if isAuthenticated();
+    }
+    match /exam_responses_shard_3/{responseId} {
+      allow read, create, update: if isAuthenticated();
+    }
+    match /exam_responses_shard_4/{responseId} {
+      allow read, create, update: if isAuthenticated();
+    }
+    match /exam_responses_shard_5/{responseId} {
+      allow read, create, update: if isAuthenticated();
+    }
+    match /exam_responses_shard_6/{responseId} {
+      allow read, create, update: if isAuthenticated();
+    }
+    match /exam_responses_shard_7/{responseId} {
+      allow read, create, update: if isAuthenticated();
+    }
+    match /exam_responses_shard_8/{responseId} {
+      allow read, create, update: if isAuthenticated();
+    }
+    match /exam_responses_shard_9/{responseId} {
+      allow read, create, update: if isAuthenticated();
+    }
+
+    // User Exam History (Sharded)
+    match /user_exam_history_shard_0/{userId}/exams/{examId} {
+      allow read, write: if isAuthenticated() && userId == request.auth.uid;
+    }
+    match /user_exam_history_shard_1/{userId}/exams/{examId} {
+      allow read, write: if isAuthenticated() && userId == request.auth.uid;
+    }
+    match /user_exam_history_shard_2/{userId}/exams/{examId} {
+      allow read, write: if isAuthenticated() && userId == request.auth.uid;
+    }
+    match /user_exam_history_shard_3/{userId}/exams/{examId} {
+      allow read, write: if isAuthenticated() && userId == request.auth.uid;
+    }
+    match /user_exam_history_shard_4/{userId}/exams/{examId} {
+      allow read, write: if isAuthenticated() && userId == request.auth.uid;
+    }
+
+    // Leaderboard (Sharded)
+    match /leaderboard_shard_0/{userId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /leaderboard_shard_1/{userId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /leaderboard_shard_2/{userId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /leaderboard_shard_3/{userId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /leaderboard_shard_4/{userId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /leaderboard_shard_5/{userId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /leaderboard_shard_6/{userId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /leaderboard_shard_7/{userId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /leaderboard_shard_8/{userId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /leaderboard_shard_9/{userId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // Counters (for distributed counting)
+    match /counters/{counterId}/shards/{shardId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // System Metrics (for monitoring)
+    match /system_metrics/{metricId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    match /system_metrics/{metricId}/{subcollection=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // Custom Questions (Local storage backup)
+    match /custom_questions/{userId}/questions/{questionId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Study Plans
+    match /study_plans/{userId}/{document=**} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Achievements
+    match /achievements/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Statistics
+    match /statistics/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Mistakes (for practice)
+    match /mistakes/{userId}/questions/{questionId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Documents (Study materials)
+    match /documents/{documentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated();
+    }
+
+    // Videos (Educational content)
+    match /videos/{videoId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated();
+    }
+
+    // Campaigns (Gamification)
+    match /campaigns/{campaignId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // Shop Items (In-app purchases/rewards)
+    match /shop_items/{itemId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // User Inventory
+    match /user_inventory/{userId}/{document=**} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Scheduled Events
+    match /scheduled_events/{eventId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated();
+    }
+
+    // Fallback rule for any other collections (REMOVE IN PRODUCTION)
+    // match /{document=**} {
+    //   allow read, write: if false;
+    // }
+  }
+}

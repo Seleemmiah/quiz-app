@@ -1,1 +1,57 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"quiz-d1427","appId":"1:362153618720:android:c51696c7374fcb4a187b45","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"quiz-d1427","appId":"1:362153618720:ios:1675fd0782ef57df187b45","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"macos":{"default":{"projectId":"quiz-d1427","appId":"1:362153618720:ios:1675fd0782ef57df187b45","uploadDebugSymbols":false,"fileOutput":"macos/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"quiz-d1427","configurations":{"android":"1:362153618720:android:c51696c7374fcb4a187b45","ios":"1:362153618720:ios:1675fd0782ef57df187b45","macos":"1:362153618720:ios:1675fd0782ef57df187b45","web":"1:362153618720:web:0458ba896bae0aed187b45","windows":"1:362153618720:web:70c9ea554498fa83187b45"}}}}}}
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "quiz-d1427",
+          "appId": "1:362153618720:android:c51696c7374fcb4a187b45",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "quiz-d1427",
+          "appId": "1:362153618720:ios:1675fd0782ef57df187b45",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "quiz-d1427",
+          "appId": "1:362153618720:ios:1675fd0782ef57df187b45",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "quiz-d1427",
+          "configurations": {
+            "android": "1:362153618720:android:c51696c7374fcb4a187b45",
+            "ios": "1:362153618720:ios:1675fd0782ef57df187b45",
+            "macos": "1:362153618720:ios:1675fd0782ef57df187b45",
+            "web": "1:362153618720:web:0458ba896bae0aed187b45",
+            "windows": "1:362153618720:web:70c9ea554498fa83187b45"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}

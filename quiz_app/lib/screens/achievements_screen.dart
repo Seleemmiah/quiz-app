@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/achievement_service.dart';
+import 'package:quiz_app/widgets/glass_card.dart';
 
 class AchievementsScreen extends StatefulWidget {
   const AchievementsScreen({super.key});
@@ -111,16 +112,18 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   Widget _buildAchievementCard(Achievement achievement) {
     final isLocked = !achievement.isUnlocked;
 
-    return Card(
-      elevation: isLocked ? 1 : 3,
-      color: isLocked ? Colors.grey[200] : null,
+    return GlassCard(
+      padding: EdgeInsets.zero,
+      borderColor: isLocked
+          ? Colors.grey.withOpacity(0.3)
+          : Theme.of(context).primaryColor.withOpacity(0.4),
       child: InkWell(
         onTap: () {
           if (achievement.isUnlocked) {
             _showAchievementDetails(achievement);
           }
         },
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(

@@ -1,0 +1,507 @@
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the king of the Greek gods?",
+    "correct_answer": "Zeus",
+    "incorrect_answers": ["Poseidon", "Hades", "Apollo"],
+    "explanation": "Zeus is the king of the Greek gods, known for wielding a lightning bolt."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the Greek goddess of wisdom?",
+    "correct_answer": "Athena",
+    "incorrect_answers": ["Aphrodite", "Hera", "Artemis"],
+    "explanation": "Athena is the Greek goddess of wisdom and warfare, often depicted with an owl."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the name of the three-headed dog guarding the Underworld?",
+    "correct_answer": "Cerberus",
+    "incorrect_answers": ["Orthrus", "Chimera", "Hydra"],
+    "explanation": "Cerberus is the three-headed dog that guards the entrance to the Underworld."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the Greek god of the sea?",
+    "correct_answer": "Poseidon",
+    "incorrect_answers": ["Zeus", "Hades", "Apollo"],
+    "explanation": "Poseidon is the Greek god of the sea, often depicted with a trident."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Where did the Olympian gods reside?",
+    "correct_answer": "Mount Olympus",
+    "incorrect_answers": ["Mount Parnassus", "Mount Etna", "Mount Vesuvius"],
+    "explanation": "The Olympian gods resided on Mount Olympus, the highest mountain in Greece."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the Norse god of thunder?",
+    "correct_answer": "Thor",
+    "incorrect_answers": ["Odin", "Loki", "Heimdall"],
+    "explanation": "Thor is the Norse god of thunder, wielding the hammer Mjolnir."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the name of Thor's hammer?",
+    "correct_answer": "Mjolnir",
+    "incorrect_answers": ["Gungnir", "Gram", "Tyrfing"],
+    "explanation": "Mjolnir is Thor's magical hammer in Norse mythology."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the trickster god in Norse mythology?",
+    "correct_answer": "Loki",
+    "incorrect_answers": ["Thor", "Odin", "Freyr"],
+    "explanation": "Loki is the mischievous trickster god in Norse mythology."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the Allfather in Norse mythology?",
+    "correct_answer": "Odin",
+    "incorrect_answers": ["Thor", "Loki", "Freyr"],
+    "explanation": "Odin is the primary father god in Norse mythology, known as the Allfather."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the name of the heavenly home of the gods in Norse mythology?",
+    "correct_answer": "Asgard",
+    "incorrect_answers": ["Valhalla", "Midgard", "Jotunheim"],
+    "explanation": "Asgard is the heavenly home of the gods in Norse mythology."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the Roman king of the gods?",
+    "correct_answer": "Jupiter",
+    "incorrect_answers": ["Mars", "Neptune", "Apollo"],
+    "explanation": "Jupiter is the king of the gods in Roman mythology, equivalent to Greek Zeus."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the Roman goddess of love?",
+    "correct_answer": "Venus",
+    "incorrect_answers": ["Juno", "Diana", "Minerva"],
+    "explanation": "Venus is the Roman goddess of love and beauty, equivalent to Greek Aphrodite."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the Roman messenger god?",
+    "correct_answer": "Mercury",
+    "incorrect_answers": ["Mars", "Apollo", "Vulcan"],
+    "explanation": "Mercury is the Roman messenger god, depicted with winged sandals."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the Egyptian sun god?",
+    "correct_answer": "Ra",
+    "incorrect_answers": ["Osiris", "Anubis", "Horus"],
+    "explanation": "Ra (or Re) is the ancient Egyptian sun god, often depicted with a sun disk."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the Egyptian god of the afterlife?",
+    "correct_answer": "Osiris",
+    "incorrect_answers": ["Ra", "Anubis", "Horus"],
+    "explanation": "Osiris is the Egyptian god of the afterlife and judge of the dead."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is the Egyptian goddess of magic?",
+    "correct_answer": "Isis",
+    "incorrect_answers": ["Hathor", "Bastet", "Sekhmet"],
+    "explanation": "Isis is the Egyptian goddess of magic, motherhood, and healing."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which god is depicted with a jackal head?",
+    "correct_answer": "Anubis",
+    "incorrect_answers": ["Osiris", "Horus", "Set"],
+    "explanation": "Anubis, the god of mummification, is depicted with the head of a jackal."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which day of the week is named after Thor?",
+    "correct_answer": "Thursday",
+    "incorrect_answers": ["Tuesday", "Wednesday", "Friday"],
+    "explanation": "Thursday is named after Thor, the Norse god of thunder."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What creature was sacred to the goddess Bastet?",
+    "correct_answer": "Cats",
+    "incorrect_answers": ["Dogs", "Birds", "Snakes"],
+    "explanation": "Cats were considered sacred and associated with the goddess Bastet."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who slew the Minotaur in the labyrinth?",
+    "correct_answer": "Theseus",
+    "incorrect_answers": ["Perseus", "Heracles", "Jason"],
+    "explanation": "Theseus was the hero who slayed the Minotaur in the labyrinth of Crete."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What did Persephone eat in the Underworld?",
+    "correct_answer": "Pomegranate seeds",
+    "incorrect_answers": ["Apple", "Grapes", "Figs"],
+    "explanation": "Persephone ate pomegranate seeds, forcing her to stay in the Underworld part of each year."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is the Greek god of wine?",
+    "correct_answer": "Dionysus",
+    "incorrect_answers": ["Apollo", "Hermes", "Ares"],
+    "explanation": "Dionysus is the Greek god of wine, revelry, and ecstasy."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is the father of Zeus?",
+    "correct_answer": "Cronus",
+    "incorrect_answers": ["Uranus", "Oceanus", "Hyperion"],
+    "explanation": "Cronus is the Titan who fathered Zeus, Poseidon, and Hades."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What winged horse sprang from Medusa's blood?",
+    "correct_answer": "Pegasus",
+    "incorrect_answers": ["Sleipnir", "Arion", "Xanthus"],
+    "explanation": "Pegasus, the winged horse, sprang from Medusa's blood when Perseus slew her."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the rainbow bridge in Norse mythology?",
+    "correct_answer": "Bifrost",
+    "incorrect_answers": ["Yggdrasil", "Gjallarbr\u00fa", "\u00c1sbr\u00fa"],
+    "explanation": "Bifrost is the rainbow bridge connecting Asgard and Midgard."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What serpent encircles Midgard?",
+    "correct_answer": "Jormungand",
+    "incorrect_answers": ["Nidhogg", "Fafnir", "N\u00ed\u00f0h\u00f6ggr"],
+    "explanation": "Jormungand, the Midgard Serpent, encircles the world and is fated to fight Thor."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the Norse apocalypse called?",
+    "correct_answer": "Ragnarok",
+    "incorrect_answers": ["Valhalla", "Fimbulwinter", "G\u00f6tterd\u00e4mmerung"],
+    "explanation": "Ragnarok is the apocalyptic battle signifying the end of the world in Norse mythology."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is the Norse goddess of love?",
+    "correct_answer": "Freyja",
+    "incorrect_answers": ["Frigg", "Sif", "Idunn"],
+    "explanation": "Freyja is the Norse goddess of love, beauty, and fertility."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the world tree in Norse mythology?",
+    "correct_answer": "Yggdrasil",
+    "incorrect_answers": ["Bifrost", "Glasir", "L\u00e6ra\u00f0r"],
+    "explanation": "Yggdrasil is the world tree that connects all nine realms of Norse cosmology."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is the Roman goddess of the hunt?",
+    "correct_answer": "Diana",
+    "incorrect_answers": ["Venus", "Juno", "Minerva"],
+    "explanation": "Diana is the Roman goddess of the hunt, equivalent to Greek Artemis."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is the Roman queen of the gods?",
+    "correct_answer": "Juno",
+    "incorrect_answers": ["Venus", "Diana", "Vesta"],
+    "explanation": "Juno is the Roman queen of the gods, presiding over marriage and childbirth."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is the Roman god of the underworld?",
+    "correct_answer": "Pluto",
+    "incorrect_answers": ["Neptune", "Mars", "Vulcan"],
+    "explanation": "Pluto is the Roman god of the underworld, equivalent to Greek Hades."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which goddess has 'cereal' derived from her name?",
+    "correct_answer": "Ceres",
+    "incorrect_answers": ["Vesta", "Juno", "Diana"],
+    "explanation": "Ceres is the Roman goddess of agriculture, and 'cereal' is derived from her name."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who were the twin founders of Rome?",
+    "correct_answer": "Romulus and Remus",
+    "incorrect_answers": ["Castor and Pollux", "Amphion and Zethus", "Idas and Lynceus"],
+    "explanation": "Romulus and Remus were twin brothers raised by a she-wolf, legendary founders of Rome."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is the Egyptian goddess of truth?",
+    "correct_answer": "Ma'at",
+    "incorrect_answers": ["Isis", "Hathor", "Nut"],
+    "explanation": "Ma'at is the goddess of truth, justice, and harmony, depicted with an ostrich feather."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who is the Egyptian god of writing?",
+    "correct_answer": "Thoth",
+    "incorrect_answers": ["Anubis", "Horus", "Set"],
+    "explanation": "Thoth is the Egyptian god of writing, knowledge, and the moon."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the Egyptian funerary text called?",
+    "correct_answer": "The Book of the Dead",
+    "incorrect_answers": ["The Book of Life", "The Pyramid Texts", "The Coffin Texts"],
+    "explanation": "The Book of the Dead contains spells to guide the deceased through the afterlife."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the blind prophet of Thebes?",
+    "correct_answer": "Tiresias",
+    "incorrect_answers": ["Calchas", "Melampus", "Cassandra"],
+    "explanation": "Tiresias was the blind prophet of Thebes who was transformed into a woman for seven years."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Whose golden apple started the Trojan War?",
+    "correct_answer": "Eris",
+    "incorrect_answers": ["Aphrodite", "Hera", "Athena"],
+    "explanation": "Eris, goddess of discord, threw a golden apple inscribed 'To the Fairest', starting the Trojan War."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who tried to bring Eurydice back from the Underworld?",
+    "correct_answer": "Orpheus",
+    "incorrect_answers": ["Theseus", "Heracles", "Odysseus"],
+    "explanation": "Orpheus, the legendary musician, tried to bring his wife Eurydice back but looked back too soon."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who performed twelve labors as penance?",
+    "correct_answer": "Heracles",
+    "incorrect_answers": ["Theseus", "Perseus", "Jason"],
+    "explanation": "Heracles (Hercules) performed twelve seemingly impossible labors as penance."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who rivaled Athena for Athens?",
+    "correct_answer": "Poseidon",
+    "incorrect_answers": ["Apollo", "Ares", "Hermes"],
+    "explanation": "Poseidon and Athena competed for Athens; Athena won by offering the olive tree."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who was the blind god tricked by Loki?",
+    "correct_answer": "Hod",
+    "incorrect_answers": ["Baldur", "Heimdall", "Tyr"],
+    "explanation": "Hod was the blind god tricked by Loki into killing his brother Baldur."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is Odin's eight-legged horse called?",
+    "correct_answer": "Sleipnir",
+    "incorrect_answers": ["Gullfaxi", "H\u00f3fvarpnir", "Skinfaxi"],
+    "explanation": "Sleipnir is Odin's eight-legged steed, the fastest horse in Norse mythology."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the realm of the dead in Norse mythology?",
+    "correct_answer": "Niflheim",
+    "incorrect_answers": ["Helheim", "Svartalfheim", "Muspelheim"],
+    "explanation": "Niflheim is the cold, misty world of the dead, ruled by the goddess Hel."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What are Odin's two ravens called?",
+    "correct_answer": "Huginn and Muninn",
+    "incorrect_answers": ["Geri and Freki", "Tanngrisnir and Tanngnj\u00f3str", "Arvak and Alsvid"],
+    "explanation": "Huginn (Thought) and Muninn (Memory) are Odin's ravens who bring him information."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who is the watchman of the gods?",
+    "correct_answer": "Heimdall",
+    "incorrect_answers": ["Tyr", "Baldur", "Vidar"],
+    "explanation": "Heimdall guards the entrance to Asgard and will sound a horn at Ragnarok."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who is the Roman goddess of the dawn?",
+    "correct_answer": "Aurora",
+    "incorrect_answers": ["Luna", "Diana", "Vesta"],
+    "explanation": "Aurora is the Roman goddess personifying the dawn."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who is the Roman goddess of the hearth?",
+    "correct_answer": "Vesta",
+    "incorrect_answers": ["Juno", "Ceres", "Diana"],
+    "explanation": "Vesta is the Roman goddess of the hearth, whose sacred fire was tended by Vestal Virgins."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which god is January named after?",
+    "correct_answer": "Janus",
+    "incorrect_answers": ["Jupiter", "Mars", "Mercury"],
+    "explanation": "January is named after Janus, the Roman god of doorways and beginnings."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who is the Roman equivalent of Athena?",
+    "correct_answer": "Minerva",
+    "incorrect_answers": ["Diana", "Venus", "Juno"],
+    "explanation": "Minerva is the Roman goddess equivalent to Greek Athena, associated with wisdom."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who is the Egyptian sky goddess?",
+    "correct_answer": "Nut",
+    "incorrect_answers": ["Isis", "Hathor", "Sekhmet"],
+    "explanation": "Nut is the sky goddess who arches over the earth and swallows the sun each evening."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Whose feather was used in the weighing ceremony?",
+    "correct_answer": "Ma'at",
+    "incorrect_answers": ["Isis", "Thoth", "Anubis"],
+    "explanation": "Ma'at's feather was used to weigh against the heart of the deceased."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who is the Egyptian god of storms?",
+    "correct_answer": "Set",
+    "incorrect_answers": ["Horus", "Anubis", "Thoth"],
+    "explanation": "Set (or Seth) is the god of storms and the desert."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What was the primordial mound in Egyptian mythology?",
+    "correct_answer": "Benben",
+    "incorrect_answers": ["Nun", "Atum", "Khepri"],
+    "explanation": "Benben was the primordial mound that emerged from chaos upon which creation began."
+  },
+  {
+    "category": "Mythology",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which dwarf god drove away evil spirits?",
+    "correct_answer": "Bes",
+    "incorrect_answers": ["Ptah", "Khnum", "Sobek"],
+    "explanation": "Bes is the dwarf god known for driving away evil spirits and protecting households."
+  }
+
+// Generated 56 Mythology questions
+// Mythology: 19 easy, 18 medium, 19 hard

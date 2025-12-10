@@ -1,0 +1,499 @@
+// Generated 55 Science: Computers questions so far...
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does CPU stand for?",
+    "correct_answer": "Central Processing Unit",
+    "incorrect_answers": ["Central Process Unit", "Computer Personal Unit", "Central Processor Unit"],
+    "explanation": "CPU stands for Central Processing Unit, the main processor of a computer."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does RAM stand for?",
+    "correct_answer": "Random Access Memory",
+    "incorrect_answers": ["Read Access Memory", "Random Application Memory", "Rapid Access Memory"],
+    "explanation": "RAM is Random Access Memory, used for temporary data storage."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Who is considered the Father of Computers?",
+    "correct_answer": "Charles Babbage",
+    "incorrect_answers": ["Alan Turing", "John von Neumann", "Bill Gates"],
+    "explanation": "Charles Babbage designed the first mechanical computer, the Analytical Engine."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "How many bits are in a byte?",
+    "correct_answer": "8",
+    "incorrect_answers": ["4", "16", "32"],
+    "explanation": "A byte consists of 8 bits, the basic unit of computer storage."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does GUI stand for?",
+    "correct_answer": "Graphical User Interface",
+    "incorrect_answers": ["General User Interface", "Graphical Utility Interface", "General Utility Interface"],
+    "explanation": "GUI stands for Graphical User Interface, allowing visual interaction with computers."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does USB stand for?",
+    "correct_answer": "Universal Serial Bus",
+    "incorrect_answers": ["United Serial Bus", "Universal System Bus", "Uniform Serial Bus"],
+    "explanation": "USB stands for Universal Serial Bus, a standard for connecting devices."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the main circuit board of a computer called?",
+    "correct_answer": "Motherboard",
+    "incorrect_answers": ["Fatherboard", "Mainboard", "Systemboard"],
+    "explanation": "The motherboard is the main printed circuit board in a computer."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does WWW stand for?",
+    "correct_answer": "World Wide Web",
+    "incorrect_answers": ["Wide World Web", "World Web Wide", "Web World Wide"],
+    "explanation": "WWW stands for World Wide Web, the information system on the Internet."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the smallest unit of data in a computer?",
+    "correct_answer": "Bit",
+    "incorrect_answers": ["Byte", "Nibble", "Word"],
+    "explanation": "A bit is the smallest unit of data, representing a 0 or 1."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does PDF stand for?",
+    "correct_answer": "Portable Document Format",
+    "incorrect_answers": ["Print Document Format", "Portable Data File", "Public Document Format"],
+    "explanation": "PDF stands for Portable Document Format, developed by Adobe."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is malware?",
+    "correct_answer": "Malicious software",
+    "incorrect_answers": ["Mail software", "Main software", "Manual software"],
+    "explanation": "Malware is malicious software designed to harm or exploit computers."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does URL stand for?",
+    "correct_answer": "Uniform Resource Locator",
+    "incorrect_answers": ["Universal Resource Locator", "Uniform Reference Link", "Universal Reference Locator"],
+    "explanation": "URL stands for Uniform Resource Locator, the address of a web resource."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does LAN stand for?",
+    "correct_answer": "Local Area Network",
+    "incorrect_answers": ["Large Area Network", "Long Access Network", "Limited Area Network"],
+    "explanation": "LAN stands for Local Area Network, a network in a limited area."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is a firewall used for?",
+    "correct_answer": "Network security",
+    "incorrect_answers": ["File storage", "Data backup", "Video editing"],
+    "explanation": "A firewall protects networks by controlling incoming and outgoing traffic."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does SSD stand for?",
+    "correct_answer": "Solid State Drive",
+    "incorrect_answers": ["Super Speed Drive", "Solid Storage Device", "System State Drive"],
+    "explanation": "SSD stands for Solid State Drive, a type of storage device."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is phishing?",
+    "correct_answer": "Fraudulent attempt to obtain sensitive information",
+    "incorrect_answers": ["A type of computer game", "A programming language", "A hardware component"],
+    "explanation": "Phishing is a cybercrime where attackers trick people into revealing sensitive data."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "One gigabyte equals how many megabytes?",
+    "correct_answer": "1024",
+    "incorrect_answers": ["1000", "512", "2048"],
+    "explanation": "One gigabyte equals 1024 megabytes in binary notation."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is cloud computing?",
+    "correct_answer": "Storing and accessing data over the internet",
+    "incorrect_answers": ["Computing in bad weather", "A type of processor", "A programming language"],
+    "explanation": "Cloud computing delivers computing services over the internet."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What does HTML stand for?",
+    "correct_answer": "HyperText Markup Language",
+    "incorrect_answers": ["High Tech Modern Language", "Home Tool Markup Language", "Hyperlinks and Text Markup Language"],
+    "explanation": "HTML is HyperText Markup Language, used to create web pages."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which programming language is named after an Indonesian island?",
+    "correct_answer": "Java",
+    "incorrect_answers": ["Python", "Ruby", "Perl"],
+    "explanation": "Java is named after Java, an Indonesian island known for its coffee."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Who created the C++ programming language?",
+    "correct_answer": "Bjarne Stroustrup",
+    "incorrect_answers": ["Dennis Ritchie", "James Gosling", "Guido van Rossum"],
+    "explanation": "Bjarne Stroustrup created C++ in 1979 as an extension of C."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What does ENIAC stand for?",
+    "correct_answer": "Electronic Numerical Integrator and Computer",
+    "incorrect_answers": ["Electronic Network Integration and Control", "Enhanced Numerical Interface and Calculator", "Electronic Numeric Instruction and Computation"],
+    "explanation": "ENIAC was one of the earliest electronic digital computers."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What operating system is Linux designed to imitate?",
+    "correct_answer": "Unix",
+    "incorrect_answers": ["Windows", "macOS", "DOS"],
+    "explanation": "Linux is a Unix-like operating system created by Linus Torvalds."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the kernel in an operating system?",
+    "correct_answer": "The core responsible for resource management",
+    "incorrect_answers": ["The user interface", "The application layer", "The network driver"],
+    "explanation": "The kernel is the core of an OS, managing resources, files, and security."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What does API stand for?",
+    "correct_answer": "Application Programming Interface",
+    "incorrect_answers": ["Advanced Programming Interface", "Application Process Interface", "Advanced Process Integration"],
+    "explanation": "API stands for Application Programming Interface, allowing software to communicate."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the time complexity of binary search?",
+    "correct_answer": "O(log n)",
+    "incorrect_answers": ["O(n)", "O(n^2)", "O(1)"],
+    "explanation": "Binary search has O(log n) time complexity as it halves the search space each iteration."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What does SQL stand for?",
+    "correct_answer": "Structured Query Language",
+    "incorrect_answers": ["Standard Query Language", "Simple Query Language", "System Query Language"],
+    "explanation": "SQL is Structured Query Language used for managing relational databases."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the purpose of DNS?",
+    "correct_answer": "Translate domain names to IP addresses",
+    "incorrect_answers": ["Secure network connections", "Store website data", "Compress files"],
+    "explanation": "DNS (Domain Name System) converts human-readable domain names to IP addresses."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is a computer worm?",
+    "correct_answer": "Self-replicating malware that spreads automatically",
+    "incorrect_answers": ["A debugging tool", "A type of cable", "A search algorithm"],
+    "explanation": "A worm is malware that replicates itself and spreads without user interaction."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is a compiler?",
+    "correct_answer": "Translates source code to machine code",
+    "incorrect_answers": ["Executes code line by line", "Debugs programs", "Compresses files"],
+    "explanation": "A compiler translates entire source code into machine code before execution."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the difference between RAM and ROM?",
+    "correct_answer": "RAM is volatile, ROM is non-volatile",
+    "incorrect_answers": ["RAM is slower", "ROM is larger", "RAM is permanent"],
+    "explanation": "RAM loses data when power is off, while ROM retains data permanently."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is a virtual machine?",
+    "correct_answer": "Software emulation of a computer",
+    "incorrect_answers": ["A cloud server", "A network device", "A storage system"],
+    "explanation": "A virtual machine is a software emulation of a physical computer."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is cache memory?",
+    "correct_answer": "High-speed memory for frequently accessed data",
+    "incorrect_answers": ["Long-term storage", "Backup memory", "Network memory"],
+    "explanation": "Cache memory stores frequently accessed data for faster retrieval."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What does HTTP stand for?",
+    "correct_answer": "HyperText Transfer Protocol",
+    "incorrect_answers": ["Hyperlink Text Transfer Protocol", "High-Level Text Transfer Protocol", "HyperText Translation Protocol"],
+    "explanation": "HTTP is HyperText Transfer Protocol, the foundation of data communication on the web."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the primary function of a router?",
+    "correct_answer": "Forward data packets between networks",
+    "incorrect_answers": ["Store files", "Run applications", "Display graphics"],
+    "explanation": "A router forwards data packets between computer networks."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who is regarded as the first computer programmer?",
+    "correct_answer": "Ada Lovelace",
+    "incorrect_answers": ["Charles Babbage", "Alan Turing", "Grace Hopper"],
+    "explanation": "Ada Lovelace wrote the first algorithm for Charles Babbage's Analytical Engine."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What IBM computer defeated Garry Kasparov in 1997?",
+    "correct_answer": "Deep Blue",
+    "incorrect_answers": ["Watson", "Summit", "Blue Gene"],
+    "explanation": "Deep Blue defeated world chess champion Garry Kasparov in 1997."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is IEEE 1394 commonly known as?",
+    "correct_answer": "FireWire",
+    "incorrect_answers": ["Thunderbolt", "USB-C", "HDMI"],
+    "explanation": "IEEE 1394 is commonly known as FireWire, used for high-speed data transfer."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What was the first virus detected on ARPANET?",
+    "correct_answer": "Creeper",
+    "incorrect_answers": ["Morris", "ILOVEYOU", "Melissa"],
+    "explanation": "Creeper was the first virus detected on ARPANET in the early 1970s."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who co-designed TCP/IP protocols?",
+    "correct_answer": "Vinton Cerf",
+    "incorrect_answers": ["Tim Berners-Lee", "Robert Kahn", "Larry Page"],
+    "explanation": "Vinton Cerf and Robert Kahn co-designed the TCP/IP protocols."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the CAP theorem in distributed systems?",
+    "correct_answer": "Consistency, Availability, Partition tolerance",
+    "incorrect_answers": ["Cache, API, Protocol", "Compute, Allocate, Process", "Connect, Authenticate, Protect"],
+    "explanation": "CAP theorem states you can only guarantee two of three: Consistency, Availability, Partition tolerance."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the halting problem?",
+    "correct_answer": "Determining if a program will terminate",
+    "incorrect_answers": ["Finding infinite loops", "Debugging code", "Optimizing algorithms"],
+    "explanation": "The halting problem proves it's impossible to determine if any program will halt for all inputs."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a Turing machine?",
+    "correct_answer": "Abstract computational model",
+    "incorrect_answers": ["A physical computer", "A programming language", "An operating system"],
+    "explanation": "A Turing machine is a mathematical model of computation that defines an abstract machine."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the difference between P and NP problems?",
+    "correct_answer": "P is polynomial time, NP is nondeterministic polynomial",
+    "incorrect_answers": ["P is parallel, NP is not", "P is private, NP is public", "P is permanent, NP is temporary"],
+    "explanation": "P problems can be solved in polynomial time; NP problems can be verified in polynomial time."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a bloom filter?",
+    "correct_answer": "Probabilistic data structure for set membership",
+    "incorrect_answers": ["A sorting algorithm", "A compression technique", "A security protocol"],
+    "explanation": "A bloom filter is a space-efficient probabilistic data structure to test set membership."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is eventual consistency?",
+    "correct_answer": "Data becomes consistent over time",
+    "incorrect_answers": ["Immediate consistency", "Strong consistency", "No consistency"],
+    "explanation": "Eventual consistency guarantees that if no new updates are made, all replicas will eventually converge."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a trie data structure?",
+    "correct_answer": "Tree for storing strings efficiently",
+    "incorrect_answers": ["A sorting algorithm", "A hash function", "A graph traversal"],
+    "explanation": "A trie is a tree data structure used for efficient string storage and retrieval."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a B-tree?",
+    "correct_answer": "Self-balancing tree for databases",
+    "incorrect_answers": ["A binary tree", "A sorting algorithm", "A hash table"],
+    "explanation": "A B-tree is a self-balancing tree structure commonly used in databases and file systems."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the MapReduce paradigm?",
+    "correct_answer": "Processing large datasets in parallel",
+    "incorrect_answers": ["A sorting technique", "A security protocol", "A network model"],
+    "explanation": "MapReduce is a programming model for processing large datasets across distributed clusters."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a race condition?",
+    "correct_answer": "Multiple threads accessing shared data simultaneously",
+    "incorrect_answers": ["A performance optimization", "A security feature", "A debugging tool"],
+    "explanation": "A race condition occurs when multiple threads access shared data concurrently, causing unpredictable results."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the lambda calculus?",
+    "correct_answer": "Formal system for expressing computation",
+    "incorrect_answers": ["A programming language", "A database query", "A network protocol"],
+    "explanation": "Lambda calculus is a formal system in mathematical logic for expressing computation based on function abstraction."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is Byzantine fault tolerance?",
+    "correct_answer": "System continues despite malicious failures",
+    "incorrect_answers": ["A security protocol", "A network standard", "A programming paradigm"],
+    "explanation": "Byzantine fault tolerance allows a system to continue operating correctly even when some components fail maliciously."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What sorting algorithm has O(n log n) average complexity?",
+    "correct_answer": "Quicksort",
+    "incorrect_answers": ["Bubble Sort", "Insertion Sort", "Selection Sort"],
+    "explanation": "Quicksort has O(n log n) average time complexity and is very efficient for large datasets."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the two-phase commit protocol?",
+    "correct_answer": "Distributed transaction protocol",
+    "incorrect_answers": ["A sorting algorithm", "A security measure", "A compression method"],
+    "explanation": "Two-phase commit ensures all nodes in a distributed transaction commit or abort together."
+  },
+  {
+    "category": "Science: Computers",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a consensus algorithm?",
+    "correct_answer": "Algorithm for agreement in distributed systems",
+    "incorrect_answers": ["A sorting method", "A search technique", "A compression algorithm"],
+    "explanation": "Consensus algorithms enable distributed systems to agree on a single value despite failures."
+  }
+
+// Total: 55 questions generated
+// Science: Computers: 18 easy, 17 medium, 20 hard

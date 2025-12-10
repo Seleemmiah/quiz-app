@@ -9,7 +9,7 @@ class AIService {
 
   AIService() {
     _model = GenerativeModel(
-      model: 'gemini-pro',
+      model: 'gemini-flash-latest',
       apiKey: _apiKey,
     );
   }
@@ -79,6 +79,30 @@ class AIService {
     } catch (e) {
       print('Error generating quiz: $e');
       throw Exception('Failed to generate quiz: $e');
+    }
+  }
+
+  Future<String> getExplanation({
+    required String question,
+    required String correctAnswer,
+    required String userAnswer,
+  }) async {
+    final prompt = '''
+    You are a helpful tutor.
+    Question: "$question"
+    Correct Answer: "$correctAnswer"
+    User's Answer: "$userAnswer"
+
+    Explain simply why the correct answer is right and (if different) why the user's answer is wrong.
+    Keep it under 3 sentences.
+    ''';
+
+    try {
+      final content = [Content.text(prompt)];
+      final response = await _model.generateContent(content);
+      return response.text ?? 'Could not generate explanation.';
+    } catch (e) {
+      return 'Error: $e';
     }
   }
 }

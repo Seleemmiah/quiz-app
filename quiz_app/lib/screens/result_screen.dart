@@ -7,9 +7,18 @@ import 'package:quiz_app/models/question_model.dart';
 import 'package:quiz_app/settings.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:confetti/confetti.dart';
+import 'package:quiz_app/services/firestore_service.dart';
+import 'package:quiz_app/models/quiz_result.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:quiz_app/services/sound_service.dart';
+import 'package:quiz_app/services/gamification_service.dart';
+import 'package:quiz_app/services/campaign_service.dart';
+import 'package:quiz_app/services/shop_service.dart';
+import 'package:quiz_app/widgets/glass_card.dart';
+import 'package:quiz_app/models/theme_preset.dart';
 
 class ResultScreen extends StatefulWidget {
-  // We need to receive the score and total from the navigator
+  // ... (existing code)
   final int score;
   final int totalQuestions;
   final Difficulty difficulty;
@@ -18,8 +27,11 @@ class ResultScreen extends StatefulWidget {
   final List<String?> selectedAnswers;
   final int? timeTaken;
   final bool isBlindMode;
+  final String? levelId;
+  final bool streakIncreased;
+  final String? quizId;
+  final bool showAnswers;
 
-  // Constructor to receive the data
   const ResultScreen({
     super.key,
     required this.score,
@@ -30,6 +42,10 @@ class ResultScreen extends StatefulWidget {
     required this.selectedAnswers,
     this.timeTaken,
     this.isBlindMode = false,
+    this.levelId,
+    this.streakIncreased = false,
+    this.quizId,
+    this.showAnswers = true,
   });
 
   @override
@@ -40,6 +56,8 @@ class _ResultScreenState extends State<ResultScreen> {
   final ScoreService _scoreService = ScoreService();
   final StatisticsService _statisticsService = StatisticsService();
   final AchievementService _achievementService = AchievementService();
+  final GamificationService _gamificationService = GamificationService();
+
   int _highScore = 0;
   bool _isNewHighScore = false;
   List<Achievement> _newAchievements = [];
@@ -51,6 +69,16 @@ class _ResultScreenState extends State<ResultScreen> {
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 3));
 
+    // Save result to Firestore
+    _saveQuizResult();
+
+    // Show streak celebration if applicable
+    if (widget.streakIncreased) {
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) _showStreakCelebration();
+      });
+    }
+
     // Only show confetti and update high score if NOT in blind mode
     if (!widget.isBlindMode) {
       _updateAndLoadHighScore();
@@ -60,15 +88,52 @@ class _ResultScreenState extends State<ResultScreen> {
       final percentage = widget.totalQuestions > 0
           ? (widget.score / widget.totalQuestions) * 100
           : 0;
+
+      // Play sound based on performance
+      if (percentage >= 80) {
+        SoundService().playHighScoreSound();
+      } else if (percentage >= 50) {
+        SoundService().playAverageScoreSound();
+      } else {
+        SoundService().playLowScoreSound();
+      }
+
       if (percentage >= 80) {
         Future.delayed(const Duration(milliseconds: 500), () {
           _confettiController.play();
         });
       }
-    } else {
-      // Still record statistics but maybe don't show achievements yet?
-      // For now, let's record it.
-      _recordStatisticsAndCheckAchievements();
+
+      // Update Campaign Progress
+      if (widget.levelId != null) {
+        CampaignService().updateProgress(
+          widget.levelId!,
+          widget.score,
+          widget.totalQuestions,
+        );
+      }
+
+      // Award Coins
+      ShopService().addCoins(widget.score);
+    }
+  }
+
+  Future<void> _saveQuizResult() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final result = QuizResult(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        userId: user.uid,
+        score: widget.score,
+        totalQuestions: widget.totalQuestions,
+        category: widget.category ?? 'General',
+        difficulty: widget.difficulty.name,
+        timeTakenSeconds: widget.timeTaken ?? 0,
+        date: DateTime.now(),
+        quizId: widget.quizId,
+      );
+
+      await FirestoreService().saveQuizResult(result);
     }
   }
 
@@ -103,6 +168,30 @@ class _ResultScreenState extends State<ResultScreen> {
       category: widget.category,
     );
 
+    // Calculate and award XP
+    final earnedXP = _gamificationService.calculateQuizXP(
+      score: widget.score,
+      totalQuestions: widget.totalQuestions,
+      difficulty: widget.difficulty,
+      completionTimeSeconds: widget.timeTaken,
+    );
+
+    // Get level before adding XP
+    final xpBefore = await _gamificationService.getTotalXP();
+    final levelBefore = _gamificationService.getLevel(xpBefore);
+
+    // Add the earned XP
+    await _gamificationService.addXP(earnedXP);
+
+    // Get level after adding XP
+    final xpAfter = await _gamificationService.getTotalXP();
+    final levelAfter = _gamificationService.getLevel(xpAfter);
+
+    // Check if user leveled up
+    if (levelAfter > levelBefore && mounted) {
+      _showLevelUpDialog(levelBefore, levelAfter);
+    }
+
     // Get updated statistics for achievement checking
     final stats = await _statisticsService.getStatistics();
 
@@ -116,6 +205,7 @@ class _ResultScreenState extends State<ResultScreen> {
       difficultyQuizzes: stats.difficultyQuizzes,
       categoryQuizzes: stats.categoryQuizzes,
       categoryAverages: stats.categoryAverages,
+      currentLevel: levelAfter, // Pass current level
     );
 
     if (newAchievements.isNotEmpty && mounted) {
@@ -123,6 +213,13 @@ class _ResultScreenState extends State<ResultScreen> {
         _newAchievements = newAchievements;
       });
     }
+
+    // Check for Campaign Progress
+    // We need to know if this was a campaign level.
+    // Since we can't easily pass arguments to initState, we'll check widget properties if we add them,
+    // or we can rely on a separate method call or passed arguments.
+    // Ideally, ResultScreen should accept 'levelId'.
+    // For now, let's assume we pass 'levelId' in the constructor or arguments.
   }
 
   void _shareScore() {
@@ -130,7 +227,7 @@ class _ResultScreenState extends State<ResultScreen> {
         ? (widget.score / widget.totalQuestions) * 100
         : 0;
     final message = 'I scored ${widget.score}/${widget.totalQuestions} '
-        '(${percentage.toStringAsFixed(1)}%) on the Quiz App! '
+        '(${percentage.toStringAsFixed(1)}%) on Mindly! '
         '${widget.category != null ? "Category: ${widget.category}" : ""}';
     Share.share(message);
   }
@@ -275,18 +372,9 @@ class _ResultScreenState extends State<ResultScreen> {
                     const SizedBox(height: 20),
                     FadeIn(
                       delay: const Duration(milliseconds: 1000),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.amber.withValues(alpha: 0.2),
-                              Colors.orange.withValues(alpha: 0.2),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.amber, width: 2),
-                        ),
+                      child: GlassCard(
+                        borderColor: Colors.amber.withOpacity(0.5),
+                        borderWidth: 2,
                         child: Column(
                           children: [
                             Text(
@@ -343,7 +431,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       icon: const Icon(Icons.restart_alt),
                       label: const Text('Restart Quiz'),
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/');
+                        Navigator.pushReplacementNamed(context, '/home');
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -355,26 +443,58 @@ class _ResultScreenState extends State<ResultScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  FadeInUp(
-                    delay: const Duration(milliseconds: 1400),
-                    child: OutlinedButton.icon(
-                      icon: const Icon(Icons.rate_review_outlined),
-                      label: const Text('Review Answers'),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/review',
-                          arguments: {
-                            'questions': widget.questions,
-                            'selectedAnswers': widget.selectedAnswers,
-                          },
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                  // Only show Review Answers button if showAnswers is true
+                  if (widget.showAnswers)
+                    FadeInUp(
+                      delay: const Duration(milliseconds: 1400),
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.rate_review_outlined),
+                        label: const Text('Review Answers'),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/review',
+                            arguments: {
+                              'questions': widget.questions,
+                              'selectedAnswers': widget.selectedAnswers,
+                            },
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
                       ),
                     ),
-                  ),
+                  // Show message for students when answers are hidden
+                  if (!widget.showAnswers)
+                    FadeInUp(
+                      delay: const Duration(milliseconds: 1400),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.blue.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.info_outline, color: Colors.blue),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Your submission has been recorded. Your teacher will review your answers.',
+                                style: TextStyle(
+                                  color: Colors.blue.shade700,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -400,6 +520,178 @@ class _ResultScreenState extends State<ResultScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showStreakCelebration() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.local_fire_department,
+                      color: Colors.orange, size: 24),
+                  SizedBox(width: 8),
+                  Text(
+                    'Streak Increased!',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Keep it up!',
+                style: TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 36,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                  ),
+                  child: const Text('OK'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showLevelUpDialog(int oldLevel, int newLevel) {
+    // Play confetti for level up
+    _confettiController.play();
+
+    // Check if any themes were unlocked
+    final unlockedThemes = ThemePreset.presets
+        .where((theme) => theme.unlockLevel == newLevel)
+        .toList();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Level up icon
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.arrow_upward,
+                  size: 48,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Level up text
+              const Text(
+                '🎉 LEVEL UP! 🎉',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+
+              Text(
+                'Level $oldLevel → Level $newLevel',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+
+              // Unlocked themes
+              if (unlockedThemes.isNotEmpty) ...[
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.amber.withOpacity(0.3)),
+                  ),
+                  child: Column(
+                    children: [
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.lock_open, color: Colors.amber, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'New Theme Unlocked!',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.amber,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      ...unlockedThemes.map((theme) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Text(
+                              '${theme.emoji} ${theme.name}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+
+              // Motivational message
+              Text(
+                'Keep up the great work!',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+
+              // Close button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: const Text('Awesome!'),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

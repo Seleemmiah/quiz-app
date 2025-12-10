@@ -1,0 +1,722 @@
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does CAD stand for?",
+    "correct_answer": "Computer-Aided Design",
+    "incorrect_answers": ["Computer-Aided Drawing", "Computer-Assisted Design", "Complex Architectural Design"],
+    "explanation": "CAD software is used by engineers to create precision drawings."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the main material used in modern skyscrapers?",
+    "correct_answer": "Steel",
+    "incorrect_answers": ["Wood", "Brick", "Plastic"],
+    "explanation": "Steel provides the necessary strength and flexibility for tall structures."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What simple machine is a ramp?",
+    "correct_answer": "Inclined Plane",
+    "incorrect_answers": ["Lever", "Pulley", "Wedge"],
+    "explanation": "An inclined plane allows heavy loads to be moved up with less force."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What device converts electrical energy into mechanical energy?",
+    "correct_answer": "Motor",
+    "incorrect_answers": ["Generator", "Battery", "Resistor"],
+    "explanation": "An electric motor converts electrical energy into motion."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which engineer is famous for his work with alternating current (AC)?",
+    "correct_answer": "Nikola Tesla",
+    "incorrect_answers": ["Thomas Edison", "Alexander Graham Bell", "Henry Ford"],
+    "explanation": "Nikola Tesla championed the AC system for electricity transmission."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What structure spans a physical obstacle like a river?",
+    "correct_answer": "Bridge",
+    "incorrect_answers": ["Tunnel", "Dam", "Canal"],
+    "explanation": "Bridges are built to span obstacles without closing the way underneath."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the rotating part of a motor called?",
+    "correct_answer": "Rotor",
+    "incorrect_answers": ["Stator", "Axle", "Bearing"],
+    "explanation": "The rotor is the moving component of an electromagnetic system."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the stationary part of a motor called?",
+    "correct_answer": "Stator",
+    "incorrect_answers": ["Rotor", "Commutator", "Brush"],
+    "explanation": "The stator is the stationary part of a rotary system."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What device stores electrical energy?",
+    "correct_answer": "Battery",
+    "incorrect_answers": ["Motor", "Switch", "Fuse"],
+    "explanation": "Batteries store chemical energy and convert it to electrical energy."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the unit of electrical resistance?",
+    "correct_answer": "Ohm",
+    "incorrect_answers": ["Volt", "Ampere", "Watt"],
+    "explanation": "The Ohm is the standard unit of electrical resistance."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What material is a good conductor of electricity?",
+    "correct_answer": "Copper",
+    "incorrect_answers": ["Rubber", "Glass", "Plastic"],
+    "explanation": "Copper is widely used in wiring because it conducts electricity well."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the main function of a dam?",
+    "correct_answer": "Retain water",
+    "incorrect_answers": ["Generate wind", "Filter air", "Burn trash"],
+    "explanation": "Dams are built to hold back water for reservoirs or hydroelectric power."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What simple machine is a seesaw?",
+    "correct_answer": "Lever",
+    "incorrect_answers": ["Pulley", "Screw", "Wheel and Axle"],
+    "explanation": "A seesaw is a classic example of a lever."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the ratio of stress to strain called?",
+    "correct_answer": "Young's Modulus",
+    "incorrect_answers": ["Poisson's Ratio", "Shear Modulus", "Bulk Modulus"],
+    "explanation": "Young's Modulus measures the stiffness of a solid material."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the primary component of concrete?",
+    "correct_answer": "Cement",
+    "incorrect_answers": ["Sand", "Gravel", "Water"],
+    "explanation": "Cement binds the other ingredients (aggregate and water) together."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What does HVAC stand for?",
+    "correct_answer": "Heating, Ventilation, and Air Conditioning",
+    "incorrect_answers": ["High Voltage Alternating Current", "Heat, Vacuum, and Cooling", "Humidity, Ventilation, and Air Control"],
+    "explanation": "HVAC systems control the environment inside buildings."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which type of bridge uses cables to support the deck?",
+    "correct_answer": "Suspension Bridge",
+    "incorrect_answers": ["Arch Bridge", "Beam Bridge", "Truss Bridge"],
+    "explanation": "Suspension bridges hang the deck from cables strung between towers."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the measure of a material's resistance to deformation?",
+    "correct_answer": "Stiffness",
+    "incorrect_answers": ["Strength", "Toughness", "Hardness"],
+    "explanation": "Stiffness is the extent to which an object resists deformation in response to an applied force."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the process of joining metals by melting them?",
+    "correct_answer": "Welding",
+    "incorrect_answers": ["Soldering", "Brazing", "Forging"],
+    "explanation": "Welding fuses materials by melting them together."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the study of fluids in motion called?",
+    "correct_answer": "Fluid Dynamics",
+    "incorrect_answers": ["Thermodynamics", "Statics", "Kinematics"],
+    "explanation": "Fluid dynamics describes the flow of fluids (liquids and gases)."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What device increases or decreases voltage?",
+    "correct_answer": "Transformer",
+    "incorrect_answers": ["Transistor", "Capacitor", "Inductor"],
+    "explanation": "Transformers transfer electrical energy between circuits, changing voltage levels."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the term for a failure caused by repeated loading?",
+    "correct_answer": "Fatigue",
+    "incorrect_answers": ["Creep", "Fracture", "Buckling"],
+    "explanation": "Fatigue is the weakening of a material caused by cyclic loading."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which law states V = IR?",
+    "correct_answer": "Ohm's Law",
+    "incorrect_answers": ["Kirchhoff's Law", "Faraday's Law", "Ampere's Law"],
+    "explanation": "Ohm's Law relates voltage, current, and resistance."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the main purpose of a flywheel?",
+    "correct_answer": "Store rotational energy",
+    "incorrect_answers": ["Generate electricity", "Cool the engine", "Filter fuel"],
+    "explanation": "Flywheels store rotational kinetic energy to smooth out power delivery."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the efficiency limit of a heat engine called?",
+    "correct_answer": "Carnot Efficiency",
+    "incorrect_answers": ["Rankine Efficiency", "Brayton Efficiency", "Otto Efficiency"],
+    "explanation": "The Carnot efficiency is the maximum theoretical efficiency of a heat engine."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What phenomenon causes a bridge to collapse due to wind?",
+    "correct_answer": "Resonance",
+    "incorrect_answers": ["Damping", "Flutter", "Fatigue"],
+    "explanation": "Resonance occurs when a force drives a system at its natural frequency (e.g., Tacoma Narrows Bridge)."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the term for the slow deformation of material under stress?",
+    "correct_answer": "Creep",
+    "incorrect_answers": ["Fatigue", "Yielding", "Buckling"],
+    "explanation": "Creep is the tendency of a solid material to move slowly or deform permanently under mechanical stresses."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What dimensionless number predicts fluid flow regimes?",
+    "correct_answer": "Reynolds Number",
+    "incorrect_answers": ["Mach Number", "Prandtl Number", "Nusselt Number"],
+    "explanation": "The Reynolds number helps predict laminar or turbulent flow patterns."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the name of the chart used to schedule projects?",
+    "correct_answer": "Gantt Chart",
+    "incorrect_answers": ["Pie Chart", "Pareto Chart", "Scatter Plot"],
+    "explanation": "A Gantt chart illustrates a project schedule."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which cycle describes the operation of a steam power plant?",
+    "correct_answer": "Rankine Cycle",
+    "incorrect_answers": ["Otto Cycle", "Diesel Cycle", "Brayton Cycle"],
+    "explanation": "The Rankine cycle is an idealized thermodynamic cycle of a heat engine."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the property of a material to absorb energy before fracturing?",
+    "correct_answer": "Toughness",
+    "incorrect_answers": ["Hardness", "Stiffness", "Strength"],
+    "explanation": "Toughness is the ability of a material to absorb energy and plastically deform without fracturing."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the term for the sudden failure of a structural member under compression?",
+    "correct_answer": "Buckling",
+    "incorrect_answers": ["Shearing", "Tension", "Torsion"],
+    "explanation": "Buckling is a sudden change in shape (deformation) of a structural component under load."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Who is considered the father of civil engineering?",
+    "correct_answer": "John Smeaton",
+    "incorrect_answers": ["Isambard Kingdom Brunel", "Thomas Telford", "Gustave Eiffel"],
+    "explanation": "John Smeaton was the first to call himself a 'civil engineer'."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the primary alloying element in stainless steel?",
+    "correct_answer": "Chromium",
+    "incorrect_answers": ["Nickel", "Carbon", "Manganese"],
+    "explanation": "Chromium prevents rust by forming a passive layer of oxide."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the unit of inductance?",
+    "correct_answer": "Henry",
+    "incorrect_answers": ["Farad", "Weber", "Tesla"],
+    "explanation": "The Henry (H) is the SI unit of inductance."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "Which logic gate outputs true only if both inputs are true?",
+    "correct_answer": "AND",
+    "incorrect_answers": ["OR", "XOR", "NAND"],
+    "explanation": "The AND gate requires both inputs to be high to output high."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the process of removing salt from seawater?",
+    "correct_answer": "Desalination",
+    "incorrect_answers": ["Distillation", "Filtration", "Chlorination"],
+    "explanation": "Desalination removes minerals from saline water."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the ratio of inertial forces to viscous forces?",
+    "correct_answer": "Reynolds Number",
+    "incorrect_answers": ["Froude Number", "Weber Number", "Euler Number"],
+    "explanation": "The Reynolds number quantifies the relative importance of these two types of forces."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the term for the heat required to raise the temperature of a unit mass by one degree?",
+    "correct_answer": "Specific Heat Capacity",
+    "incorrect_answers": ["Latent Heat", "Thermal Conductivity", "Enthalpy"],
+    "explanation": "Specific heat capacity is the heat energy required to raise the temperature of a substance."
+  },
+  {
+    "category": "Engineering",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the maximum stress a material can withstand while being stretched?",
+    "correct_answer": "Tensile Strength",
+    "incorrect_answers": ["Compressive Strength", "Shear Strength", "Yield Strength"],
+    "explanation": "Tensile strength measures the force required to pull something to the point where it breaks."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does HTML stand for?",
+    "correct_answer": "HyperText Markup Language",
+    "incorrect_answers": ["HighText Machine Language", "HyperTool Multi Language", "Home Tool Markup Language"],
+    "explanation": "HTML is the standard markup language for documents designed to be displayed in a web browser."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is a bug?",
+    "correct_answer": "An error in code",
+    "incorrect_answers": ["A feature", "A virus", "A type of variable"],
+    "explanation": "A software bug is an error, flaw, or fault in a computer program."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which language is named after a snake?",
+    "correct_answer": "Python",
+    "incorrect_answers": ["Cobra", "Viper", "Anaconda"],
+    "explanation": "Python was named after Monty Python, but the snake logo is iconic."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does GUI stand for?",
+    "correct_answer": "Graphical User Interface",
+    "incorrect_answers": ["General User Interface", "Global User Interface", "Graphical Unit Interface"],
+    "explanation": "A GUI allows users to interact with electronic devices through graphical icons."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the binary value of 1?",
+    "correct_answer": "1",
+    "incorrect_answers": ["0", "10", "11"],
+    "explanation": "In binary, 1 is represented as 1."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What symbol is used for comments in Python?",
+    "correct_answer": "#",
+    "incorrect_answers": ["//", "/*", "--"],
+    "explanation": "Python uses the hash symbol (#) for single-line comments."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is a loop?",
+    "correct_answer": "Repeating code",
+    "incorrect_answers": ["Stopping code", "Deleting code", "Skipping code"],
+    "explanation": "A loop is a sequence of instructions that is continually repeated until a certain condition is reached."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does CSS stand for?",
+    "correct_answer": "Cascading Style Sheets",
+    "incorrect_answers": ["Computer Style Sheets", "Creative Style Sheets", "Colorful Style Sheets"],
+    "explanation": "CSS describes how HTML elements are to be displayed on screen."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is the main function in a C program?",
+    "correct_answer": "main()",
+    "incorrect_answers": ["start()", "begin()", "init()"],
+    "explanation": "Execution of a C program begins with the main() function."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What company owns Java?",
+    "correct_answer": "Oracle",
+    "incorrect_answers": ["Microsoft", "Google", "Apple"],
+    "explanation": "Oracle Corporation acquired Sun Microsystems, the original developer of Java."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is 'Hello, World!'?",
+    "correct_answer": "First program",
+    "incorrect_answers": ["Last program", "Error message", "Virus name"],
+    "explanation": "'Hello, World!' is traditionally the first program written when learning a new language."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "Which of these is a boolean value?",
+    "correct_answer": "True",
+    "incorrect_answers": ["10", "String", "Null"],
+    "explanation": "Boolean data types have two possible values: True or False."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What does CPU stand for?",
+    "correct_answer": "Central Processing Unit",
+    "incorrect_answers": ["Computer Processing Unit", "Central Program Unit", "Control Processing Unit"],
+    "explanation": "The CPU is the primary component of a computer that acts as its 'brain'."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "easy",
+    "question": "What is an array?",
+    "correct_answer": "A list of items",
+    "incorrect_answers": ["A single number", "A text file", "A database"],
+    "explanation": "An array is a data structure consisting of a collection of elements."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What does SQL stand for?",
+    "correct_answer": "Structured Query Language",
+    "incorrect_answers": ["Standard Query Language", "Simple Query Language", "System Query Language"],
+    "explanation": "SQL is a domain-specific language used in programming and designed for managing data held in a RDBMS."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is recursion?",
+    "correct_answer": "A function calling itself",
+    "incorrect_answers": ["A loop inside a loop", "A database error", "A variable type"],
+    "explanation": "Recursion is a method where the solution to a problem depends on solutions to smaller instances of the same problem."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What does API stand for?",
+    "correct_answer": "Application Programming Interface",
+    "incorrect_answers": ["Application Program Interconnect", "Advanced Programming Interface", "Automated Program Interface"],
+    "explanation": "An API is a set of functions and procedures allowing the creation of applications that access the features or data of an operating system, application, or other service."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is the difference between '==' and '='?",
+    "correct_answer": "Comparison vs Assignment",
+    "incorrect_answers": ["Assignment vs Comparison", "Addition vs Subtraction", "None"],
+    "explanation": "'==' compares values, while '=' assigns a value to a variable."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is Git?",
+    "correct_answer": "Version Control System",
+    "incorrect_answers": ["Programming Language", "Operating System", "Text Editor"],
+    "explanation": "Git is a distributed version-control system for tracking changes in source code."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What does JSON stand for?",
+    "correct_answer": "JavaScript Object Notation",
+    "incorrect_answers": ["Java Source Object Network", "JavaScript Online Notation", "Java System Object Node"],
+    "explanation": "JSON is an open standard file format using human-readable text to store and transmit data objects."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is a class in OOP?",
+    "correct_answer": "A blueprint for objects",
+    "incorrect_answers": ["A function", "A variable", "A library"],
+    "explanation": "In object-oriented programming, a class is an extensible program-code-template for creating objects."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which data structure uses LIFO?",
+    "correct_answer": "Stack",
+    "incorrect_answers": ["Queue", "Array", "Tree"],
+    "explanation": "A Stack follows the Last In, First Out (LIFO) principle."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "Which data structure uses FIFO?",
+    "correct_answer": "Queue",
+    "incorrect_answers": ["Stack", "Graph", "Heap"],
+    "explanation": "A Queue follows the First In, First Out (FIFO) principle."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "medium",
+    "question": "What is an algorithm?",
+    "correct_answer": "Step-by-step instructions",
+    "incorrect_answers": ["A hardware component", "A type of virus", "A programming language"],
+    "explanation": "An algorithm is a finite sequence of well-defined, computer-implementable instructions."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the time complexity of binary search?",
+    "correct_answer": "O(log n)",
+    "incorrect_answers": ["O(n)", "O(n^2)", "O(1)"],
+    "explanation": "Binary search runs in logarithmic time."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What does REST stand for in web services?",
+    "correct_answer": "Representational State Transfer",
+    "incorrect_answers": ["Remote State Transfer", "Real State Transfer", "Rapid State Transfer"],
+    "explanation": "REST is a software architectural style that defines a set of constraints to be used for creating Web services."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is dependency injection?",
+    "correct_answer": "Design pattern",
+    "incorrect_answers": ["Database type", "Sorting algorithm", "Compiler error"],
+    "explanation": "Dependency injection is a technique in which an object receives other objects that it depends on."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What are the SOLID principles?",
+    "correct_answer": "OOP design guidelines",
+    "incorrect_answers": ["Database rules", "Network protocols", "Security standards"],
+    "explanation": "SOLID is an acronym for five design principles intended to make software designs more understandable, flexible, and maintainable."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a closure?",
+    "correct_answer": "Function with preserved scope",
+    "incorrect_answers": ["End of a program", "Database connection", "Memory leak"],
+    "explanation": "A closure is a record storing a function together with an environment."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the difference between a process and a thread?",
+    "correct_answer": "Threads share memory",
+    "incorrect_answers": ["Processes share memory", "Threads are slower", "Processes are smaller"],
+    "explanation": "Threads within the same process share the same memory space, while processes have separate memory spaces."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a deadlock?",
+    "correct_answer": "Processes waiting for each other",
+    "incorrect_answers": ["Program crash", "Infinite loop", "Memory overflow"],
+    "explanation": "A deadlock occurs when two or more processes are unable to proceed because each is waiting for the other to release a resource."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is polymorphism?",
+    "correct_answer": "Objects taking many forms",
+    "incorrect_answers": ["Data encryption", "Code compilation", "Memory management"],
+    "explanation": "Polymorphism allows objects of different classes to be treated as objects of a common superclass."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the purpose of a constructor?",
+    "correct_answer": "Initialize an object",
+    "incorrect_answers": ["Destroy an object", "Copy an object", "Print an object"],
+    "explanation": "A constructor is a special method of a class or structure in object-oriented programming that initializes a newly created object."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a singleton?",
+    "correct_answer": "Class with only one instance",
+    "incorrect_answers": ["Class with no methods", "Class with many instances", "Abstract class"],
+    "explanation": "The singleton pattern restricts the instantiation of a class to one 'single' instance."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is Big O notation used for?",
+    "correct_answer": "Describing algorithm performance",
+    "incorrect_answers": ["Naming variables", "Defining classes", "Styling code"],
+    "explanation": "Big O notation describes the limiting behavior of a function when the argument tends towards a particular value or infinity."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a hash map?",
+    "correct_answer": "Key-value pair data structure",
+    "incorrect_answers": ["Sorted list", "Binary tree", "Linear array"],
+    "explanation": "A hash map implements an associative array abstract data type, a structure that can map keys to values."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the difference between TCP and UDP?",
+    "correct_answer": "TCP is reliable, UDP is fast",
+    "incorrect_answers": ["UDP is reliable, TCP is fast", "They are the same", "TCP is for email only"],
+    "explanation": "TCP provides reliable, ordered, and error-checked delivery, while UDP is connectionless and faster but less reliable."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a race condition?",
+    "correct_answer": "Timing-dependent bug",
+    "incorrect_answers": ["Fast code", "Network speed", "Compiler optimization"],
+    "explanation": "A race condition occurs when a software system's behavior depends on the timing of uncontrollable events."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is the CAP theorem?",
+    "correct_answer": "Consistency, Availability, Partition tolerance",
+    "incorrect_answers": ["Consistency, Accuracy, Performance", "Capacity, Availability, Performance", "Consistency, Availability, Privacy"],
+    "explanation": "The CAP theorem states that a distributed data store can only provide two of the three guarantees."
+  },
+  {
+    "category": "Programming",
+    "type": "multiple",
+    "difficulty": "hard",
+    "question": "What is a lambda function?",
+    "correct_answer": "Anonymous function",
+    "incorrect_answers": ["Recursive function", "Main function", "Class method"],
+    "explanation": "A lambda function is a small anonymous function defined with the lambda keyword."
+  }
+
+// Generated 80 Tech questions

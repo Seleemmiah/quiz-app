@@ -6,7 +6,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Quiz App</string>
+	<string>Mindly</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -14,7 +14,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>quiz_app</string>
+	<string>Mindly</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -48,6 +48,14 @@
 	<true/>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>We use notifications to remind you to keep your quiz streak alive!</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>We use speech recognition for voice mode to read questions aloud.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We use the microphone for voice features in the quiz app.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We use the camera for document scanning and handwriting recognition.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We use the photo library to access documents for quiz generation.</string>
 	<key>GIDClientID</key>
 	<string>362153618720-qod5e15ubgq7v3urkqnc7r2aou7ovb25.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>

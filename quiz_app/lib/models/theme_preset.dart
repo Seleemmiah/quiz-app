@@ -6,136 +6,544 @@ class ThemePreset {
   final Color primaryColor;
   final Color accentColor;
   final String emoji;
+  final int unlockLevel; // Level required to unlock (0 = free)
+  final String description; // Description of the theme
 
   const ThemePreset({
     required this.name,
     required this.primaryColor,
     required this.accentColor,
     required this.emoji,
+    this.unlockLevel = 0,
+    this.description = 'Standard Theme',
   });
 
   static const List<ThemePreset> presets = [
+    // SIGNATURE MINDLY THEME - Our Brand Identity
     ThemePreset(
-      name: 'Default',
-      primaryColor: Colors.indigo,
-      accentColor: Colors.indigoAccent,
-      emoji: '🎨',
+      name: 'Mindly',
+      primaryColor: Color(0xFF6366F1), // Indigo-500 - Our signature color
+      accentColor: Color(0xFF8B5CF6), // Purple-500
+      emoji: '🧠',
+      description: 'The official Mindly experience',
+    ),
+
+    // FREE THEMES - VIBRANT & COOL! (Level 0)
+    ThemePreset(
+      name: 'Cosmic Purple',
+      primaryColor: Color(0xFF7C3AED), // Vibrant purple
+      accentColor: Color(0xFFA78BFA), // Light purple
+      emoji: '🌌',
+      description: 'Epic space vibes',
     ),
     ThemePreset(
-      name: 'Ocean',
-      primaryColor: Color(0xFF006994),
-      accentColor: Color(0xFF00B4D8),
+      name: 'Neon Blue',
+      primaryColor: Color(0xFF3B82F6), // Bright blue
+      accentColor: Color(0xFF60A5FA), // Sky blue
+      emoji: '💙',
+      description: 'Electric and energetic',
+    ),
+    ThemePreset(
+      name: 'Lime Burst',
+      primaryColor: Color(0xFF84CC16), // Lime green
+      accentColor: Color(0xFFA3E635), // Light lime
+      emoji: '🍋',
+      description: 'Fresh and zesty',
+    ),
+    ThemePreset(
+      name: 'Hot Pink',
+      primaryColor: Color(0xFFEC4899), // Hot pink
+      accentColor: Color(0xFFF472B6), // Light pink
+      emoji: '💖',
+      description: 'Bold and playful',
+    ),
+    ThemePreset(
+      name: 'Ocean Wave',
+      primaryColor: Color(0xFF06B6D4), // Cyan
+      accentColor: Color(0xFF22D3EE), // Light cyan
       emoji: '🌊',
+      description: 'Cool and refreshing',
+    ),
+    ThemePreset(
+      name: 'Fire Orange',
+      primaryColor: Color(0xFFF97316), // Orange
+      accentColor: Color(0xFFFB923C), // Light orange
+      emoji: '🔥',
+      description: 'Hot and intense',
+    ),
+    ThemePreset(
+      name: 'Emerald Dream',
+      primaryColor: Color(0xFF10B981), // Emerald
+      accentColor: Color(0xFF34D399), // Light emerald
+      emoji: '💚',
+      description: 'Natural and calming',
+    ),
+    ThemePreset(
+      name: 'Royal Violet',
+      primaryColor: Color(0xFF8B5CF6), // Violet
+      accentColor: Color(0xFFA78BFA), // Light violet
+      emoji: '👑',
+      description: 'Majestic and premium',
+    ),
+
+    // PROFESSIONAL THEMES - Subdued & Elegant (Level 0)
+    ThemePreset(
+      name: 'Slate',
+      primaryColor: Color(0xFF475569), // Slate-600
+      accentColor: Color(0xFF64748B), // Slate-500
+      emoji: '🏢',
+      description: 'Professional and neutral',
+    ),
+    ThemePreset(
+      name: 'Navy',
+      primaryColor: Color(0xFF1E3A8A), // Blue-900
+      accentColor: Color(0xFF1E40AF), // Blue-800
+      emoji: '⚓',
+      description: 'Classic and trustworthy',
     ),
     ThemePreset(
       name: 'Forest',
-      primaryColor: Color(0xFF2D6A4F),
-      accentColor: Color(0xFF52B788),
+      primaryColor: Color(0xFF065F46), // Emerald-800
+      accentColor: Color(0xFF047857), // Emerald-700
       emoji: '🌲',
+      description: 'Calm and focused',
     ),
+    ThemePreset(
+      name: 'Burgundy',
+      primaryColor: Color(0xFF881337), // Rose-900
+      accentColor: Color(0xFF9F1239), // Rose-800
+      emoji: '🍷',
+      description: 'Sophisticated and refined',
+    ),
+
+    // UNLOCKABLE THEMES (Level 5+)
     ThemePreset(
       name: 'Sunset',
-      primaryColor: Color(0xFFE63946),
-      accentColor: Color(0xFFF77F00),
+      primaryColor: Color(0xFFF59E0B),
+      accentColor: Color(0xFFF97316),
       emoji: '🌅',
+      unlockLevel: 5,
+      description: 'Warm and energetic',
     ),
     ThemePreset(
-      name: 'Midnight',
-      primaryColor: Color(0xFF1A1A2E),
-      accentColor: Color(0xFF16213E),
-      emoji: '🌙',
+      name: 'Coral',
+      primaryColor: Color(0xFFF43F5E),
+      accentColor: Color(0xFFE11D48),
+      emoji: '🪸',
+      unlockLevel: 5,
+      description: 'Vibrant and playful',
     ),
     ThemePreset(
-      name: 'Lavender',
-      primaryColor: Color(0xFF9D4EDD),
-      accentColor: Color(0xFFC77DFF),
-      emoji: '💜',
+      name: 'Forest Green',
+      primaryColor: Color(0xFF14532D),
+      accentColor: Color(0xFF166534),
+      emoji: '🌲',
+      unlockLevel: 8,
+      description: 'Deep nature vibes',
     ),
-    // --- New Presets Below ---
+
+    // PREMIUM THEMES (Level 10+)
     ThemePreset(
-      name: 'Blush',
-      primaryColor: Color(0xFFF08084),
-      accentColor: Color(0xFFFFC3A0),
-      emoji: '🌸',
-    ),
-    ThemePreset(
-      name: 'Emerald',
-      primaryColor: Color(0xFF009688),
-      accentColor: Color(0xFF4DB6AC),
-      emoji: '💎',
-    ),
-    ThemePreset(
-      name: 'Tangerine',
-      primaryColor: Color(0xFFF28500),
-      accentColor: Color(0xFFFFAB40),
-      emoji: '🍊',
+      name: 'Royal Gold',
+      primaryColor: Color(0xFFEAB308),
+      accentColor: Color(0xFFFBBF24),
+      emoji: '👑',
+      unlockLevel: 10,
+      description: 'Luxurious and prestigious',
     ),
     ThemePreset(
-      name: 'Slate',
-      primaryColor: Color(0xFF455A64),
-      accentColor: Color(0xFF78909C),
-      emoji: '🏙️',
+      name: 'Cyberpunk',
+      primaryColor: Color(0xFFEC4899),
+      accentColor: Color(0xFFA855F7),
+      emoji: '🎮',
+      unlockLevel: 12,
+      description: 'Futuristic neon style',
+    ),
+    ThemePreset(
+      name: 'Electric',
+      primaryColor: Color(0xFF0EA5E9),
+      accentColor: Color(0xFF06B6D4),
+      emoji: '⚡',
+      unlockLevel: 15,
+      description: 'High energy blue',
+    ),
+
+    // ELITE THEMES (Level 20+)
+    ThemePreset(
+      name: 'Midnight Violet',
+      primaryColor: Color(0xFF4C1D95),
+      accentColor: Color(0xFF6D28D9),
+      emoji: '🔮',
+      unlockLevel: 20,
+      description: 'Mysterious and deep',
+    ),
+    ThemePreset(
+      name: 'Ruby Red',
+      primaryColor: Color(0xFF991B1B),
+      accentColor: Color(0xFFDC2626),
+      emoji: '❤️',
+      unlockLevel: 25,
+      description: 'Intense and bold',
+    ),
+    ThemePreset(
+      name: 'Carbon',
+      primaryColor: Color(0xFF18181B),
+      accentColor: Color(0xFF71717A),
+      emoji: '⚫',
+      unlockLevel: 30,
+      description: 'Ultimate dark mode',
+    ),
+    ThemePreset(
+      name: 'Matrix',
+      primaryColor: Color(0xFF00FF41),
+      accentColor: Color(0xFF00D936),
+      emoji: '💻',
+      unlockLevel: 40,
+      description: 'Hack the system',
+    ),
+    ThemePreset(
+      name: 'Obsidian',
+      primaryColor: Color(0xFF000000),
+      accentColor: Color(0xFF333333),
+      emoji: '🖤',
+      unlockLevel: 50,
+      description: 'Pure black OLED mastery',
     ),
   ];
 
   ThemeData createLightTheme() {
+    final isDarkTheme = _isDarkColorScheme();
+
     return ThemeData(
+      useMaterial3: true,
       brightness: Brightness.light,
       primaryColor: primaryColor,
-      colorScheme: ColorScheme.light(
-        primary: primaryColor,
-        secondary: accentColor,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primaryColor,
+        brightness: Brightness.light,
       ),
-      scaffoldBackgroundColor: Colors.grey.shade100,
-      textTheme: GoogleFonts.latoTextTheme().apply(
-        bodyColor: Colors.black,
-        displayColor: Colors.black,
+      scaffoldBackgroundColor:
+          isDarkTheme ? Colors.grey.shade900 : Colors.grey.shade50,
+      cardTheme: CardThemeData(
+        elevation: 0,
+        color:
+            isDarkTheme ? Colors.grey.shade800.withOpacity(0.5) : Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16), // Reduced from 20
+        ),
+        margin: const EdgeInsets.all(8), // Reduced margin
+      ),
+      // Apply Google Fonts to ALL text in the app
+      textTheme: GoogleFonts.interTextTheme(
+        TextTheme(
+          // Display styles (large headings)
+          displayLarge: GoogleFonts.inter(
+            fontSize: 48, // Reduced from 57
+            fontWeight: FontWeight.bold,
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          displayMedium: GoogleFonts.inter(
+            fontSize: 38, // Reduced from 45
+            fontWeight: FontWeight.bold,
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          displaySmall: GoogleFonts.inter(
+            fontSize: 30, // Reduced from 36
+            fontWeight: FontWeight.bold,
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          // Headline styles
+          headlineLarge: GoogleFonts.inter(
+            fontSize: 26, // Reduced from 32
+            fontWeight: FontWeight.bold,
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          headlineMedium: GoogleFonts.inter(
+            fontSize: 22, // Reduced from 28
+            fontWeight: FontWeight.bold,
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          headlineSmall: GoogleFonts.inter(
+            fontSize: 19, // Reduced from 24
+            fontWeight: FontWeight.w600,
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          // Title styles
+          titleLarge: GoogleFonts.inter(
+            fontSize: 17, // Reduced from 22
+            fontWeight: FontWeight.w600,
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          titleMedium: GoogleFonts.inter(
+            fontSize: 14, // Reduced from 16
+            fontWeight: FontWeight.w600,
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          titleSmall: GoogleFonts.inter(
+            fontSize: 12, // Reduced from 14
+            fontWeight: FontWeight.w600,
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          // Body styles
+          bodyLarge: GoogleFonts.inter(
+            fontSize: 14, // Reduced from 16
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          bodyMedium: GoogleFonts.inter(
+            fontSize: 13, // Reduced from 14
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          bodySmall: GoogleFonts.inter(
+            fontSize: 11, // Reduced from 12
+            color: isDarkTheme ? Colors.white70 : Colors.black54,
+          ),
+          // Label styles
+          labelLarge: GoogleFonts.inter(
+            fontSize: 13, // Reduced from 14
+            fontWeight: FontWeight.w600,
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          labelMedium: GoogleFonts.inter(
+            fontSize: 11, // Reduced from 12
+            fontWeight: FontWeight.w600,
+            color: isDarkTheme ? Colors.white : Colors.black87,
+          ),
+          labelSmall: GoogleFonts.inter(
+            fontSize: 10, // Reduced from 11
+            fontWeight: FontWeight.w600,
+            color: isDarkTheme ? Colors.white70 : Colors.black54,
+          ),
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(
+              vertical: 12, horizontal: 20), // Reduced from 14, 28
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12), // Reduced from 14
           ),
-          textStyle: GoogleFonts.lato(
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
+          textStyle: GoogleFonts.inter(
+            fontSize: 14, // Reduced from 15
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.2, // Reduced from 0.3
           ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(
+              vertical: 12, horizontal: 20), // Reduced
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // Reduced from 14
+          ),
+          textStyle: GoogleFonts.inter(
+            fontSize: 14, // Reduced from 15
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.2,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(
+              vertical: 10, horizontal: 16), // Reduced
+          textStyle: GoogleFonts.inter(
+            fontSize: 13, // Reduced from 14
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white, // Ensures all text/icons are white
+        iconTheme: const IconThemeData(color: Colors.white),
+        titleTextStyle: GoogleFonts.inter(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white, // Explicit white for title
         ),
       ),
     );
   }
 
   ThemeData createDarkTheme({bool isOled = false}) {
+    final isGlassTheme = _isGlassTheme();
+
     return ThemeData(
+      useMaterial3: true,
       brightness: Brightness.dark,
       primaryColor: primaryColor,
-      colorScheme: ColorScheme.dark(
-        primary: primaryColor,
-        secondary: accentColor,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primaryColor,
+        brightness: Brightness.dark,
       ),
-      scaffoldBackgroundColor: isOled ? Colors.black : const Color(0xFF2D344A),
-      cardColor: isOled ? const Color(0xFF121212) : null,
-      textTheme: GoogleFonts.latoTextTheme().apply(
-        bodyColor: Colors.white,
-        displayColor: Colors.white,
+      scaffoldBackgroundColor: isOled
+          ? Colors.black
+          : (isGlassTheme ? const Color(0xFF0A0A0A) : const Color(0xFF0F172A)),
+      cardColor: isOled
+          ? const Color(0xFF0A0A0A)
+          : (isGlassTheme
+              ? const Color(0xFF1A1A1A).withOpacity(0.7)
+              : const Color(0xFF1E293B)),
+      cardTheme: CardThemeData(
+        elevation: 0,
+        color: isOled
+            ? const Color(0xFF0A0A0A)
+            : (isGlassTheme
+                ? const Color(0xFF1A1A1A).withOpacity(0.7)
+                : const Color(0xFF1E293B)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16), // Reduced from 20
+        ),
+        margin: const EdgeInsets.all(8), // Reduced margin
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          textStyle: GoogleFonts.lato(
-            fontSize: 18,
+      // Apply Google Fonts to ALL text in dark mode
+      textTheme: GoogleFonts.interTextTheme(
+        TextTheme(
+          displayLarge: GoogleFonts.inter(
+            fontSize: 48,
             fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          displayMedium: GoogleFonts.inter(
+            fontSize: 38,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          displaySmall: GoogleFonts.inter(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          headlineLarge: GoogleFonts.inter(
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          headlineMedium: GoogleFonts.inter(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          headlineSmall: GoogleFonts.inter(
+            fontSize: 19,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+          titleLarge: GoogleFonts.inter(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+          titleMedium: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+          titleSmall: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+          bodyLarge: GoogleFonts.inter(
+            fontSize: 14,
+            color: Colors.white,
+          ),
+          bodyMedium: GoogleFonts.inter(
+            fontSize: 13,
+            color: Colors.white,
+          ),
+          bodySmall: GoogleFonts.inter(
+            fontSize: 11,
+            color: Colors.white70,
+          ),
+          labelLarge: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+          labelMedium: GoogleFonts.inter(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+          labelSmall: GoogleFonts.inter(
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+            color: Colors.white70,
           ),
         ),
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.2,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.2,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          textStyle: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white, // Ensures all text/icons are white
+        iconTheme: const IconThemeData(color: Colors.white),
+        titleTextStyle: GoogleFonts.inter(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white, // Explicit white for title
+        ),
+      ),
     );
+  }
+
+  // Helper to determine if this is a dark color scheme
+  bool _isDarkColorScheme() {
+    return name == 'Carbon' ||
+        name == 'Obsidian' ||
+        name == 'Matrix' ||
+        name == 'Steel';
+  }
+
+  // Helper to determine if this should use glass effect
+  bool _isGlassTheme() {
+    return name == 'Carbon' ||
+        name == 'Obsidian' ||
+        name == 'Matrix' ||
+        name == 'Arctic' ||
+        name == 'Electric' ||
+        name == 'Professional Navy' ||
+        name == 'Deep Purple';
   }
 }

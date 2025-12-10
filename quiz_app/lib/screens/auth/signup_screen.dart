@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/auth_service.dart';
+import 'package:quiz_app/services/preferences_service.dart';
 import 'package:animate_do/animate_do.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -15,9 +16,29 @@ class _SignupScreenState extends State<SignupScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _schoolNameController = TextEditingController();
+  final _matricNumberController = TextEditingController(); // New field
+  final _teacherIdController = TextEditingController();
   final _authService = AuthService();
   bool _isLoading = false;
   bool _isPasswordVisible = false;
+  String _selectedRole = 'student'; // Default role
+  bool _isRoleSetFromArgs = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isRoleSetFromArgs) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (args != null && args['role'] != null) {
+        setState(() {
+          _selectedRole = args['role'];
+          _isRoleSetFromArgs = true;
+        });
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -25,6 +46,9 @@ class _SignupScreenState extends State<SignupScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _schoolNameController.dispose();
+    _matricNumberController.dispose();
+    _teacherIdController.dispose();
     super.dispose();
   }
 
@@ -36,7 +60,22 @@ class _SignupScreenState extends State<SignupScreen> {
           email: _emailController.text.trim(),
           password: _passwordController.text,
           username: _usernameController.text.trim(),
+          role: _selectedRole,
+          matricNumber: _selectedRole == 'student'
+              ? _matricNumberController.text.trim()
+              : null,
         );
+
+        // Update local preferences
+        await PreferencesService().setUsername(_usernameController.text.trim());
+
+        // If teacher, save verification details (mock for now)
+        if (_selectedRole == 'teacher') {
+          // In a real app, we would save this to a separate 'verification_requests' collection
+          // or add it to the user document. For now, we'll assume it's handled by saveUser
+          // or we can add a specific update call here if needed.
+          // For this demo, we'll just proceed.
+        }
 
         // Send email verification
         await _authService.sendEmailVerification();
@@ -116,6 +155,21 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Get arguments
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null && args['role'] != null) {
+      // Only set if not already set by user interaction in this session
+      // But since we are coming from RoleSelection, we should respect it.
+      // To avoid overwriting if setState rebuilds, we could check a flag,
+      // but for simplicity, we'll initialize it in initState if we convert to using a local variable
+      // that is initialized once. However, since build runs often, let's just check if it matches
+      // the default 'student' before overriding, OR better, handle this in didChangeDependencies.
+      // For now, let's just use the argument if provided and we haven't manually changed it?
+      // Actually, simpler: Initialize _selectedRole in initState if possible, but we can't access context there easily for arguments.
+      // So we'll do it in didChangeDependencies.
+    }
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -186,7 +240,34 @@ class _SignupScreenState extends State<SignupScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 24),
+
+                    // Role Selection
+                    FadeInUp(
+                      delay: const Duration(milliseconds: 250),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _buildRoleCard(
+                              context,
+                              'Student',
+                              Icons.school_outlined,
+                              'student',
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildRoleCard(
+                              context,
+                              'Teacher',
+                              Icons.person_outline,
+                              'teacher',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
 
                     // Username Field
                     FadeInUp(
@@ -239,11 +320,53 @@ class _SignupScreenState extends State<SignupScreen> {
                           if (!value.contains('@')) {
                             return 'Please enter a valid email';
                           }
+
+                          // Academic Integrity: Enforce student emails
+                          if (_selectedRole == 'student') {
+                            final lowerValue = value.toLowerCase();
+                            final isAcademic = lowerValue.endsWith('.edu') ||
+                                lowerValue.endsWith('.ac.uk') ||
+                                lowerValue.endsWith('.edu.ng') ||
+                                lowerValue.endsWith('.edu.sg') ||
+                                lowerValue.endsWith('.edu.au');
+
+                            if (!isAcademic) {
+                              return 'Please use your school email (.edu)';
+                            }
+                          }
+
                           return null;
                         },
                       ),
                     ),
                     const SizedBox(height: 16),
+
+                    // Matric Number Field (Student Only)
+                    if (_selectedRole == 'student') ...[
+                      FadeInUp(
+                        delay: const Duration(milliseconds: 450),
+                        child: TextFormField(
+                          controller: _matricNumberController,
+                          decoration: InputDecoration(
+                            labelText: 'Matric Number',
+                            hintText: 'e.g. MAT/2023/1234',
+                            prefixIcon: const Icon(Icons.badge_outlined),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            filled: true,
+                            fillColor: Theme.of(context).cardColor,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your matric number';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
 
                     // Password Field
                     FadeInUp(
@@ -421,6 +544,51 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoleCard(
+    BuildContext context,
+    String title,
+    IconData icon,
+    String role,
+  ) {
+    final isSelected = _selectedRole == role;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedRole = role),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+              : Theme.of(context).cardColor,
+          border: Border.all(
+            color: isSelected
+                ? Theme.of(context).primaryColor
+                : Colors.grey.shade300,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
+              size: 32,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color:
+                    isSelected ? Theme.of(context).primaryColor : Colors.grey,
+              ),
+            ),
+          ],
         ),
       ),
     );

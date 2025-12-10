@@ -3,6 +3,12 @@ import 'package:quiz_app/services/gamification_service.dart';
 import 'package:quiz_app/services/achievement_service.dart';
 import 'package:quiz_app/services/statistics_service.dart';
 import 'package:quiz_app/services/preferences_service.dart';
+import 'package:quiz_app/widgets/glass_card.dart';
+import 'package:quiz_app/services/mistakes_service.dart';
+import 'package:quiz_app/screens/quiz_screen.dart';
+import 'package:quiz_app/widgets/activity_heatmap.dart';
+import 'package:quiz_app/widgets/skill_radar_chart.dart';
+import 'package:quiz_app/widgets/circular_progress_ring.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -44,7 +50,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _currentStreak = 0;
   int _totalQuizzes = 0;
   String _currentAvatar = '👨‍🎓';
-  String _username = 'Quiz Master';
+  String _username = 'Mindly User';
+  Map<DateTime, int> _activityData = {};
+  Map<String, double> _categoryPerformance = {};
+  double _averageScore = 0.0;
 
   @override
   void initState() {
@@ -62,6 +71,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final stats = await _statisticsService.getStatistics();
     final avatar = await _preferencesService.getAvatar();
     final username = await _preferencesService.getUsername();
+    final activity = await _statisticsService.getLast7DaysActivity();
+    final categoryPerf = await _statisticsService.getCategoryPerformance();
 
     if (mounted) {
       setState(() {
@@ -74,6 +85,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _totalQuizzes = stats.totalQuizzes;
         _currentAvatar = avatar;
         _username = username;
+        _activityData = activity;
+        _categoryPerformance = categoryPerf;
+        _averageScore = stats.averageScore;
       });
     }
   }
@@ -204,8 +218,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Stack(
                     children: [
                       Container(
-                        width: 100,
-                        height: 100,
+                        width: 70,
+                        height: 70,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
@@ -265,8 +279,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 24),
 
               // Level Card
-              Card(
-                elevation: 4,
+              GlassCard(
+                padding: EdgeInsets.zero,
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -275,9 +289,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Theme.of(context).primaryColor.withValues(alpha: 0.7),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  padding: const EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
                       Text(
@@ -292,7 +306,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Text(
                         '$_totalXP XP',
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 12,
                           color: Colors.white70,
                         ),
                       ),
@@ -323,88 +337,111 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 20),
 
               // Daily Challenge Card
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_today,
-                            color: _challengeCompleted
-                                ? Colors.green
-                                : Colors.orange,
-                          ),
-                          const SizedBox(width: 8),
-                          const Text(
-                            'Daily Challenge',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Spacer(),
-                          if (_challengeCompleted)
-                            const Icon(Icons.check_circle, color: Colors.green)
-                          else
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.orange.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Text(
-                                '+100 XP',
-                                style: TextStyle(
-                                  color: Colors.orange,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        _dailyChallenge?['description'] ?? 'Loading...',
-                        style: TextStyle(
-                          fontSize: 16,
-                          decoration: _challengeCompleted
-                              ? TextDecoration.lineThrough
-                              : null,
-                          color: _challengeCompleted ? Colors.grey : null,
+              GlassCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today,
+                          color: _challengeCompleted
+                              ? Colors.green
+                              : Colors.orange,
                         ),
+                        const SizedBox(width: 8),
+                        const Text(
+                          'Daily Challenge',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Spacer(),
+                        if (_challengeCompleted)
+                          const Icon(Icons.check_circle, color: Colors.green)
+                        else
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text(
+                              '+100 XP',
+                              style: TextStyle(
+                                color: Colors.orange,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      _dailyChallenge?['description'] ?? 'Loading...',
+                      style: TextStyle(
+                        fontSize: 16,
+                        decoration: _challengeCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
+                        color: _challengeCompleted ? Colors.grey : null,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              // Stats Grid
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildStatCard(
-                      icon: Icons.local_fire_department,
-                      label: 'Streak',
-                      value: '$_currentStreak',
-                      color: Colors.orange,
-                    ),
+              // Activity Heatmap
+              GlassCard(
+                child: ActivityHeatmap(
+                  activity: _activityData,
+                  maxQuizzes: 5,
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Skill Radar Chart
+              if (_categoryPerformance.isNotEmpty)
+                GlassCard(
+                  child: SkillRadarChart(
+                    categoryScores: _categoryPerformance,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildStatCard(
-                      icon: Icons.quiz,
-                      label: 'Quizzes',
-                      value: '$_totalQuizzes',
-                      color: Colors.blue,
-                    ),
+                ),
+
+              if (_categoryPerformance.isNotEmpty) const SizedBox(height: 20),
+
+              // Circular Progress Rings
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  CircularProgressRing(
+                    progress: _averageScore / 100,
+                    label: 'Avg Score',
+                    value: '${_averageScore.toStringAsFixed(0)}%',
+                    color: Colors.blue,
+                    size: 90,
+                  ),
+                  CircularProgressRing(
+                    progress: _currentStreak / 30, // Max 30 days
+                    label: 'Streak',
+                    value: '$_currentStreak',
+                    color: Colors.orange,
+                    size: 90,
+                  ),
+                  CircularProgressRing(
+                    progress:
+                        (_totalQuizzes % 100) / 100, // Progress to next 100
+                    label: 'Quizzes',
+                    value: '$_totalQuizzes',
+                    color: Colors.green,
+                    size: 90,
                   ),
                 ],
               ),
@@ -420,6 +457,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 12),
+              ListTile(
+                leading: const Icon(Icons.history_edu, color: Colors.redAccent),
+                title: const Text('Review Mistakes'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () async {
+                  final mistakes = await MistakesService().getMistakes();
+                  if (mistakes.isEmpty) {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('No mistakes to review! Great job!')),
+                      );
+                    }
+                    return;
+                  }
+                  if (mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => QuizScreen(
+                          customQuestions: mistakes,
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
               ListTile(
                 leading: const Icon(Icons.emoji_events, color: Colors.amber),
                 title: const Text('View Achievements'),
@@ -440,39 +504,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatCard({
-    required IconData icon,
-    required String label,
-    required String value,
-    required Color color,
-  }) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 32),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
         ),
       ),
     );
