@@ -131,12 +131,13 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
         onPressed: () {
           final text = _questionController.text;
           final selection = _questionController.selection;
-          final newText =
-              text.replaceRange(selection.start, selection.end, latex);
+          final int start = selection.isValid ? selection.start : text.length;
+          final int end = selection.isValid ? selection.end : text.length;
+
+          final newText = text.replaceRange(start, end, latex);
           _questionController.value = TextEditingValue(
             text: newText,
-            selection:
-                TextSelection.collapsed(offset: selection.start + latex.length),
+            selection: TextSelection.collapsed(offset: start + latex.length),
           );
           setState(() {}); // Rebuild for preview
         },

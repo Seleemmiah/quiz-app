@@ -66,8 +66,9 @@ class SoundService {
       final player = AudioPlayer();
       await player.setReleaseMode(ReleaseMode.release);
       // Android fails to play low_score.wav (MEDIA_ERROR). Disabled to prevent log spam.
-      await player.play(AssetSource('sounds/low_score.wav'));
-      // debugPrint('Low score sound disabled due to file compatibility issue.');
+      // await player.play(AssetSource('sounds/low_score.wav'));
+      debugPrint(
+          'Low score sound disabled due to file compatibility issue with Emulator.');
     } catch (e) {
       // debugPrint('Error playing low score sound: $e');
     }

@@ -340,7 +340,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                         }
 
                         return Card(
-                          margin: const EdgeInsets.only(bottom: 8),
+                          margin: const EdgeInsets.only(bottom: 4),
                           color: isCurrentUser
                               ? Theme.of(context)
                                   .primaryColor
@@ -405,7 +405,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             itemBuilder: (context, index) {
               final member = _members[index];
               return Card(
-                margin: const EdgeInsets.only(bottom: 8),
+                margin: const EdgeInsets.only(bottom: 4),
                 child: ListTile(
                   leading: CircleAvatar(
                     child: Text(member.userAvatar),
@@ -496,7 +496,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                         final scheduledAt = DateTime.fromMillisecondsSinceEpoch(
                             event['scheduledAt'] as int);
                         return Card(
-                          margin: const EdgeInsets.only(bottom: 12),
+                          margin: const EdgeInsets.only(bottom: 6),
                           child: ListTile(
                             leading: CircleAvatar(
                               backgroundColor: Theme.of(context).primaryColor,

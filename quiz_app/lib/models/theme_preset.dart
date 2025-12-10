@@ -229,9 +229,21 @@ class ThemePreset {
         color:
             isDarkTheme ? Colors.grey.shade800.withOpacity(0.5) : Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16), // Reduced from 20
+          borderRadius: BorderRadius.circular(12), // Sleeker 12
         ),
-        margin: const EdgeInsets.all(8), // Reduced margin
+        margin:
+            const EdgeInsets.symmetric(vertical: 4, horizontal: 8), // Tighter
+      ),
+      dialogTheme: DialogThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 0,
+        backgroundColor: isDarkTheme ? Colors.grey.shade900 : Colors.white,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        isDense: true,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
       // Apply Google Fonts to ALL text in the app
       textTheme: GoogleFonts.interTextTheme(
@@ -396,9 +408,20 @@ class ThemePreset {
                 ? const Color(0xFF1A1A1A).withOpacity(0.7)
                 : const Color(0xFF1E293B)),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16), // Reduced from 20
+          borderRadius: BorderRadius.circular(12), // Sleeker 12
         ),
-        margin: const EdgeInsets.all(8), // Reduced margin
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      ),
+      dialogTheme: DialogThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 0,
+        backgroundColor: isOled ? Colors.black : const Color(0xFF1E293B),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        isDense: true,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
       // Apply Google Fonts to ALL text in dark mode
       textTheme: GoogleFonts.interTextTheme(

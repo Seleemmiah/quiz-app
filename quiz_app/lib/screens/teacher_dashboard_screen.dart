@@ -100,7 +100,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen>
           return FadeInUp(
             delay: Duration(milliseconds: index * 50),
             child: Card(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: const EdgeInsets.only(bottom: 6), // Sleeker margin
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor:
@@ -167,9 +167,9 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen>
           return FadeInUp(
             delay: Duration(milliseconds: index * 50),
             child: Card(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: const EdgeInsets.only(bottom: 6), // Sleeker margin
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12), // Compact padding
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
