@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/models/class_model.dart';
 import 'package:quiz_app/services/class_service.dart';
 import 'package:intl/intl.dart';
+import 'package:quiz_app/widgets/glass_dialog.dart';
 
 class ScheduleClassScreen extends StatefulWidget {
   final ClassModel classModel;
@@ -57,9 +58,14 @@ class _ScheduleClassScreenState extends State<ScheduleClassScreen> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    final now = DateTime.now();
+    // Ensure initialDate is not before firstDate.
+    // If _selectedDate is in the past, use `now` as the initial date.
+    final initialPickerDate = _selectedDate.isBefore(now) ? now : _selectedDate;
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate,
+      initialDate: initialPickerDate,
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
@@ -261,31 +267,29 @@ class _ScheduleClassScreenState extends State<ScheduleClassScreen> {
       const Duration(days: 1),
     ];
 
-    final selected = await showDialog<Duration>(
+    final selected = await GlassDialog.show<Duration>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Reminder Time'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: options.map((duration) {
-            String label;
-            if (duration.inMinutes < 60) {
-              label = '${duration.inMinutes} minutes before';
-            } else if (duration.inHours < 24) {
-              label =
-                  '${duration.inHours} hour${duration.inHours > 1 ? 's' : ''} before';
-            } else {
-              label =
-                  '${duration.inDays} day${duration.inDays > 1 ? 's' : ''} before';
-            }
+      title: 'Reminder Time',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: options.map((duration) {
+          String label;
+          if (duration.inMinutes < 60) {
+            label = '${duration.inMinutes} minutes before';
+          } else if (duration.inHours < 24) {
+            label =
+                '${duration.inHours} hour${duration.inHours > 1 ? 's' : ''} before';
+          } else {
+            label =
+                '${duration.inDays} day${duration.inDays > 1 ? 's' : ''} before';
+          }
 
-            return ListTile(
-              title: Text(label),
-              selected: duration == _selectedReminderTime,
-              onTap: () => Navigator.pop(context, duration),
-            );
-          }).toList(),
-        ),
+          return ListTile(
+            title: Text(label),
+            selected: duration == _selectedReminderTime,
+            onTap: () => Navigator.pop(context, duration),
+          );
+        }).toList(),
       ),
     );
 

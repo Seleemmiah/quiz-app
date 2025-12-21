@@ -43,12 +43,15 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
       _selectedDifficulty = widget.editQuestion!.difficulty;
 
       final incorrectAnswers = widget.editQuestion!.incorrectAnswers;
-      if (incorrectAnswers.isNotEmpty)
+      if (incorrectAnswers.isNotEmpty) {
         _wrong1Controller.text = incorrectAnswers[0];
-      if (incorrectAnswers.length > 1)
+      }
+      if (incorrectAnswers.length > 1) {
         _wrong2Controller.text = incorrectAnswers[1];
-      if (incorrectAnswers.length > 2)
+      }
+      if (incorrectAnswers.length > 2) {
         _wrong3Controller.text = incorrectAnswers[2];
+      }
 
       if (widget.editQuestion?.imageUrl != null) {
         _imageUrlController.text = widget.editQuestion!.imageUrl!;
@@ -351,7 +354,7 @@ class _CreateQuestionScreenState extends State<CreateQuestionScreen> {
 
             // Difficulty
             DropdownButtonFormField<Difficulty>(
-              value: _selectedDifficulty,
+              initialValue: _selectedDifficulty,
               decoration: const InputDecoration(
                 labelText: 'Difficulty',
                 border: OutlineInputBorder(),

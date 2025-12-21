@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:quiz_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:quiz_app/screens/quiz_screen.dart';
 import 'package:quiz_app/services/score_service.dart';
 import 'package:quiz_app/services/bookmark_service.dart';
@@ -15,6 +14,7 @@ import 'package:quiz_app/services/recommendation_service.dart';
 import 'package:quiz_app/services/api_service.dart';
 import 'package:quiz_app/screens/video_library_screen.dart';
 import 'package:quiz_app/screens/handwriting_screen.dart';
+import 'package:quiz_app/screens/quiz_history_screen.dart';
 import 'package:quiz_app/services/achievement_service.dart';
 import 'package:quiz_app/services/statistics_service.dart';
 import 'package:quiz_app/services/firestore_service.dart';
@@ -23,6 +23,7 @@ import 'package:quiz_app/widgets/smart_recommendations.dart';
 import 'package:quiz_app/screens/teacher_dashboard_screen.dart';
 import 'package:quiz_app/services/professional_notification_service.dart';
 import 'package:intl/intl.dart';
+import 'package:quiz_app/widgets/glass_dialog.dart';
 
 class StartScreen extends StatefulWidget {
   final String? initialCategory;
@@ -49,7 +50,6 @@ class _StartScreenState extends State<StartScreen> {
   // Future to hold categories from the API
   final ScoreService _scoreService = ScoreService();
   final BookmarkService _bookmarkService = BookmarkService();
-  final PreferencesService _preferencesService = PreferencesService();
   final RecommendationService _recommendationService = RecommendationService();
   final ApiService _apiService = ApiService();
   final AchievementService _achievementService = AchievementService();
@@ -75,7 +75,7 @@ class _StartScreenState extends State<StartScreen> {
       }
 
       // Fetch user role
-      final role = await _firestoreService.getUserRole(user.uid);
+      final role = await FirestoreService().getUserRole(user.uid);
       if (mounted && role != null) {
         setState(() {
           _userRole = role;
@@ -84,12 +84,11 @@ class _StartScreenState extends State<StartScreen> {
     }
 
     // Load preferences first
-    final difficulty = await _preferencesService.getDefaultDifficulty();
-    final category = await _preferencesService.getDefaultCategory();
-    final timeLimit = await _preferencesService.getDefaultTimeLimit();
-    final quizLength = await _preferencesService.getQuizLength();
-    final loginStreak =
-        await _achievementService.getLoginStreak(); // Changed to login streak
+    final difficulty = await PreferencesService.getDefaultDifficulty();
+    final category = await PreferencesService.getDefaultCategory();
+    final timeLimit = await PreferencesService.getDefaultTimeLimit();
+    final quizLength = await PreferencesService.getQuizLength();
+    final loginStreak = await _achievementService.getLoginStreak();
 
     // Load total quizzes from statistics
     final stats = await StatisticsService().getStatistics();
@@ -137,8 +136,8 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   Future<void> _loadAvatar() async {
-    final avatar = await _preferencesService.getAvatar();
-    final username = await _preferencesService.getUsername();
+    final avatar = await PreferencesService.getAvatar();
+    final username = await PreferencesService.getUsername();
     if (mounted) {
       setState(() {
         _userAvatar = avatar;
@@ -161,7 +160,7 @@ class _StartScreenState extends State<StartScreen> {
     await notificationService.initialize();
   }
 
-  Future<void> _refreshDashboard() async {
+  Future<void> refreshDashboard() async {
     await _initializeScreen();
     // Refresh unread count if triggered
     setState(() {});
@@ -268,46 +267,42 @@ class _StartScreenState extends State<StartScreen> {
 
       if (!mounted) return;
 
-      await showDialog(
+      await GlassDialog.show(
         context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Select Category'),
-            content: SizedBox(
-              width: double.maxFinite,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  final category = categories[index];
-                  final isSelected = category == _selectedCategory;
+        title: 'Select Category',
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              final isSelected = category == _selectedCategory;
 
-                  return ListTile(
-                    title: Text(category),
-                    leading: Icon(
-                      isSelected ? Icons.check_circle : Icons.circle_outlined,
-                      color: isSelected ? Theme.of(context).primaryColor : null,
-                    ),
-                    selected: isSelected,
-                    onTap: () {
-                      setState(() {
-                        _selectedCategory = category;
-                      });
-                      Navigator.pop(context);
-                      _loadHighScore(); // Reload high score for new category
-                    },
-                  );
+              return ListTile(
+                title: Text(category),
+                leading: Icon(
+                  isSelected ? Icons.check_circle : Icons.circle_outlined,
+                  color: isSelected ? Theme.of(context).primaryColor : null,
+                ),
+                selected: isSelected,
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = category;
+                  });
+                  Navigator.pop(context);
+                  _loadHighScore(); // Reload high score for new category
                 },
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-            ],
-          );
-        },
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ],
       );
     } catch (e) {
       if (mounted) {
@@ -319,42 +314,38 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   Future<void> _showDifficultyPicker(BuildContext context) async {
-    await showDialog(
+    await GlassDialog.show(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select Difficulty'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: Difficulty.values.map((difficulty) {
-              final isSelected = difficulty == _selectedDifficulty;
-              return ListTile(
-                title: Text(difficulty.name.toUpperCase()),
-                leading: Icon(
-                  isSelected ? Icons.check_circle : Icons.circle_outlined,
-                  color: isSelected ? Theme.of(context).primaryColor : null,
-                ),
-                selected: isSelected,
-                onTap: () async {
-                  setState(() {
-                    _selectedDifficulty = difficulty;
-                  });
-                  // Save to preferences
-                  await _preferencesService.setDefaultDifficulty(difficulty);
-                  Navigator.pop(context);
-                  _loadHighScore(); // Reload high score for new difficulty
-                },
-              );
-            }).toList(),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+      title: 'Select Difficulty',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: Difficulty.values.map((difficulty) {
+          final isSelected = difficulty == _selectedDifficulty;
+          return ListTile(
+            title: Text(difficulty.name.toUpperCase()),
+            leading: Icon(
+              isSelected ? Icons.check_circle : Icons.circle_outlined,
+              color: isSelected ? Theme.of(context).primaryColor : null,
             ),
-          ],
-        );
-      },
+            selected: isSelected,
+            onTap: () async {
+              setState(() {
+                _selectedDifficulty = difficulty;
+              });
+              // Save to preferences
+              await PreferencesService.setDefaultDifficulty(difficulty);
+              Navigator.pop(context);
+              _loadHighScore(); // Reload high score for new difficulty
+            },
+          );
+        }).toList(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+      ],
     );
   }
 
@@ -389,7 +380,7 @@ class _StartScreenState extends State<StartScreen> {
                       _selectedTimeInMinutes = timeLimit;
                     });
                     // Save to preferences
-                    await _preferencesService.setDefaultTimeLimit(timeLimit);
+                    await PreferencesService.setDefaultTimeLimit(timeLimit);
                     Navigator.pop(context);
                   },
                 );
@@ -409,49 +400,47 @@ class _StartScreenState extends State<StartScreen> {
 
   void _showExamCodeDialog() {
     final TextEditingController codeController = TextEditingController();
-    showDialog(
+    GlassDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Enter Exam Code 📝'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Enter the code provided by your teacher to start the exam.',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: codeController,
-              decoration: InputDecoration(
-                labelText: 'Exam Code',
-                hintText: 'e.g., MATH101',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                prefixIcon: const Icon(Icons.vpn_key),
-              ),
-              textCapitalization: TextCapitalization.characters,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+      title: 'Enter Exam Code 📝',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Enter the code provided by your teacher to start the exam.',
+            style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
-          ElevatedButton(
-            onPressed: () {
-              final code = codeController.text.trim().toUpperCase();
-              if (code.isNotEmpty) {
-                Navigator.pop(context);
-                _startExam(code);
-              }
-            },
-            child: const Text('Start Exam'),
+          const SizedBox(height: 16),
+          TextField(
+            controller: codeController,
+            decoration: InputDecoration(
+              labelText: 'Exam Code',
+              hintText: 'e.g., MATH101',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              prefixIcon: const Icon(Icons.vpn_key),
+            ),
+            textCapitalization: TextCapitalization.characters,
           ),
         ],
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            final code = codeController.text.trim().toUpperCase();
+            if (code.isNotEmpty) {
+              Navigator.pop(context);
+              _startExam(code);
+            }
+          },
+          child: const Text('Start Exam'),
+        ),
+      ],
     );
   }
 
@@ -464,7 +453,7 @@ class _StartScreenState extends State<StartScreen> {
     );
 
     try {
-      final examData = await _firestoreService.getExamByCode(code);
+      final examData = await FirestoreService().getExamByCode(code);
 
       if (mounted) {
         Navigator.pop(context); // Close loading dialog
@@ -515,7 +504,7 @@ class _StartScreenState extends State<StartScreen> {
                 content:
                     Text('Exam has ended. You can no longer take this exam.'),
                 backgroundColor: Colors.red,
-                duration: const Duration(seconds: 5),
+                duration: Duration(seconds: 5),
               ),
             );
           }
@@ -542,7 +531,7 @@ class _StartScreenState extends State<StartScreen> {
           }
 
           // Fetch user's matric number from Firestore
-          final userData = await _firestoreService.getUser(user.uid);
+          final userData = await FirestoreService().getUser(user.uid);
           final userMatricNumber = userData?['matricNumber'] as String?;
 
           if (userMatricNumber == null || userMatricNumber.isEmpty) {
@@ -1057,6 +1046,18 @@ class _StartScreenState extends State<StartScreen> {
                 );
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.history),
+              title: const Text('Recent Quizzes'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const QuizHistoryScreen()),
+                );
+              },
+            ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.settings),
@@ -1077,7 +1078,7 @@ class _StartScreenState extends State<StartScreen> {
         child: SafeArea(
           child: Center(
             child: RefreshIndicator(
-              onRefresh: _refreshDashboard,
+              onRefresh: refreshDashboard,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Padding(
@@ -1207,7 +1208,7 @@ class _StartScreenState extends State<StartScreen> {
                                   const Icon(
                                     Icons.emoji_events,
                                     color: Colors.white,
-                                    size: 28, // Slightly larger since no circle
+                                    size: 25, // Slightly larger since no circle
                                   ),
                                 ],
                               ),
@@ -1249,7 +1250,7 @@ class _StartScreenState extends State<StartScreen> {
                               },
                               borderRadius: BorderRadius.circular(16),
                               child: Container(
-                                padding: const EdgeInsets.all(20),
+                                padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
@@ -1269,15 +1270,15 @@ class _StartScreenState extends State<StartScreen> {
                                 child: Row(
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.all(12),
+                                      padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         color: Colors.white.withOpacity(0.2),
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: const Icon(Icons.dashboard,
-                                          color: Colors.white, size: 28),
+                                          color: Colors.white, size: 24),
                                     ),
-                                    const SizedBox(width: 16),
+                                    const SizedBox(width: 12),
                                     const Expanded(
                                       child: Column(
                                         crossAxisAlignment:
@@ -1287,7 +1288,7 @@ class _StartScreenState extends State<StartScreen> {
                                             'Teacher Dashboard',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 18,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -1295,15 +1296,15 @@ class _StartScreenState extends State<StartScreen> {
                                           Text(
                                             'View student progress & results',
                                             style: TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 13,
+                                              color: Colors.white,
+                                              fontSize: 10,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
                                     const Icon(Icons.arrow_forward_ios,
-                                        color: Colors.white70, size: 16),
+                                        color: Colors.white, size: 16),
                                   ],
                                 ),
                               ),
@@ -1321,7 +1322,7 @@ class _StartScreenState extends State<StartScreen> {
                             onTap: _showExamCodeDialog,
                             borderRadius: BorderRadius.circular(16),
                             child: Container(
-                              padding: const EdgeInsets.all(20),
+                              padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
@@ -1341,16 +1342,16 @@ class _StartScreenState extends State<StartScreen> {
                               child: Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.all(12),
+                                    padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
                                       color: Colors.white.withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: const Icon(Icons.vpn_key,
-                                        color: Colors.white, size: 28),
+                                        color: Colors.white, size: 24),
                                   ),
-                                  const SizedBox(width: 16),
-                                  const Expanded(
+                                  const SizedBox(width: 12),
+                                  Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -1359,23 +1360,31 @@ class _StartScreenState extends State<StartScreen> {
                                           'Enter Exam Code',
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 18,
+                                            fontSize: 15,
                                             fontWeight: FontWeight.bold,
+                                            shadows: [
+                                              Shadow(
+                                                offset: const Offset(1, 1),
+                                                blurRadius: 2,
+                                                color: Colors.black
+                                                    .withOpacity(0.5),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        SizedBox(height: 4),
-                                        Text(
+                                        const SizedBox(height: 4),
+                                        const Text(
                                           'Start a secure exam session',
                                           style: TextStyle(
-                                            color: Colors.white70,
-                                            fontSize: 13,
+                                            color: Colors.white,
+                                            fontSize: 10,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   const Icon(Icons.arrow_forward_ios,
-                                      color: Colors.white70, size: 16),
+                                      color: Colors.white, size: 16),
                                 ],
                               ),
                             ),

@@ -78,8 +78,8 @@ class _CampaignScreenState extends State<CampaignScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              primaryColor.withValues(alpha: 0.1),
-              accentColor.withValues(alpha: 0.1)
+              primaryColor.withOpacity(0.1),
+              accentColor.withOpacity(0.1)
             ],
           ),
         ),
@@ -118,7 +118,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
               boxShadow: [
                 if (!isLocked)
                   BoxShadow(
-                    color: primaryColor.withValues(alpha: 0.2),
+                    color: primaryColor.withOpacity(0.2),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),

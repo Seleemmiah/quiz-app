@@ -3,6 +3,7 @@ import 'package:quiz_app/services/gamification_service.dart';
 import 'package:quiz_app/services/achievement_service.dart';
 import 'package:quiz_app/services/statistics_service.dart';
 import 'package:quiz_app/services/preferences_service.dart';
+
 import 'package:quiz_app/widgets/glass_card.dart';
 import 'package:quiz_app/services/mistakes_service.dart';
 import 'package:quiz_app/screens/quiz_screen.dart';
@@ -21,7 +22,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final GamificationService _gamificationService = GamificationService();
   final AchievementService _achievementService = AchievementService();
   final StatisticsService _statisticsService = StatisticsService();
-  final PreferencesService _preferencesService = PreferencesService();
 
   static const List<String> _availableAvatars = [
     '👨‍🎓',
@@ -67,10 +67,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final progress = _gamificationService.getLevelProgress(xp);
     final challenge = await _gamificationService.getDailyChallenge();
     final completed = await _gamificationService.isDailyChallengeCompleted();
-    final streak = await _achievementService.getCurrentStreak();
+    // Use new achievement system for streak
+    final streak = await _achievementService.getLoginStreak();
     final stats = await _statisticsService.getStatistics();
-    final avatar = await _preferencesService.getAvatar();
-    final username = await _preferencesService.getUsername();
+    final avatar = await PreferencesService.getAvatar();
+    final username = await PreferencesService.getUsername();
     final activity = await _statisticsService.getLast7DaysActivity();
     final categoryPerf = await _statisticsService.getCategoryPerformance();
 
@@ -116,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () async {
               final newName = controller.text.trim();
               if (newName.isNotEmpty) {
-                await _preferencesService.setUsername(newName);
+                await PreferencesService.setUsername(newName);
                 setState(() {
                   _username = newName;
                 });
@@ -150,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               final isSelected = avatar == _currentAvatar;
               return InkWell(
                 onTap: () async {
-                  await _preferencesService.setAvatar(avatar);
+                  await PreferencesService.setAvatar(avatar);
                   setState(() {
                     _currentAvatar = avatar;
                   });
@@ -161,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     border: Border.all(
                       color: isSelected
                           ? Theme.of(context).primaryColor
-                          : Colors.grey.withValues(alpha: 0.3),
+                          : Colors.grey.withOpacity(0.3),
                       width: isSelected ? 3 : 1,
                     ),
                     borderRadius: BorderRadius.circular(12),
@@ -286,7 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     gradient: LinearGradient(
                       colors: [
                         Theme.of(context).primaryColor,
-                        Theme.of(context).primaryColor.withValues(alpha: 0.7),
+                        Theme.of(context).primaryColor.withOpacity(0.7),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(20),
@@ -367,7 +368,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.orange.withValues(alpha: 0.2),
+                              color: Colors.orange.withOpacity(0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Text(
@@ -429,8 +430,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     size: 90,
                   ),
                   CircularProgressRing(
-                    progress: _currentStreak / 30, // Max 30 days
-                    label: 'Streak',
+                    progress: (_currentStreak % 30) / 30, // Max 30 days
+                    label: 'Login Streak',
                     value: '$_currentStreak',
                     color: Colors.orange,
                     size: 90,

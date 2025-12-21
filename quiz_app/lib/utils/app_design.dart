@@ -18,20 +18,20 @@ class AppDesign {
   static const double spacingXLarge = 24.0;
 
   // Font Sizes (Reduced)
-  static const double fontSizeTiny = 10.0;
+  static const double fontSizeTiny = 8.0;
   static const double fontSizeSmall = 12.0;
-  static const double fontSizeMedium = 14.0;
-  static const double fontSizeLarge = 16.0;
-  static const double fontSizeXLarge = 18.0;
-  static const double fontSizeTitle = 20.0;
+  static const double fontSizeMedium = 10.0;
+  static const double fontSizeLarge = 12.0;
+  static const double fontSizeXLarge = 14.0;
+  static const double fontSizeTitle = 15.0;
 
   // Icon Sizes (Reduced)
-  static const double iconSizeSmall = 16.0;
-  static const double iconSizeMedium = 20.0;
-  static const double iconSizeLarge = 24.0;
+  static const double iconSizeSmall = 12.0;
+  static const double iconSizeMedium = 16.0;
+  static const double iconSizeLarge = 20.0;
 
   // Button Heights (Reduced)
-  static const double buttonHeightSmall = 40.0;
-  static const double buttonHeightMedium = 48.0;
-  static const double buttonHeightLarge = 56.0;
+  static const double buttonHeightSmall = 34.0;
+  static const double buttonHeightMedium = 38.0;
+  static const double buttonHeightLarge = 40.0;
 }

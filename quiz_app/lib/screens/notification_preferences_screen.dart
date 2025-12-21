@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/models/notification_preferences_model.dart';
 import 'package:quiz_app/services/notification_service.dart';
 import 'package:quiz_app/services/professional_notification_service.dart';
+import 'package:quiz_app/widgets/glass_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:quiz_app/services/sound_service.dart';
 
 class NotificationPreferencesScreen extends StatefulWidget {
   const NotificationPreferencesScreen({super.key});
@@ -94,8 +96,9 @@ class _NotificationPreferencesScreenState
                       subtitle: FutureBuilder<SharedPreferences>(
                         future: SharedPreferences.getInstance(),
                         builder: (context, snapshot) {
-                          if (!snapshot.hasData)
+                          if (!snapshot.hasData) {
                             return const Text('Loading...');
+                          }
                           final hour =
                               snapshot.data!.getInt('motivation_hour') ?? 9;
                           final minute =
@@ -235,10 +238,11 @@ class _NotificationPreferencesScreenState
                     SwitchListTile(
                       title: const Text('Sound Effects'),
                       subtitle: const Text('Play sounds for quiz interactions'),
-                      value: true, // TODO: Connect to SoundService
+                      value: !SoundService().isMuted,
                       onChanged: (value) {
-                        // TODO: Implement sound toggle
-                        // SoundService().setSoundEnabled(value);
+                        setState(() {
+                          SoundService().setMuted(!value);
+                        });
                       },
                     ),
                   ],
@@ -267,31 +271,29 @@ class _NotificationPreferencesScreenState
       const Duration(days: 1),
     ];
 
-    final selected = await showDialog<Duration>(
+    final selected = await GlassDialog.show<Duration>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Reminder Time'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: options.map((duration) {
-            String label;
-            if (duration.inMinutes < 60) {
-              label = '${duration.inMinutes} minutes before';
-            } else if (duration.inHours < 24) {
-              label =
-                  '${duration.inHours} hour${duration.inHours > 1 ? 's' : ''} before';
-            } else {
-              label =
-                  '${duration.inDays} day${duration.inDays > 1 ? 's' : ''} before';
-            }
+      title: 'Reminder Time',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: options.map((duration) {
+          String label;
+          if (duration.inMinutes < 60) {
+            label = '${duration.inMinutes} minutes before';
+          } else if (duration.inHours < 24) {
+            label =
+                '${duration.inHours} hour${duration.inHours > 1 ? 's' : ''} before';
+          } else {
+            label =
+                '${duration.inDays} day${duration.inDays > 1 ? 's' : ''} before';
+          }
 
-            return ListTile(
-              title: Text(label),
-              selected: duration == _preferences!.reminderTimeBefore,
-              onTap: () => Navigator.pop(context, duration),
-            );
-          }).toList(),
-        ),
+          return ListTile(
+            title: Text(label),
+            selected: duration == _preferences!.reminderTimeBefore,
+            onTap: () => Navigator.pop(context, duration),
+          );
+        }).toList(),
       ),
     );
 

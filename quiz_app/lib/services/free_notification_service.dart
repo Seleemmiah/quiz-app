@@ -12,7 +12,7 @@ class FreeNotificationService {
       FlutterLocalNotificationsPlugin();
 
   StreamSubscription<QuerySnapshot>? _notificationListener;
-  Set<String> _processedNotifications = {};
+  final Set<String> _processedNotifications = {};
 
   /// Initialize the notification service
   Future<void> initialize() async {

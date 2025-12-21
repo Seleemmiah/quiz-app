@@ -96,7 +96,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
           child: LinearProgressIndicator(
             value: (_currentIndex + 1) / widget.questions.length,
             backgroundColor:
-                Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                Theme.of(context).primaryColor.withOpacity(0.2),
             valueColor:
                 AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           ),
@@ -211,8 +211,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: isCorrect
-                      ? Colors.green.withValues(alpha: 0.1)
-                      : Colors.red.withValues(alpha: 0.1),
+                      ? Colors.green.withOpacity(0.1)
+                      : Colors.red.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: isCorrect ? Colors.green : Colors.red,

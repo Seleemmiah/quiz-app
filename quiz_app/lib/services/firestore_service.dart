@@ -276,4 +276,56 @@ class FirestoreService {
       return -1;
     }
   }
+  // --- Teacher-Student Relationship ---
+
+  // Add students to teacher's list
+  Future<void> addStudentsToTeacher(
+      String teacherId, List<String> studentIds) async {
+    final batch = _db.batch();
+    for (var studentId in studentIds) {
+      final ref = _db
+          .collection('teachers')
+          .doc(teacherId)
+          .collection('students')
+          .doc(studentId);
+      batch.set(ref, {'addedAt': DateTime.now()}, SetOptions(merge: true));
+    }
+    await batch.commit();
+  }
+
+  // Get Teacher's Students
+  Future<List<Map<String, dynamic>>> getTeacherStudents(
+      String teacherId) async {
+    try {
+      // Get IDs
+      final snapshot = await _db
+          .collection('teachers')
+          .doc(teacherId)
+          .collection('students')
+          .get();
+
+      if (snapshot.docs.isEmpty) return [];
+
+      final studentIds = snapshot.docs.map((d) => d.id).toList();
+
+      // Fetch User Profiles (chunked if > 10)
+      List<Map<String, dynamic>> students = [];
+
+      for (var i = 0; i < studentIds.length; i += 10) {
+        final end = (i + 10 < studentIds.length) ? i + 10 : studentIds.length;
+        final chunk = studentIds.sublist(i, end);
+
+        final userSnap = await _db
+            .collection('users')
+            .where(FieldPath.documentId, whereIn: chunk)
+            .get();
+        students.addAll(userSnap.docs.map((d) => d.data()).toList());
+      }
+
+      return students;
+    } catch (e) {
+      print('Error fetching teacher students: $e');
+      return [];
+    }
+  }
 }

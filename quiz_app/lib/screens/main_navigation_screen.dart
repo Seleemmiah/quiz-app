@@ -29,6 +29,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   void initState() {
     super.initState();
+    // Track daily login for streak
     _trackDailyLogin();
   }
 

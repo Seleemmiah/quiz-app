@@ -10,6 +10,7 @@ enum QuestionType {
 }
 
 class Question {
+  final String id;
   final String category;
   final String difficulty;
   final String question;
@@ -22,6 +23,7 @@ class Question {
   final QuestionType questionType;
 
   Question._({
+    required this.id,
     required this.category,
     required this.difficulty,
     required this.question,
@@ -40,12 +42,11 @@ class Question {
   factory Question.fromLocalJson(Map<String, dynamic> json) {
     // Combine correct and incorrect answers into one list
     final rawIncorrect = json['incorrectAnswers'] ?? json['incorrect_answers'];
-    final List<String> incorrect = (rawIncorrect as List)
-        .map<String>((e) => _htmlUnescape.convert(e.toString()))
-        .toList();
+    final List<String> incorrect =
+        (rawIncorrect as List).map<String>((e) => e.toString()).toList();
 
-    final correct = _htmlUnescape.convert(
-        json['correctAnswer']?.toString() ?? json['correct_answer'].toString());
+    final correct =
+        json['correctAnswer']?.toString() ?? json['correct_answer'].toString();
 
     // Determine question type
     final typeStr = json['type']?.toString().toLowerCase() ?? 'multiple';
@@ -57,8 +58,9 @@ class Question {
     }
 
     return Question._(
+      id: json['id']?.toString() ?? '',
       category: _htmlUnescape.convert(json['category'].toString()),
-      difficulty: _htmlUnescape.convert(json['difficulty'].toString()),
+      difficulty: json['difficulty'].toString(),
       question: _htmlUnescape.convert(json['question'].toString()),
       correctAnswer: correct,
       incorrectAnswers: incorrect,
@@ -77,13 +79,14 @@ class Question {
     List<String> incorrectAnswers,
     QuestionType questionType,
   ) {
+    final allAnswers = [correctAnswer, ...incorrectAnswers]
+        .map((answer) => _htmlUnescape.convert(answer))
+        .toList();
+
     // For True/False, don't shuffle - keep True/False order
     if (questionType == QuestionType.trueFalse) {
       return ['True', 'False'];
     }
-
-    // For multiple choice, shuffle as before
-    final allAnswers = [correctAnswer, ...incorrectAnswers];
     allAnswers.shuffle(Random());
     return allAnswers;
   }
@@ -94,6 +97,7 @@ class Question {
   // Serialization methods for saving/loading quiz state
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'category': category,
       'difficulty': difficulty,
       'question': question,

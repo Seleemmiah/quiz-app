@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/achievement_service.dart';
+import 'package:quiz_app/models/achievement.dart';
 import 'package:quiz_app/widgets/glass_card.dart';
 
 class AchievementsScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   @override
   void initState() {
     super.initState();
-    _achievementsFuture = _achievementService.getAllAchievements();
+    _achievementsFuture = _achievementService.getUserAchievements();
   }
 
   @override
@@ -49,7 +50,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                   gradient: LinearGradient(
                     colors: [
                       Theme.of(context).primaryColor,
-                      Theme.of(context).primaryColor.withValues(alpha: 0.7),
+                      Theme.of(context).primaryColor.withOpacity(0.7),
                     ],
                   ),
                 ),
@@ -137,7 +138,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                   shape: BoxShape.circle,
                   color: isLocked
                       ? Colors.grey[300]
-                      : Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                      : Theme.of(context).primaryColor.withOpacity(0.1),
                   border: Border.all(
                     color: isLocked
                         ? Colors.grey[400]!
@@ -146,10 +147,10 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                   ),
                 ),
                 child: Center(
-                  child: Text(
-                    isLocked ? '🔒' : achievement.icon,
-                    style: const TextStyle(fontSize: 32),
-                  ),
+                  child: isLocked
+                      ? const Icon(Icons.lock, size: 32, color: Colors.grey)
+                      : Icon(achievement.icon,
+                          size: 32, color: achievement.color),
                 ),
               ),
               const SizedBox(height: 12),
@@ -186,7 +187,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
+                    color: Colors.green.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -212,7 +213,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
       builder: (context) => AlertDialog(
         title: Row(
           children: [
-            Text(achievement.icon, style: const TextStyle(fontSize: 32)),
+            Icon(achievement.icon, size: 32, color: achievement.color),
             const SizedBox(width: 12),
             Expanded(
               child: Text(

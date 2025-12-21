@@ -34,8 +34,8 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
     try {
       final classModel = await _classService.joinClass(
         classCode: _classCodeController.text.trim().toUpperCase(),
-        userId: _currentUser!.uid,
-        userName: _currentUser!.displayName ?? 'Student',
+        userId: _currentUser.uid,
+        userName: _currentUser.displayName ?? 'Student',
         userAvatar: '👨‍🎓',
       );
 
@@ -158,7 +158,7 @@ class _JoinClassScreenState extends State<JoinClassScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withValues(alpha: 0.1),
+                  color: Colors.blue.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(

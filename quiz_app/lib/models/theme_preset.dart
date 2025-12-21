@@ -226,8 +226,9 @@ class ThemePreset {
           isDarkTheme ? Colors.grey.shade900 : Colors.grey.shade50,
       cardTheme: CardThemeData(
         elevation: 0,
-        color:
-            isDarkTheme ? Colors.grey.shade800.withOpacity(0.5) : Colors.white,
+        color: isDarkTheme
+            ? Colors.grey.shade800.withOpacity(0.5)
+            : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12), // Sleeker 12
         ),
@@ -238,6 +239,7 @@ class ThemePreset {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 0,
         backgroundColor: isDarkTheme ? Colors.grey.shade900 : Colors.white,
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
       inputDecorationTheme: InputDecorationTheme(
         isDense: true,
@@ -416,6 +418,7 @@ class ThemePreset {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 0,
         backgroundColor: isOled ? Colors.black : const Color(0xFF1E293B),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
       inputDecorationTheme: InputDecorationTheme(
         isDense: true,

@@ -20,37 +20,38 @@ class GlassDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       backgroundColor: Colors.transparent,
       elevation: 0,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
           child: Container(
+            constraints: const BoxConstraints(maxWidth: 400),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
                   Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white.withValues(alpha: 0.15)
-                      : Colors.white.withValues(alpha: 0.7),
+                      ? Colors.white.withOpacity(0.15)
+                      : Colors.white.withOpacity(0.7),
                   Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white.withValues(alpha: 0.05)
-                      : Colors.white.withValues(alpha: 0.5),
+                      ? Colors.white.withOpacity(0.05)
+                      : Colors.white.withOpacity(0.5),
                 ],
               ),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.2),
-                width: 1.5,
+                color: Colors.white.withOpacity(0.2),
+                width: 1.0,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 12,
+                  offset: const Offset(0, 6),
                 ),
               ],
             ),
@@ -60,38 +61,39 @@ class GlassDialog extends StatelessWidget {
               children: [
                 if (title != null) ...[
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
                     child: Text(
                       title!,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
                     ),
                   ),
                   Divider(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: Colors.white.withOpacity(0.2),
                     height: 1,
                   ),
                 ],
                 Flexible(
                   child: SingleChildScrollView(
                     padding: contentPadding ??
-                        const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                        const EdgeInsets.fromLTRB(12, 12, 12, 12),
                     child: content,
                   ),
                 ),
                 if (actions != null && actions!.isNotEmpty) ...[
                   Divider(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: Colors.white.withOpacity(0.2),
                     height: 1,
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: actions!
                           .map((action) => Padding(
-                                padding: const EdgeInsets.only(left: 8),
+                                padding: const EdgeInsets.only(left: 4),
                                 child: action,
                               ))
                           .toList(),

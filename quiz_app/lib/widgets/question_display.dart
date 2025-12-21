@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:quiz_app/services/tts_service.dart';
+import 'package:quiz_app/widgets/lazy_image.dart';
 
 class QuestionDisplay extends StatelessWidget {
   final String questionText;
@@ -22,54 +23,22 @@ class QuestionDisplay extends StatelessWidget {
         if (imageUrl != null && imageUrl!.isNotEmpty) ...[
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: imageUrl!.startsWith('http')
-                ? Image.network(
-                    imageUrl!,
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        height: 200,
-                        color: Colors.grey[200],
-                        child: const Center(child: Icon(Icons.broken_image)),
-                      );
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        height: 200,
-                        color: Colors.grey[100],
-                        child: const Center(child: CircularProgressIndicator()),
-                      );
-                    },
-                  )
-                : Image.asset(
-                    imageUrl!,
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        height: 200,
-                        width: double.infinity,
-                        color: Colors.grey[200],
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.image_not_supported,
-                                color: Colors.grey, size: 50),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Missing Image:\n$imageUrl',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+            child: LazyImage(
+              imageUrl: imageUrl!,
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              placeholder: Container(
+                height: 200,
+                color: Colors.grey[100],
+                child: const Center(child: CircularProgressIndicator()),
+              ),
+              errorWidget: Container(
+                height: 200,
+                color: Colors.grey[200],
+                child: const Center(child: Icon(Icons.broken_image)),
+              ),
+            ),
           ),
           const SizedBox(height: 16),
         ],

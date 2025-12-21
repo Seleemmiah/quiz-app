@@ -124,7 +124,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen> {
 
   // State for game logic
   int _score = 0;
-  Map<int, String> _selectedAnswers = {};
+  final Map<int, String> _selectedAnswers = {};
   bool _answerSelected = false;
   String? _selectedOption;
 
@@ -323,7 +323,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen> {
         children: [
           Container(
             padding: const EdgeInsets.all(32),
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            color: Theme.of(context).primaryColor.withOpacity(0.1),
             child: Column(
               children: [
                 const Text('GAME CODE',

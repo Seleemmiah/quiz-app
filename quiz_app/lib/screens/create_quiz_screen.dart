@@ -3,6 +3,7 @@ import 'package:quiz_app/models/question_model.dart';
 import 'package:quiz_app/models/quiz_model.dart';
 import 'package:quiz_app/services/firestore_service.dart';
 import 'package:quiz_app/services/auth_service.dart';
+import 'package:quiz_app/services/import_service.dart';
 import 'package:quiz_app/screens/create_question_screen.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:math';
@@ -53,6 +54,40 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
       setState(() {
         _questions.add(result);
       });
+    }
+  }
+
+  Future<void> _importQuestions() async {
+    try {
+      final importService = ImportService();
+      setState(() => _isSaving = true);
+
+      final questions = await importService.importQuestions();
+
+      if (questions.isNotEmpty) {
+        setState(() {
+          _questions.addAll(questions);
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Imported ${questions.length} questions')),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No questions imported')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Import Error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
     }
   }
 
@@ -161,7 +196,7 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: _difficulty,
+                      initialValue: _difficulty,
                       decoration:
                           const InputDecoration(labelText: 'Difficulty'),
                       items: ['Easy', 'Medium', 'Hard']
@@ -175,7 +210,7 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: _category,
+                      initialValue: _category,
                       decoration: const InputDecoration(labelText: 'Category'),
                       items: ['General', 'Science', 'History', 'Math', 'Coding']
                           .map(
@@ -204,7 +239,7 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int?>(
-                value: _timeLimitMinutes,
+                initialValue: _timeLimitMinutes,
                 decoration: const InputDecoration(
                   labelText: 'Time Limit (Teacher-Set)',
                   border: OutlineInputBorder(),
@@ -231,10 +266,20 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                   'Questions (${_questions.length})',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                ElevatedButton.icon(
-                  onPressed: _addQuestion,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add Question'),
+                Row(
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: _importQuestions,
+                      icon: const Icon(Icons.upload_file),
+                      label: const Text('Import'),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed: _addQuestion,
+                      icon: const Icon(Icons.add),
+                      label: const Text('Add'),
+                    ),
+                  ],
                 ),
               ],
             ),

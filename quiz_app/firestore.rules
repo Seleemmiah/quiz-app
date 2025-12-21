@@ -32,6 +32,19 @@ service cloud.firestore {
       match /campaign_progress/{levelId} {
         allow read, write: if isOwner(userId);
       }
+
+      match /loginStreak/{streakId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /achievements/{documentId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Teachers Collection
+    match /teachers/{teacherId}/students/{studentId} {
+      allow read, write: if isAuthenticated();
     }
 
     // User Results

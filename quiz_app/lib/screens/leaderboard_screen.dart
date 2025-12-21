@@ -49,7 +49,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             _selectedDifficulty, _selectedCategory);
       }
     } catch (e) {
-      debugPrint('Error loading local leaderboard: $e');
+      // In production, you might want to log this to a service like Sentry or Firebase Crashlytics
     } finally {
       if (mounted) setState(() => _isLoadingLocal = false);
     }
@@ -60,7 +60,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     try {
       _globalScores = await _firestoreService.getLeaderboard();
     } catch (e) {
-      debugPrint('Error loading global leaderboard: $e');
+      // In production, you might want to log this to a service
     } finally {
       if (mounted) setState(() => _isLoadingGlobal = false);
     }
@@ -115,7 +115,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             color: Theme.of(context).cardColor,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withOpacity(0.05),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -141,7 +141,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               const SizedBox(height: 12),
               // Category Selector
               DropdownButtonFormField<String>(
-                value: _selectedCategory,
+                initialValue: _selectedCategory,
                 decoration: InputDecoration(
                   labelText: 'Category',
                   contentPadding:
@@ -187,7 +187,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       ),
                     )
                   : ListView.builder(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(8),
                       itemCount: _localScores.length,
                       itemBuilder: (context, index) {
                         final entry = _localScores[index];
@@ -195,7 +195,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
                         return Card(
                           elevation: isTop3 ? 4 : 1,
-                          margin: const EdgeInsets.only(bottom: 12),
+                          margin: const EdgeInsets.only(bottom: 8),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                             side: isTop3
@@ -254,7 +254,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(8),
       itemCount: _globalScores.length,
       itemBuilder: (context, index) {
         final entry = _globalScores[index];
@@ -262,7 +262,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
         return Card(
           elevation: isTop3 ? 4 : 1,
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: 8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: isTop3

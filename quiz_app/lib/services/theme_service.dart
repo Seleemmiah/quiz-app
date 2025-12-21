@@ -16,6 +16,23 @@ class AppTheme {
     this.brightness = Brightness.light,
   });
 
+  /// Create a dark version of this theme
+  AppTheme toDark() {
+    return AppTheme(
+      name: '$name (Dark)',
+      primaryColor: _darkenColor(primaryColor),
+      secondaryColor: _darkenColor(secondaryColor),
+      accentColor: _darkenColor(accentColor),
+      brightness: Brightness.dark,
+    );
+  }
+
+  /// Helper method to darken a color for dark theme
+  Color _darkenColor(Color color) {
+    final hsl = HSLColor.fromColor(color);
+    return hsl.withLightness((hsl.lightness + 0.2).clamp(0.0, 1.0)).toColor();
+  }
+
   ThemeData toThemeData() {
     return ThemeData(
       useMaterial3: true,
@@ -31,13 +48,15 @@ class AppTheme {
           : const Color(0xFF121212),
       appBarTheme: AppBarTheme(
         backgroundColor: primaryColor,
-        foregroundColor: Colors.white,
+        foregroundColor:
+            brightness == Brightness.light ? Colors.white : Colors.black,
         elevation: 0,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
+          foregroundColor:
+              brightness == Brightness.light ? Colors.white : Colors.black,
           elevation: 2,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
@@ -57,6 +76,7 @@ class AppTheme {
 
 class ThemeService {
   static const String _themeKey = 'selected_theme';
+  static const String _themeModeKey = 'theme_mode';
 
   // Beautiful themes optimized for glass effects
   static const List<AppTheme> themes = [
@@ -151,8 +171,48 @@ class ThemeService {
     return prefs.getInt(_themeKey) ?? 0; // Default to Ocean Blue
   }
 
+  Future<void> saveThemeMode(ThemeMode mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_themeModeKey, mode.name);
+  }
+
+  Future<ThemeMode> getThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final modeString = prefs.getString(_themeModeKey);
+    return ThemeMode.values.firstWhere(
+      (mode) => mode.name == modeString,
+      orElse: () => ThemeMode.system,
+    );
+  }
+
   Future<AppTheme> getCurrentTheme() async {
     final index = await getThemeIndex();
-    return themes[index];
+    final mode = await getThemeMode();
+
+    final baseTheme = themes[index];
+
+    switch (mode) {
+      case ThemeMode.dark:
+        return baseTheme.toDark();
+      case ThemeMode.light:
+        return baseTheme;
+      case ThemeMode.system:
+        // For system mode, return light theme by default
+        // This can be enhanced to detect system theme
+        return baseTheme;
+    }
+  }
+
+  Future<ThemeData> getCurrentThemeData() async {
+    final theme = await getCurrentTheme();
+    return theme.toThemeData();
+  }
+
+  // Get theme based on system brightness
+  Future<AppTheme> getThemeForBrightness(Brightness brightness) async {
+    final index = await getThemeIndex();
+    final baseTheme = themes[index];
+
+    return brightness == Brightness.dark ? baseTheme.toDark() : baseTheme;
   }
 }

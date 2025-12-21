@@ -11,7 +11,7 @@ class HandwritingScreen extends StatefulWidget {
 }
 
 class _HandwritingScreenState extends State<HandwritingScreen> {
-  List<Offset?> _points = [];
+  final List<Offset?> _points = [];
   bool _isRecognizing = false;
   String _solution = '';
 

@@ -5,8 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quiz_app/services/settings_service.dart';
 
 void main() {
-  setUpAll(() {
+  setUpAll(() async {
     GoogleFonts.config.allowRuntimeFetching = false;
+
+    // Mock SharedPreferences
+    SharedPreferences.setMockInitialValues({});
   });
 
   testWidgets('App starts and shows welcome message',
@@ -22,6 +25,6 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify that our app shows the title.
-    expect(find.text('Quiz App'), findsWidgets);
+    expect(find.text('Mindly'), findsWidgets);
   });
 }

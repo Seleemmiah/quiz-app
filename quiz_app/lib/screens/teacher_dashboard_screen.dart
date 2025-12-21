@@ -6,7 +6,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/screens/create_quiz_screen.dart';
 import 'package:quiz_app/services/professional_notification_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:quiz_app/widgets/teacher_analytics.dart';
 
 class TeacherDashboardScreen extends StatefulWidget {
   const TeacherDashboardScreen({super.key});
@@ -27,14 +27,20 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _loadData();
   }
 
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
     try {
-      final students = await _firestoreService.getStudents();
+      final teacherId = FirebaseAuth.instance.currentUser?.uid;
+      List<Map<String, dynamic>> students = [];
+
+      if (teacherId != null) {
+        students = await _firestoreService.getTeacherStudents(teacherId);
+      }
+
       final results = await _firestoreService.getAllQuizResults();
 
       if (mounted) {
@@ -63,7 +69,8 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen>
           controller: _tabController,
           tabs: const [
             Tab(text: 'Students', icon: Icon(Icons.people)),
-            Tab(text: 'Recent Results', icon: Icon(Icons.analytics)),
+            Tab(text: 'Results', icon: Icon(Icons.assignment)),
+            Tab(text: 'Analytics', icon: Icon(Icons.analytics)),
           ],
         ),
       ),
@@ -74,6 +81,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen>
               children: [
                 _buildStudentList(),
                 _buildResultsList(),
+                _buildAnalytics(),
               ],
             ),
       floatingActionButton: FloatingActionButton.extended(
@@ -239,6 +247,13 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen>
     );
   }
 
+  Widget _buildAnalytics() {
+    return TeacherAnalytics(
+      results: _results,
+      students: _students,
+    );
+  }
+
   Widget _buildEmptyState(String message) {
     return Center(
       child: Column(
@@ -286,7 +301,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen>
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  value: selectedDifficulty,
+                  initialValue: selectedDifficulty,
                   decoration: const InputDecoration(
                     labelText: 'Difficulty',
                     border: OutlineInputBorder(),
@@ -575,15 +590,29 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen>
                     if (targetStudentIds.isNotEmpty) {
                       final notificationService =
                           ProfessionalNotificationService();
+
+                      // 1. Send Notifications
                       await notificationService.sendExamCreatedNotification(
                         studentIds: targetStudentIds,
                         examTitle: subjectController.text.trim(),
                         examTime: startTime!,
                         examId: code,
                       );
+
+                      // 2. Link Students to Teacher (My Students)
+                      try {
+                        final teacherId =
+                            FirebaseAuth.instance.currentUser?.uid;
+                        if (teacherId != null) {
+                          await _firestoreService.addStudentsToTeacher(
+                              teacherId, targetStudentIds);
+                        }
+                      } catch (e) {
+                        print("Error linking students: $e");
+                      }
                     }
                   } catch (e) {
-                    debugPrint('Failed to send exam notifications: $e');
+                    // In production, you might want to log this to a service
                   }
 
                   if (context.mounted) {

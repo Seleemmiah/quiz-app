@@ -22,12 +22,19 @@ class DailyChallengeService {
     'History',
     'Mathematics',
     'Electrical Engineering',
+    'Aerospace Engineering',
+    'Astronomy',
+    'Art',
     'Mechanical Engineering',
     'Civil Engineering',
     'Chemical Engineering',
     'Computer Engineering',
+    'Biomedical Engineering',
+    'Physics',
+    'Chemistry',
     'Technology',
     'Sports',
+    'Music',
     'Geography',
   ];
 
@@ -67,9 +74,9 @@ class DailyChallengeService {
     final category = _categories[_random.nextInt(_categories.length)];
 
     // Get questions for this category
-    final allQuestions = local_q.getLocalQuestions();
+    final allQuestions = local_q.localQuestions;
     final categoryQuestions =
-        allQuestions.where((q) => q.category == category).toList();
+        allQuestions.where((q) => q['category'] == category).toList();
 
     // Shuffle and take 10 questions
     categoryQuestions.shuffle(_random);
@@ -90,7 +97,8 @@ class DailyChallengeService {
       questionCount: selectedQuestions.length,
       targetScore: targetScore,
       bonusPoints: bonusPoints,
-      questionIds: selectedQuestions.map((q) => q.question).toList(),
+      questionIds:
+          selectedQuestions.map((q) => q['question'] as String).toList(),
     );
 
     // Save to Firestore

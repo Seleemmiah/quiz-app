@@ -1,5 +1,4 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/foundation.dart';
 
 class SoundService {
   static final SoundService _instance = SoundService._internal();
@@ -15,6 +14,12 @@ class SoundService {
 
   void toggleMute() {
     _isMuted = !_isMuted;
+  }
+
+  bool get isMuted => _isMuted;
+
+  void setMuted(bool muted) {
+    _isMuted = muted;
   }
 
   Future<void> playCorrectSound() async {
@@ -65,10 +70,10 @@ class SoundService {
     try {
       final player = AudioPlayer();
       await player.setReleaseMode(ReleaseMode.release);
-      // Android fails to play low_score.wav (MEDIA_ERROR). Disabled to prevent log spam.
-      // await player.play(AssetSource('sounds/low_score.wav'));
-      debugPrint(
-          'Low score sound disabled due to file compatibility issue with Emulator.');
+      // Re-enabled for Production/Real Devices.
+      // WARNING: This specific file ('sounds/low_score.wav') is known to crash the Android Emulator (SIGABRT).
+      // If the app crashes on the emulator, comment this line out again.
+      await player.play(AssetSource('sounds/low_score.wav'));
     } catch (e) {
       // debugPrint('Error playing low score sound: $e');
     }

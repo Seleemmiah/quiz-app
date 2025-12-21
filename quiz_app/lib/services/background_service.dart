@@ -32,7 +32,6 @@ void callbackDispatcher() {
           final userId = prefs.getString('current_user_id');
 
           if (userId != null) {
-            // 4. Check for new notifications in Firestore
             // We check for notifications created in the last 20 minutes (since task runs ~15 min)
             final now = DateTime.now();
             final twentyMinutesAgo = now.subtract(const Duration(minutes: 20));
@@ -87,7 +86,7 @@ class BackgroundService {
   static Future<void> initialize() async {
     await Workmanager().initialize(
       callbackDispatcher,
-      isInDebugMode: true, // Set to false in production
+      isInDebugMode: false, // Set to false in production
     );
   }
 

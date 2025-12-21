@@ -61,40 +61,39 @@ class NotificationService {
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         debugPrint('FCM permission granted');
 
-        // For iOS: Get APNS token first
+        // For iOS: Get APNS token (may be null initially)
         if (defaultTargetPlatform == TargetPlatform.iOS) {
           try {
             final apnsToken = await messaging.getAPNSToken();
             if (apnsToken != null) {
               debugPrint('APNS Token: $apnsToken');
             } else {
-              debugPrint('APNS token not available yet, will retry...');
-              // Wait a bit and retry
-              await Future.delayed(const Duration(seconds: 2));
-              final retryToken = await messaging.getAPNSToken();
-              if (retryToken != null) {
-                debugPrint('APNS Token (retry): $retryToken');
-              }
+              debugPrint(
+                  'APNS token is null - FCM may not work properly on iOS until token is available');
             }
           } catch (e) {
             debugPrint('Error getting APNS token: $e');
-            // Continue anyway - FCM might still work
           }
         }
 
-        // Get FCM token
-        final token = await messaging.getToken();
-        if (token != null) {
-          debugPrint('FCM Token: $token');
+        // Get FCM token with error handling
+        try {
+          final token = await messaging.getToken();
+          if (token != null) {
+            debugPrint('FCM Token: $token');
 
-          // Save to Firestore
-          final user = FirebaseAuth.instance.currentUser;
-          if (user != null) {
-            await _firestore
-                .collection('users')
-                .doc(user.uid)
-                .update({'fcmToken': token});
+            // Save to Firestore
+            final user = FirebaseAuth.instance.currentUser;
+            if (user != null) {
+              await _firestore
+                  .collection('users')
+                  .doc(user.uid)
+                  .update({'fcmToken': token});
+            }
           }
+        } catch (e) {
+          debugPrint('Error getting FCM token: $e');
+          // Continue without FCM token - app can still work
         }
 
         // Handle token refresh

@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>362153618720-qod5e15ubgq7v3urkqnc7r2aou7ovb25.apps.googleusercontent.com</string>
+	<string>362153618720-tceeebub10cuiv8dl0rh7rh5fo9von6v.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.362153618720-qod5e15ubgq7v3urkqnc7r2aou7ovb25</string>
+	<string>com.googleusercontent.apps.362153618720-tceeebub10cuiv8dl0rh7rh5fo9von6v</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>362153618720-buhdnie6rdhqkr1rf4ailstv49edgjdj.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAimeeqbmW9qJwyD7ycCXbRnaRQ7j4BRfU</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.quizApp</string>
+	<string>com.mindly.app</string>
 	<key>PROJECT_ID</key>
 	<string>quiz-d1427</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:362153618720:ios:1675fd0782ef57df187b45</string>
+	<string>1:362153618720:ios:28dc98ce8f81a121187b45</string>
 </dict>
 </plist>

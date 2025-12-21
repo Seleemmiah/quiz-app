@@ -38,8 +38,8 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
     try {
       final newClass = await _classService.createClass(
         className: _classNameController.text.trim(),
-        teacherId: _currentUser!.uid,
-        teacherName: _currentUser!.displayName ?? 'Teacher',
+        teacherId: _currentUser.uid,
+        teacherName: _currentUser.displayName ?? 'Teacher',
         subject: _subjectController.text.trim().isEmpty
             ? null
             : _subjectController.text.trim(),
@@ -67,7 +67,7 @@ class _CreateClassScreenState extends State<CreateClassScreen> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color:
-                        Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                        Theme.of(context).primaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: Theme.of(context).primaryColor,

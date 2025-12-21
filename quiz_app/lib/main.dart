@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:quiz_app/screens/main_navigation_screen.dart';
+import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:quiz_app/models/question_model.dart';
 import 'package:quiz_app/screens/quiz_screen.dart';
 import 'package:quiz_app/screens/result_screen.dart';
 import 'package:quiz_app/screens/review_screen.dart';
 import 'package:quiz_app/screens/settings_screen.dart';
 import 'package:quiz_app/screens/splash_screen.dart';
-import 'package:quiz_app/screens/enhanced_onboarding_screen.dart';
+import 'package:quiz_app/screens/modern_onboarding_screen.dart';
+import 'package:quiz_app/widgets/offline_indicator.dart';
+import 'package:quiz_app/widgets/glass_dialog.dart';
 
 import 'package:quiz_app/screens/statistics_screen.dart';
 import 'package:quiz_app/screens/multiplayer/lobby_screen.dart';
@@ -61,10 +67,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Initialize Firebase if not already initialized
   await Firebase.initializeApp();
 
-  print("Handling a background message: ${message.messageId}");
-  print("Title: ${message.notification?.title}");
-  print("Body: ${message.notification?.body}");
+  debugPrint("Handling a background message: ${message.messageId}");
+  debugPrint("Title: ${message.notification?.title}");
+  debugPrint("Body: ${message.notification?.body}");
 }
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,6 +82,20 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    // Enable Offline Persistence
+    FirebaseFirestore.instance.settings =
+        const Settings(persistenceEnabled: true);
+
+    // Initialize Crashlytics
+    FlutterError.onError = (errorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    };
+
+    // Pass all uncaught asynchronous errors to Crashlytics
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
   } catch (e) {
     debugPrint('Firebase initialization failed: $e');
   }
@@ -91,8 +113,7 @@ void main() async {
 
   // Initialize Professional Notification Service
   try {
-    final professionalNotificationService = ProfessionalNotificationService();
-    await professionalNotificationService.initialize();
+    await ProfessionalNotificationService.instance.initialize();
     debugPrint('✅ Professional Notification Service initialized');
   } catch (e) {
     debugPrint('Professional notification service initialization failed: $e');
@@ -210,11 +231,16 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
+      navigatorObservers: [RouteTrackingObserver()],
       title: 'Mindly',
       debugShowCheckedModeBanner: false,
       theme: _currentThemePreset.createLightTheme(),
       darkTheme: _currentThemePreset.createDarkTheme(isOled: _isOledMode),
       themeMode: _themeMode,
+      builder: (context, child) {
+        return NotificationListenerWrapper(child: child!);
+      },
       home: const SplashScreen(), // Start with Splash Screen
       onGenerateRoute: (settings) {
         switch (settings.name) {
@@ -222,7 +248,7 @@ class MyAppState extends State<MyApp> {
             return MaterialPageRoute(builder: (_) => const WelcomeScreen());
           case '/onboarding':
             return MaterialPageRoute(
-                builder: (_) => const EnhancedOnboardingScreen());
+                builder: (_) => const ModernOnboardingScreen());
           case '/login':
             return MaterialPageRoute(builder: (_) => const LoginScreen());
           case '/signup':
@@ -425,6 +451,170 @@ class MyAppState extends State<MyApp> {
             return MaterialPageRoute(builder: (_) => const WelcomeScreen());
         }
       },
+    );
+  }
+}
+
+final ValueNotifier<String> currentRouteNotifier = ValueNotifier<String>('/');
+
+class RouteTrackingObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    if (route.settings.name != null) {
+      currentRouteNotifier.value = route.settings.name!;
+    }
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    if (newRoute?.settings.name != null) {
+      currentRouteNotifier.value = newRoute!.settings.name!;
+    }
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    if (previousRoute?.settings.name != null) {
+      currentRouteNotifier.value = previousRoute!.settings.name!;
+    }
+  }
+}
+
+class NotificationListenerWrapper extends StatefulWidget {
+  final Widget child;
+  const NotificationListenerWrapper({super.key, required this.child});
+
+  @override
+  State<NotificationListenerWrapper> createState() =>
+      _NotificationListenerWrapperState();
+}
+
+class _NotificationListenerWrapperState
+    extends State<NotificationListenerWrapper> {
+  // Stream subscription
+  StreamSubscription? _subscription;
+  final List<Map<String, dynamic>> _queue = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen for new notifications
+    _subscription =
+        ProfessionalNotificationService.instance.alertStream.listen((data) {
+      _handleNotification(data);
+    });
+
+    // Listen for route changes to flush queue
+    currentRouteNotifier.addListener(_checkQueue);
+  }
+
+  void _handleNotification(Map<String, dynamic> data) {
+    // Block on Splash or Root (if Root is Splash) and during initialization
+    final route = currentRouteNotifier.value;
+    if (route == '/' ||
+        route == '/splash' ||
+        route == '/welcome' ||
+        route.isEmpty) {
+      _queue.add(data);
+    } else {
+      // Add small delay to ensure UI is ready
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (mounted) {
+          _showNotificationDialog(data);
+        }
+      });
+    }
+  }
+
+  void _checkQueue() {
+    final route = currentRouteNotifier.value;
+    // Authorized screens to show notifications
+    if (route != '/' &&
+        route != '/splash' &&
+        route != '/welcome' &&
+        _queue.isNotEmpty) {
+      // Create a copy to iterate
+      final pending = List<Map<String, dynamic>>.from(_queue);
+      _queue.clear();
+      for (final data in pending) {
+        _showNotificationDialog(data);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    currentRouteNotifier.removeListener(_checkQueue);
+    super.dispose();
+  }
+
+  void _showNotificationDialog(Map<String, dynamic> data) {
+    if (!mounted) return;
+
+    final navContext = navigatorKey.currentContext;
+    if (navContext == null) return;
+
+    GlassDialog.show(
+      context: navContext,
+      barrierDismissible: false,
+      title: data['title'] ?? 'Notification',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.notifications_active, color: Colors.purple),
+              const SizedBox(width: 8),
+              Expanded(
+                  child: Text(data['message'] ?? '',
+                      style: const TextStyle(fontSize: 16))),
+            ],
+          ),
+          if (data['type'] == 'exam_created') ...[
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.purple.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.purple.shade100),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.info_outline, size: 20, color: Colors.purple),
+                  SizedBox(width: 8),
+                  Expanded(child: Text('Reminder set for 15 mins before!')),
+                ],
+              ),
+            ),
+          ]
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(navContext),
+          child: const Text('Dismiss'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pop(navContext);
+          },
+          child: const Text('Okay'),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        widget.child,
+        const OfflineIndicator(),
+      ],
     );
   }
 }

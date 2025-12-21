@@ -113,7 +113,10 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
         ],
       ),
       body: _isLoading
-          ? const ListLoadingSkeleton(itemCount: 5)
+          ? ListSkeleton(
+              itemCount: 5,
+              itemBuilder: () => const QuizCardSkeleton(),
+            )
           : _bookmarks.isEmpty
               ? const EmptyState.noBookmarks()
               : ListView.builder(
@@ -127,7 +130,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                         leading: CircleAvatar(
                           backgroundColor: Theme.of(context)
                               .primaryColor
-                              .withValues(alpha: 0.1),
+                              .withOpacity(0.1),
                           child: Icon(Icons.question_mark,
                               color: Theme.of(context).primaryColor, size: 20),
                         ),

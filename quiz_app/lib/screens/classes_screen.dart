@@ -25,7 +25,7 @@ class _ClassesScreenState extends State<ClassesScreen> {
   void _loadClasses() {
     if (_currentUser != null) {
       setState(() {
-        _classesFuture = _classService.getUserClasses(_currentUser!.uid);
+        _classesFuture = _classService.getUserClasses(_currentUser.uid);
       });
     }
   }
@@ -110,14 +110,14 @@ class _ClassesScreenState extends State<ClassesScreen> {
             itemCount: classes.length,
             itemBuilder: (context, index) {
               final classModel = classes[index];
-              final isTeacher = classModel.teacherId == _currentUser!.uid;
+              final isTeacher = classModel.teacherId == _currentUser.uid;
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
                 child: ListTile(
                   leading: CircleAvatar(
                     backgroundColor:
-                        Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                        Theme.of(context).primaryColor.withOpacity(0.1),
                     child: Icon(
                       isTeacher ? Icons.school : Icons.class_,
                       color: Theme.of(context).primaryColor,

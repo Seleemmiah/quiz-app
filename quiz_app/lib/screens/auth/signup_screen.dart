@@ -67,7 +67,7 @@ class _SignupScreenState extends State<SignupScreen> {
         );
 
         // Update local preferences
-        await PreferencesService().setUsername(_usernameController.text.trim());
+        await PreferencesService.setUsername(_usernameController.text.trim());
 
         // If teacher, save verification details (mock for now)
         if (_selectedRole == 'teacher') {
@@ -177,8 +177,8 @@ class _SignupScreenState extends State<SignupScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Theme.of(context).primaryColor.withValues(alpha: 0.1),
-              Theme.of(context).primaryColor.withValues(alpha: 0.05),
+              Theme.of(context).primaryColor.withOpacity(0.1),
+              Theme.of(context).primaryColor.withOpacity(0.05),
             ],
           ),
         ),
@@ -562,7 +562,7 @@ class _SignupScreenState extends State<SignupScreen> {
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: isSelected
-              ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+              ? Theme.of(context).primaryColor.withOpacity(0.1)
               : Theme.of(context).cardColor,
           border: Border.all(
             color: isSelected

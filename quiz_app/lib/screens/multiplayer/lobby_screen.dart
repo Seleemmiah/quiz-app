@@ -337,7 +337,7 @@ class _LobbyScreenState extends State<LobbyScreen>
                 ),
                 const SizedBox(height: 24),
                 DropdownButtonFormField<String>(
-                  value: _selectedCategory,
+                  initialValue: _selectedCategory,
                   decoration: const InputDecoration(
                     labelText: 'Category',
                     border: OutlineInputBorder(),
@@ -361,7 +361,7 @@ class _LobbyScreenState extends State<LobbyScreen>
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<Difficulty>(
-                  value: _selectedDifficulty,
+                  initialValue: _selectedDifficulty,
                   decoration: const InputDecoration(
                     labelText: 'Difficulty',
                     border: OutlineInputBorder(),

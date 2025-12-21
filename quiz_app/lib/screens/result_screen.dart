@@ -1,13 +1,15 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:quiz_app/services/score_service.dart';
 import 'package:quiz_app/services/statistics_service.dart';
 import 'package:quiz_app/services/achievement_service.dart';
+import 'package:quiz_app/models/achievement.dart';
 import 'package:quiz_app/models/question_model.dart';
 import 'package:quiz_app/settings.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:confetti/confetti.dart';
 import 'package:quiz_app/services/firestore_service.dart';
+import 'package:quiz_app/services/share_service.dart';
 import 'package:quiz_app/models/quiz_result.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/services/sound_service.dart';
@@ -62,12 +64,26 @@ class _ResultScreenState extends State<ResultScreen> {
   bool _isNewHighScore = false;
   List<Achievement> _newAchievements = [];
   late ConfettiController _confettiController;
+  final GlobalKey _shareButtonKey = GlobalKey();
+  StreamSubscription? _achievementSubscription;
 
   @override
   void initState() {
     super.initState();
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 3));
+
+    // Listen for new achievements
+    _achievementSubscription =
+        _achievementService.achievementUnlocked.listen((achievement) {
+      if (mounted) {
+        setState(() {
+          _newAchievements.add(achievement);
+        });
+        // Play sound for achievement
+        SoundService().playHighScoreSound();
+      }
+    });
 
     // Save result to Firestore
     _saveQuizResult();
@@ -139,6 +155,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   void dispose() {
+    _achievementSubscription?.cancel();
     _confettiController.dispose();
     super.dispose();
   }
@@ -195,41 +212,68 @@ class _ResultScreenState extends State<ResultScreen> {
     // Get updated statistics for achievement checking
     final stats = await _statisticsService.getStatistics();
 
+    // Get current streak
+    final streak = await _achievementService.getLoginStreak();
+
     // Check for new achievements
-    final newAchievements = await _achievementService.checkAchievements(
-      score: widget.score,
-      totalQuestions: widget.totalQuestions,
-      difficulty: widget.difficulty,
-      category: widget.category,
-      totalQuizzes: stats.totalQuizzes,
-      difficultyQuizzes: stats.difficultyQuizzes,
-      categoryQuizzes: stats.categoryQuizzes,
-      categoryAverages: stats.categoryAverages,
-      currentLevel: levelAfter, // Pass current level
+    await _achievementService.checkAndUnlockAchievements(
+      quizCount: stats.totalQuizzes,
+      questionCount: stats.totalQuestions,
+      streak: streak,
+      lastScore: widget.totalQuestions > 0
+          ? (widget.score / widget.totalQuestions) * 100
+          : 0,
+      isExam: widget.category == 'Exam',
     );
-
-    if (newAchievements.isNotEmpty && mounted) {
-      setState(() {
-        _newAchievements = newAchievements;
-      });
-    }
-
-    // Check for Campaign Progress
-    // We need to know if this was a campaign level.
-    // Since we can't easily pass arguments to initState, we'll check widget properties if we add them,
-    // or we can rely on a separate method call or passed arguments.
-    // Ideally, ResultScreen should accept 'levelId'.
-    // For now, let's assume we pass 'levelId' in the constructor or arguments.
   }
 
   void _shareScore() {
-    final percentage = widget.totalQuestions > 0
-        ? (widget.score / widget.totalQuestions) * 100
-        : 0;
-    final message = 'I scored ${widget.score}/${widget.totalQuestions} '
-        '(${percentage.toStringAsFixed(1)}%) on Mindly! '
-        '${widget.category != null ? "Category: ${widget.category}" : ""}';
-    Share.share(message);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Rect? rect;
+
+      // Try to get the rect from the share button
+      final BuildContext? buttonContext = _shareButtonKey.currentContext;
+      if (buttonContext != null) {
+        final RenderBox? renderBox =
+            buttonContext.findRenderObject() as RenderBox?;
+        if (renderBox != null && renderBox.hasSize) {
+          final offset = renderBox.localToGlobal(Offset.zero);
+          final size = renderBox.size;
+
+          // Ensure we have valid dimensions and position
+          if (size.width > 0 &&
+              size.height > 0 &&
+              offset.dx >= 0 &&
+              offset.dy >= 0) {
+            rect = Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height);
+          }
+        }
+      }
+
+      // If we couldn't get a valid rect, provide a fallback for iOS
+      if (rect == null) {
+        // Create a default rect in the center-bottom area of the screen
+        // Use a safe way to get screen size
+        final screenSize =
+            MediaQueryData.fromWindow(WidgetsBinding.instance.window).size;
+        final defaultWidth = 120.0;
+        final defaultHeight = 60.0;
+        rect = Rect.fromLTWH(
+          (screenSize.width - defaultWidth) / 2,
+          screenSize.height - 120,
+          defaultWidth,
+          defaultHeight,
+        );
+      }
+
+      ShareService.shareQuizResult(
+        quizTitle: widget.category ?? 'General Quiz',
+        score: widget.score,
+        totalQuestions: widget.totalQuestions,
+        category: widget.category ?? 'General',
+        sharePositionOrigin: rect,
+      );
+    });
   }
 
   @override
@@ -392,8 +436,8 @@ class _ResultScreenState extends State<ResultScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(achievement.icon,
-                                          style: const TextStyle(fontSize: 24)),
+                                      Icon(achievement.icon,
+                                          size: 24, color: achievement.color),
                                       const SizedBox(width: 8),
                                       Text(
                                         achievement.title,
@@ -415,6 +459,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   FadeInUp(
                     delay: const Duration(milliseconds: 1200),
                     child: ElevatedButton.icon(
+                      key: _shareButtonKey,
                       icon: const Icon(Icons.share),
                       label: const Text('Share Score'),
                       onPressed: _shareScore,
@@ -607,7 +652,7 @@ class _ResultScreenState extends State<ResultScreen> {
               const Text(
                 '🎉 LEVEL UP! 🎉',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -617,7 +662,7 @@ class _ResultScreenState extends State<ResultScreen> {
               Text(
                 'Level $oldLevel → Level $newLevel',
                 style: TextStyle(
-                  fontSize: 32,
+                  fontSize: 25,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).primaryColor,
                 ),
@@ -656,7 +701,7 @@ class _ResultScreenState extends State<ResultScreen> {
                             child: Text(
                               '${theme.emoji} ${theme.name}',
                               style: const TextStyle(
-                                fontSize: 16,
+                                fontSize: 10,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -671,7 +716,7 @@ class _ResultScreenState extends State<ResultScreen> {
               Text(
                 'Keep up the great work!',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 10,
                   color: Colors.grey[600],
                 ),
                 textAlign: TextAlign.center,

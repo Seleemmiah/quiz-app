@@ -389,24 +389,24 @@ class _StudyModeScreenState extends State<StudyModeScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
         ],
-        border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 48, color: textColor.withValues(alpha: 0.5)),
+          Icon(icon, size: 48, color: textColor.withOpacity(0.5)),
           const SizedBox(height: 24),
           Text(
             title,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: textColor.withValues(alpha: 0.6),
+              color: textColor.withOpacity(0.6),
               letterSpacing: 1.2,
             ),
           ),
@@ -595,7 +595,7 @@ class _StudyModeScreenState extends State<StudyModeScreen> {
             color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withOpacity(0.05),
                 offset: const Offset(0, -4),
                 blurRadius: 10,
               ),

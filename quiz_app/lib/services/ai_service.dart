@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:quiz_app/models/question_model.dart';
 
+import 'package:quiz_app/config/env.dart';
+
 class AIService {
-  // TODO: Move this to a secure storage or environment variable in production
-  static const String _apiKey = 'AIzaSyDAqx8gzlIKNU0-WGwuo4XVG45T1GrTQLE';
+  // Key moved to Env
+  static const String _apiKey = Env.geminiApiKey;
   late final GenerativeModel _model;
 
   AIService() {
@@ -78,6 +80,11 @@ class AIService {
       }).toList();
     } catch (e) {
       print('Error generating quiz: $e');
+      if (e.toString().contains('quota') ||
+          e.toString().contains('rate limit')) {
+        throw Exception(
+            'AI quota exceeded. Please try again later or upgrade your plan at https://ai.google.dev/gemini-api/docs/rate-limits');
+      }
       throw Exception('Failed to generate quiz: $e');
     }
   }

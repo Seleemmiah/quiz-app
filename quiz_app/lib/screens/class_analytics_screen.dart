@@ -89,7 +89,7 @@ class _ClassAnalyticsScreenState extends State<ClassAnalyticsScreen> {
                             Theme.of(context).primaryColor,
                             Theme.of(context)
                                 .primaryColor
-                                .withValues(alpha: 0.7),
+                                .withOpacity(0.7),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -99,7 +99,7 @@ class _ClassAnalyticsScreenState extends State<ClassAnalyticsScreen> {
                           BoxShadow(
                             color: Theme.of(context)
                                 .primaryColor
-                                .withValues(alpha: 0.3),
+                                .withOpacity(0.3),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -116,7 +116,7 @@ class _ClassAnalyticsScreenState extends State<ClassAnalyticsScreen> {
                           Container(
                             width: 1,
                             height: 40,
-                            color: Colors.white.withValues(alpha: 0.3),
+                            color: Colors.white.withOpacity(0.3),
                           ),
                           _buildSummaryItem(
                             'Avg Score',
@@ -213,7 +213,7 @@ class _ClassAnalyticsScreenState extends State<ClassAnalyticsScreen> {
         Text(
           label,
           style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.8),
+            color: Colors.white.withOpacity(0.8),
             fontSize: 14,
           ),
         ),

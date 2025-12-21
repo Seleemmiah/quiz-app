@@ -1,4 +1,3 @@
-import '../models/question_model.dart';
 
 final List<Map<String, dynamic>> generatedQuestions = [
   {

@@ -48,6 +48,50 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:362153618720:android:c6a11990094c0bc1187b45",
+        "android_client_info": {
+          "package_name": "com.mindly.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "362153618720-kl32gpgu9uq0715fu884k7ejn2gdb6d6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mindly.app",
+            "certificate_hash": "03af8ee19d5bf6d8212075a22443d1d9b01fa726"
+          }
+        },
+        {
+          "client_id": "362153618720-g82tu9jg57qdqfhlbno27ctm701kuict.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4HQYLPat23OCGH0F_Jc6ebSnghBpxbBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "362153618720-g82tu9jg57qdqfhlbno27ctm701kuict.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "362153618720-qod5e15ubgq7v3urkqnc7r2aou7ovb25.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.quizApp"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

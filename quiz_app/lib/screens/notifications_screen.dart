@@ -94,13 +94,13 @@ class NotificationsScreen extends StatelessWidget {
                           ? Colors.transparent
                           : Theme.of(context)
                               .primaryColor
-                              .withValues(alpha: 0.3),
+                              .withOpacity(0.3),
                       width: notification.isRead ? 0 : 1.5,
                     ),
                   ),
                   color: notification.isRead
                       ? Theme.of(context).cardColor
-                      : Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                      : Theme.of(context).primaryColor.withOpacity(0.05),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(12),
                     onTap: () {
@@ -120,8 +120,8 @@ class NotificationsScreen extends StatelessWidget {
                             children: [
                               // Main app icon
                               Container(
-                                width: 40,
-                                height: 40,
+                                width: 30,
+                                height: 30,
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).primaryColor,
                                   borderRadius: BorderRadius.circular(10),

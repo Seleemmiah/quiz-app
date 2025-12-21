@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // Update local preferences
         if (credential.user?.displayName != null) {
-          await PreferencesService().setUsername(credential.user!.displayName!);
+          await PreferencesService.setUsername(credential.user!.displayName!);
         }
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final credential = await _authService.signInWithGoogle();
       // Update local preferences
       if (credential.user?.displayName != null) {
-        await PreferencesService().setUsername(credential.user!.displayName!);
+        await PreferencesService.setUsername(credential.user!.displayName!);
       }
       if (mounted) {
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
@@ -90,8 +90,8 @@ class _LoginScreenState extends State<LoginScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Theme.of(context).primaryColor.withValues(alpha: 0.1),
-              Theme.of(context).primaryColor.withValues(alpha: 0.05),
+              Theme.of(context).primaryColor.withOpacity(0.1),
+              Theme.of(context).primaryColor.withOpacity(0.05),
             ],
           ),
         ),

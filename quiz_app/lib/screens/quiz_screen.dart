@@ -24,6 +24,7 @@ import 'package:quiz_app/widgets/handwriting_input_widget.dart';
 import 'package:screen_protector/screen_protector.dart';
 import 'package:quiz_app/services/exam_session_service.dart';
 import 'package:quiz_app/services/scalable_firestore_service.dart';
+import 'package:quiz_app/widgets/glass_dialog.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({
@@ -385,8 +386,9 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     setState(() {
       _selectedAnswers[_questionIndex] = selectedAnswer;
       if (isCorrect) {
-        if (hapticEnabled)
+        if (hapticEnabled) {
           HapticFeedback.lightImpact(); // Gentle vibration for correct
+        }
         SoundService().playCorrectSound(); // Play correct sound
         _currentStreak++;
         if (!isBlindMode) {
@@ -579,9 +581,9 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     final question = _questions[_questionIndex];
 
     int? selectedIndex;
-    if (cleanText == 'A')
+    if (cleanText == 'A') {
       selectedIndex = 0;
-    else if (cleanText == 'B')
+    } else if (cleanText == 'B')
       selectedIndex = 1;
     else if (cleanText == 'C')
       selectedIndex = 2;
@@ -624,29 +626,27 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
         if (didPop) return;
 
         // Show confirmation dialog before leaving
-        final shouldPop = await showDialog<bool>(
+        final shouldPop = await GlassDialog.show<bool>(
           context: context,
-          builder: (context) => AlertDialog(
-            title: Text(widget.isExamMode ? 'Submit Exam?' : 'Leave Quiz?'),
-            content: Text(
-              widget.isExamMode
-                  ? 'You cannot pause an exam. Leaving will submit your current answers.'
-                  : 'Are you sure you want to leave? Your progress will be saved.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text(
-                  widget.isExamMode ? 'Submit' : 'Leave',
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
+          title: widget.isExamMode ? 'Submit Exam?' : 'Leave Quiz?',
+          content: Text(
+            widget.isExamMode
+                ? 'You cannot pause an exam. Leaving will submit your current answers.'
+                : 'Are you sure you want to leave? Your progress will be saved.',
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                widget.isExamMode ? 'Submit' : 'Leave',
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
         );
 
         if (shouldPop == true) {
@@ -762,10 +762,10 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: _remainingTime <= 30
-                        ? Colors.red.withValues(alpha: 0.2)
+                        ? Colors.red.withOpacity(0.2)
                         : _remainingTime <= 60
-                            ? Colors.orange.withValues(alpha: 0.2)
-                            : Colors.blue.withValues(alpha: 0.2),
+                            ? Colors.orange.withOpacity(0.2)
+                            : Colors.blue.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: _remainingTime <= 30
@@ -863,7 +863,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                     ? (_questionIndex + 1) / _questions.length
                     : 0.0,
                 backgroundColor:
-                    Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                    Theme.of(context).primaryColor.withOpacity(0.2),
                 valueColor: AlwaysStoppedAnimation<Color>(
                     Theme.of(context).primaryColor),
               ),
@@ -1140,7 +1140,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                             decoration: BoxDecoration(
                               color: Theme.of(context)
                                   .cardColor
-                                  .withValues(alpha: 0.8),
+                                  .withOpacity(0.8),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Column(

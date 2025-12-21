@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quiz_app/services/firestore_service.dart';
 import 'package:quiz_app/services/professional_notification_service.dart';
 import 'package:quiz_app/services/background_service.dart';
+import 'package:quiz_app/services/achievement_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -12,6 +13,7 @@ class AuthService {
         '362153618720-qod5e15ubgq7v3urkqnc7r2aou7ovb25.apps.googleusercontent.com',
   );
   final FirestoreService _firestoreService = FirestoreService();
+  final AchievementService _achievementService = AchievementService();
 
   // Get current user
   User? get currentUser => _auth.currentUser;
@@ -157,6 +159,13 @@ class AuthService {
         );
 
         await BackgroundService.saveUserId(userCredential.user!.uid);
+
+        // Track daily login for streak
+        try {
+          await _achievementService.trackDailyLogin();
+        } catch (e) {
+          print('Failed to track login streak: $e');
+        }
       }
 
       return userCredential;
@@ -178,6 +187,13 @@ class AuthService {
           username: 'Guest',
           role: 'guest',
         );
+
+        // Track daily login for streak
+        try {
+          await _achievementService.trackDailyLogin();
+        } catch (e) {
+          print('Failed to track login streak: $e');
+        }
       }
       return credential;
     } on FirebaseAuthException catch (e) {

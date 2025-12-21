@@ -129,7 +129,7 @@ class _GenerateQuizScreenState extends State<GenerateQuizScreen> {
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: _difficulty,
+                      initialValue: _difficulty,
                       decoration:
                           const InputDecoration(labelText: 'Difficulty'),
                       items: ['easy', 'medium', 'hard']
@@ -148,7 +148,7 @@ class _GenerateQuizScreenState extends State<GenerateQuizScreen> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: DropdownButtonFormField<int>(
-                      value: _numberOfQuestions,
+                      initialValue: _numberOfQuestions,
                       decoration: const InputDecoration(labelText: 'Questions'),
                       items: [5, 10, 15, 20]
                           .map((n) => DropdownMenuItem(

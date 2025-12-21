@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/widgets/glass_dialog.dart';
 
 /// Centralized UI helper methods for consistent user experience
 class UIHelpers {
@@ -124,26 +125,23 @@ class UIHelpers {
     String cancelText = 'Cancel',
     bool isDangerous = false,
   }) async {
-    final result = await showDialog<bool>(
+    final result = await GlassDialog.show<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(title),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(cancelText),
+      title: title,
+      content: Text(message),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(cancelText),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isDangerous ? Colors.red : null,
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isDangerous ? Colors.red : null,
-            ),
-            child: Text(confirmText),
-          ),
-        ],
-      ),
+          child: Text(confirmText),
+        ),
+      ],
     );
     return result ?? false;
   }

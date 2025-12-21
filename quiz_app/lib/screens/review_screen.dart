@@ -5,6 +5,7 @@ import 'package:quiz_app/services/ai_service.dart';
 import 'package:quiz_app/screens/video_player_screen.dart';
 import 'package:quiz_app/services/video_service.dart';
 import 'package:quiz_app/models/video_explanation.dart';
+import 'package:quiz_app/widgets/glass_dialog.dart';
 
 class ReviewScreen extends StatefulWidget {
   final List<Question> questions;
@@ -90,7 +91,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
+      builder: (BuildContext context) {
+        // Use a local context that is passed to showDialog
+        return const Center(child: CircularProgressIndicator());
+      },
     );
 
     try {
@@ -186,48 +190,46 @@ class _ReviewScreenState extends State<ReviewScreen> {
   }
 
   void _showVideoSelectionDialog(List<VideoExplanation> videos) {
-    showDialog(
+    GlassDialog.show(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select Video Explanation'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: videos.length,
-            itemBuilder: (context, index) {
-              final video = videos[index];
-              return ListTile(
-                leading: Image.network(video.thumbnailUrl ?? '',
-                    width: 80,
-                    fit: BoxFit.cover,
-                    errorBuilder: (c, o, s) => const Icon(Icons.video_library)),
-                title: Text(video.title,
-                    maxLines: 2, overflow: TextOverflow.ellipsis),
-                subtitle: Text(video.uploader),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => VideoPlayerScreen(
-                        videoUrl: video.videoUrl,
-                        videoExplanation: video,
-                      ),
+      title: 'Select Video Explanation',
+      content: SizedBox(
+        width: double.maxFinite,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: videos.length,
+          itemBuilder: (context, index) {
+            final video = videos[index];
+            return ListTile(
+              leading: Image.network(video.thumbnailUrl ?? '',
+                  width: 80,
+                  fit: BoxFit.cover,
+                  errorBuilder: (c, o, s) => const Icon(Icons.video_library)),
+              title: Text(video.title,
+                  maxLines: 2, overflow: TextOverflow.ellipsis),
+              subtitle: Text(video.uploader),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VideoPlayerScreen(
+                      videoUrl: video.videoUrl,
+                      videoExplanation: video,
                     ),
-                  );
-                },
-              );
-            },
-          ),
+                  ),
+                );
+              },
+            );
+          },
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-        ],
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+      ],
     );
   }
 
@@ -316,7 +318,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
           child: LinearProgressIndicator(
             value: (_reviewIndex + 1) / _filteredIndices.length,
             backgroundColor:
-                Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                Theme.of(context).primaryColor.withOpacity(0.2),
             valueColor:
                 AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           ),
@@ -394,7 +396,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor.withValues(alpha: 0.8),
+                  color: Theme.of(context).cardColor.withOpacity(0.8),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(

@@ -19,10 +19,7 @@ class _OfflineIndicatorState extends State<OfflineIndicator> {
   void initState() {
     super.initState();
     _subscription = Connectivity().onConnectivityChanged.map((event) {
-      if (event is List<ConnectivityResult>) {
-        return event.first;
-      }
-      return event as ConnectivityResult;
+      return event.firstOrNull ?? ConnectivityResult.none;
     }).listen(_handleConnectivityChange);
   }
 

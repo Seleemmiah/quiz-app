@@ -24,7 +24,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   int _totalQuizzes = 0;
   double _averageScore = 0;
   int _totalTimeSeconds = 0;
-  Map<String, int> _categoryCounts = {};
+  final Map<String, int> _categoryCounts = {};
 
   @override
   void initState() {
@@ -187,7 +187,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -225,7 +225,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -270,7 +270,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                      color: Theme.of(context).primaryColor.withOpacity(0.1),
                     ),
                   ),
                 ],
@@ -309,7 +309,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -358,8 +358,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: result.percentage >= 70
-                      ? Colors.green.withValues(alpha: 0.1)
-                      : Colors.red.withValues(alpha: 0.1),
+                      ? Colors.green.withOpacity(0.1)
+                      : Colors.red.withOpacity(0.1),
                   child: Text(
                     '${result.percentage.toInt()}%',
                     style: TextStyle(

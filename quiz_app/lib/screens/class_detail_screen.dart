@@ -64,7 +64,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
     if (_currentUser != null) {
       final isTeacher = await _classService.isTeacher(
         _classModel!.classId,
-        _currentUser!.uid,
+        _currentUser.uid,
       );
       if (mounted) {
         setState(() => _isTeacher = isTeacher);
@@ -147,7 +147,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
       try {
         await _classService.leaveClass(
           classId: _classModel!.classId,
-          userId: _currentUser!.uid,
+          userId: _currentUser.uid,
         );
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -198,7 +198,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            color: Theme.of(context).primaryColor.withOpacity(0.1),
             child: Column(
               children: [
                 Row(
@@ -262,7 +262,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             children: [
               Expanded(
                 child: DropdownButtonFormField<String>(
-                  value: _selectedCategory,
+                  initialValue: _selectedCategory,
                   decoration: const InputDecoration(
                     labelText: 'Category',
                     border: OutlineInputBorder(),
@@ -285,7 +285,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
               const SizedBox(width: 12),
               Expanded(
                 child: DropdownButtonFormField<String>(
-                  value: _selectedDifficulty,
+                  initialValue: _selectedDifficulty,
                   decoration: const InputDecoration(
                     labelText: 'Difficulty',
                     border: OutlineInputBorder(),
@@ -344,7 +344,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                           color: isCurrentUser
                               ? Theme.of(context)
                                   .primaryColor
-                                  .withValues(alpha: 0.1)
+                                  .withOpacity(0.1)
                               : null,
                           child: ListTile(
                             leading: CircleAvatar(

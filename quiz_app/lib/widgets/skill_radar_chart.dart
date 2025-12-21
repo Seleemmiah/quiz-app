@@ -38,6 +38,13 @@ class SkillRadarChart extends StatelessWidget {
       ..sort((a, b) => b.value.compareTo(a.value));
     final displayCategories = topCategories.take(5).toList();
 
+    // fl_chart RadarChart requires at least 3 entries to draw a polygon.
+    // If we have fewer, we pad with hidden zero-value entries.
+    final chartData = List<MapEntry<String, double>>.from(displayCategories);
+    while (chartData.length < 3) {
+      chartData.add(MapEntry('', 0));
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -71,9 +78,11 @@ class SkillRadarChart extends StatelessWidget {
                 width: 1,
               ),
               getTitle: (index, angle) {
-                if (index >= displayCategories.length)
-                  return RadarChartTitle(text: '');
-                final category = displayCategories[index].key;
+                if (index >= chartData.length) {
+                  return const RadarChartTitle(text: '');
+                }
+                final category = chartData[index].key;
+                if (category.isEmpty) return const RadarChartTitle(text: '');
                 // Shorten long category names
                 final shortName = category.length > 12
                     ? '${category.substring(0, 10)}...'
@@ -85,13 +94,13 @@ class SkillRadarChart extends StatelessWidget {
               },
               dataSets: [
                 RadarDataSet(
-                  fillColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                  fillColor:
+                      Theme.of(context).primaryColor.withOpacity(0.2),
                   borderColor: Theme.of(context).primaryColor,
                   borderWidth: 2,
                   entryRadius: 3,
-                  dataEntries: displayCategories
-                      .map((e) => RadarEntry(value: e.value))
-                      .toList(),
+                  dataEntries:
+                      chartData.map((e) => RadarEntry(value: e.value)).toList(),
                 ),
               ],
               titleTextStyle: TextStyle(

@@ -140,7 +140,7 @@ class _DocumentLibraryScreenState extends State<DocumentLibraryScreen> {
         }
       }
     } catch (e) {
-      debugPrint('Error opening document: $e');
+      // In production, you might want to log this to a service
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -176,7 +176,7 @@ class _DocumentLibraryScreenState extends State<DocumentLibraryScreen> {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
+              color: Colors.black.withOpacity(0.2),
               blurRadius: 20,
               offset: const Offset(0, -5),
             ),
@@ -207,7 +207,7 @@ class _DocumentLibraryScreenState extends State<DocumentLibraryScreen> {
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: _getFileColor(document.fileType)
-                                .withValues(alpha: 0.1),
+                                .withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Icon(
@@ -501,7 +501,7 @@ class _DocumentLibraryScreenState extends State<DocumentLibraryScreen> {
             const SizedBox(height: 24),
             Text(
               'No Documents Yet',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -531,12 +531,12 @@ class _DocumentLibraryScreenState extends State<DocumentLibraryScreen> {
 
   Widget _buildDocumentGrid() {
     return GridView.builder(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3, // 3 columns for smaller cards
         childAspectRatio: 0.7,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
+        crossAxisSpacing: 6,
+        mainAxisSpacing: 6,
       ),
       itemCount: _documents.length,
       itemBuilder: (context, index) {
@@ -545,7 +545,7 @@ class _DocumentLibraryScreenState extends State<DocumentLibraryScreen> {
         return GestureDetector(
           onTap: () => _showDocumentPreview(document),
           child: GlassCard(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(8),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -554,7 +554,8 @@ class _DocumentLibraryScreenState extends State<DocumentLibraryScreen> {
                   height: 80,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: _getFileColor(document.fileType).withOpacity(0.1),
+                    color:
+                        _getFileColor(document.fileType).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
@@ -578,7 +579,7 @@ class _DocumentLibraryScreenState extends State<DocumentLibraryScreen> {
                 const SizedBox(height: 2),
                 // File Type & Size
                 Text(
-                  '${document.fileType.toUpperCase()}',
+                  document.fileType.toUpperCase(),
                   style: TextStyle(
                     fontSize: 9,
                     color: Colors.grey[600],

@@ -79,7 +79,10 @@ class _PracticeWeakAreasScreenState extends State<PracticeWeakAreasScreen> {
         title: const Text('Practice Weak Areas'),
       ),
       body: _isLoading
-          ? const ListLoadingSkeleton()
+          ? ListSkeleton(
+              itemCount: 5,
+              itemBuilder: () => const QuizCardSkeleton(),
+            )
           : _weakAreas.isEmpty
               ? const EmptyState(
                   icon: Icons.check_circle_outline,
@@ -111,7 +114,7 @@ class _PracticeWeakAreasScreenState extends State<PracticeWeakAreasScreen> {
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(16),
                         leading: CircleAvatar(
-                          backgroundColor: Colors.red.withValues(alpha: 0.1),
+                          backgroundColor: Colors.red.withOpacity(0.1),
                           child: const Icon(Icons.trending_down,
                               color: Colors.red),
                         ),

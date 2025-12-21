@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:quiz_app/widgets/glass_dialog.dart';
 
 class AvatarSelectionDialog extends StatefulWidget {
   final String currentAvatar;
@@ -62,8 +63,8 @@ class _AvatarSelectionDialogState extends State<AvatarSelectionDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Choose Your Avatar'),
+    return GlassDialog(
+      title: 'Choose Your Avatar',
       content: SizedBox(
         width: double.maxFinite,
         child: GridView.builder(
@@ -89,12 +90,12 @@ class _AvatarSelectionDialogState extends State<AvatarSelectionDialog> {
                   border: Border.all(
                     color: isSelected
                         ? Theme.of(context).primaryColor
-                        : Colors.grey.withValues(alpha: 0.3),
+                        : Colors.grey.withOpacity(0.3),
                     width: isSelected ? 3 : 1,
                   ),
                   borderRadius: BorderRadius.circular(8),
                   color: isSelected
-                      ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+                      ? Theme.of(context).primaryColor.withOpacity(0.1)
                       : null,
                 ),
                 child: Center(

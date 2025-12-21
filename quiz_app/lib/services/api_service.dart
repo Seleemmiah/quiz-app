@@ -11,11 +11,14 @@ import 'package:quiz_app/screens/questions/batch_4_questions.dart';
 import 'package:quiz_app/screens/questions/image_questions.dart';
 import 'package:quiz_app/screens/questions/organic_chemistry_questions.dart';
 import 'package:quiz_app/screens/questions/circuit_questions.dart';
+import 'package:quiz_app/services/rate_limited_api_service.dart';
 import 'package:quiz_app/settings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
 class ApiService {
+  final RateLimitedApiService _rateLimitedService = RateLimitedApiService();
+
   // This function extracts all unique categories from the local data.
   Future<List<String>> fetchCategories() async {
     try {

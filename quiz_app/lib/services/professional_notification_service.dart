@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -13,6 +14,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Professional Notification Service
 /// Handles all app notifications - in-app, push, and smart scheduling based on user performance
 class ProfessionalNotificationService {
+  static final ProfessionalNotificationService _instance =
+      ProfessionalNotificationService._internal();
+
+  factory ProfessionalNotificationService() {
+    return _instance;
+  }
+
+  ProfessionalNotificationService._internal();
+
+  static ProfessionalNotificationService get instance => _instance;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
@@ -20,7 +32,7 @@ class ProfessionalNotificationService {
   final StatisticsService _statisticsService = StatisticsService();
 
   StreamSubscription<QuerySnapshot>? _notificationListener;
-  Set<String> _processedNotifications = {};
+  final Set<String> _processedNotifications = {};
   Timer? _motivationalTimer;
 
   // --- EXTENSIVE QUOTE LIBRARY ---
@@ -98,6 +110,9 @@ class ProfessionalNotificationService {
 
     // Start smart scheduling
     _scheduleMotivationalNotifications();
+
+    // Start foreground listener
+    _startFirestoreListener();
   }
 
   Future<void> _requestPermissions() async {
@@ -119,7 +134,22 @@ class ProfessionalNotificationService {
   }
 
   Future<void> _configureFCM() async {
-    // Get and save FCO token
+    // For iOS: Get APNS token (may be null initially)
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      try {
+        final apnsToken = await _fcm.getAPNSToken();
+        if (apnsToken != null) {
+          debugPrint('APNS Token: $apnsToken');
+        } else {
+          debugPrint(
+              'APNS token is null - FCM may not work properly on iOS until token is available');
+        }
+      } catch (e) {
+        debugPrint('Error getting APNS token: $e');
+      }
+    }
+
+    // Get and save FCM token
     try {
       String? token = await _fcm.getToken();
       if (token != null) {
@@ -429,17 +459,132 @@ class ProfessionalNotificationService {
     }
   }
 
+  final StreamController<Map<String, dynamic>> _alertStreamController =
+      StreamController<Map<String, dynamic>>.broadcast();
+
+  Stream<Map<String, dynamic>> get alertStream => _alertStreamController.stream;
+
   Future<void> scheduleExamReminders({
     required String userId,
     required String examTitle,
     required DateTime examTime,
     required String examId,
   }) async {
-    // Schedule reminders
     final now = DateTime.now();
-    if (examTime.subtract(Duration(hours: 1)).isAfter(now)) {
-      // Placeholder for reminder scheduling implementation
+
+    // 1. Immediate confirmation (if applicable) - handled by caller usually, but we can ensure local alert
+    // If the CURRENT USER is the one needing reminder (student), we schedule.
+    // Assuming this function is called on the Student's device or we are setting up for them.
+    // Notes: LocalNotifications scheduled here only work on THIS device.
+    // If Teacher calls this, it schedules on TEACHER device.
+    // Teacher calls 'sendExamCreated' which sends to Firestore.
+    // Student's device must LISTEN to Firestore and then call this schedule function locally.
+
+    // 2. 15 Minutes Before
+    final reminderTime = examTime.subtract(const Duration(minutes: 15));
+    if (reminderTime.isAfter(now)) {
+      await _localNotifications.zonedSchedule(
+        examId.hashCode + 1,
+        '⏰ Exam Reminder: 15 Minutes Left!',
+        'Get ready for "$examTitle". Starting soon.',
+        tz.TZDateTime.from(reminderTime, tz.local),
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'exam_reminders',
+            'Exam Reminders',
+            importance: Importance.high,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+      );
     }
+
+    // 3. At Start Time
+    if (examTime.isAfter(now)) {
+      await _localNotifications.zonedSchedule(
+        examId.hashCode + 2,
+        '🚀 Exam Started!',
+        '"$examTitle" is starting NOW. Good luck!',
+        tz.TZDateTime.from(examTime, tz.local),
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'exam_start',
+            'Exam Start',
+            importance: Importance.max,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+      );
+    }
+  }
+
+  // Monitor Firestore for new notifications (Foreground Listener)
+  void _startFirestoreListener() {
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user != null) {
+        _subscribeToNotifications(user.uid);
+      } else {
+        _notificationListener?.cancel();
+      }
+    });
+  }
+
+  void _subscribeToNotifications(String userId) {
+    _notificationListener?.cancel();
+    _notificationListener = _firestore
+        .collection('notifications')
+        .where('userId', isEqualTo: userId)
+        .where('read', isEqualTo: false)
+        .orderBy('createdAt', descending: true)
+        .limit(1)
+        .snapshots()
+        .listen((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        final doc = snapshot.docs.first;
+        final data = doc.data();
+
+        // Check if we already processed this ID locally to avoid loops
+        if (!_processedNotifications.contains(doc.id)) {
+          _processedNotifications.add(doc.id);
+
+          // Show In-App Alert via Stream
+          _alertStreamController.add({
+            'title': data['title'],
+            'message': data['message'],
+            'type': data['type'],
+            'data': data['data'],
+          });
+
+          // Show Notification
+          _showLocalNotification(
+            id: doc.id.hashCode,
+            title: data['title'] ?? 'New Notification',
+            body: data['message'] ?? '',
+            payload: data['data']?.toString(), // Simple payload
+          );
+
+          // If it's an exam creation, Schedule Local Reminders!
+          if (data['type'] == 'exam_created' && data['data'] != null) {
+            // Parse time string if preserved or passed?
+            // Firestore usually stores Timestamp.
+            // data['data'] might need 'examTime' string?
+            // The 'sendExamCreated' notification message is just text.
+            // But 'data' contains 'examId'.
+            // We might need to fetch Exam details to schedule precisely?
+            // Or we trust the text? No, schedule needs Date.
+            // Logic Update: sendExamCreated should include 'examTime' in Metadata.
+          }
+        }
+      }
+    });
   }
 
   Future<void> sendExamStartingNotification({

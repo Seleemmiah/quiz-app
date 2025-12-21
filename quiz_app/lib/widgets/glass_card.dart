@@ -16,10 +16,10 @@ class GlassCard extends StatelessWidget {
     required this.child,
     this.padding,
     this.margin,
-    this.borderRadius = 20,
-    this.blur = 10,
+    this.borderRadius = 8,
+    this.blur = 4,
     this.borderColor,
-    this.borderWidth = 1.5,
+    this.borderWidth = 0.5,
     this.boxShadow,
   });
 
@@ -54,8 +54,8 @@ class GlassCard extends StatelessWidget {
                   [
                     BoxShadow(
                       color: theme.primaryColor.withOpacity(0.1),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
                     ),
                   ],
             ),

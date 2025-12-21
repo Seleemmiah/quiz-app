@@ -20,9 +20,9 @@ void main() {
 
     // Regex to capture category and difficulty (supporting single or double quotes)
     final categoryRegex =
-        RegExp(r'["' ']category["' ']:\s*["' ']([^"' ']+)["' ']');
+        RegExp(r'["' ']category["' ']:s*["' ']([^"' ']+)["' ']');
     final difficultyRegex =
-        RegExp(r'["' ']difficulty["' ']:\s*["' ']([^"' ']+)["' ']');
+        RegExp(r'["' ']difficulty["' ']:s*["' ']([^"' ']+)["' ']');
 
     // We need to iterate through the file and match pairs.
     // Since it's a list of maps, we can split by "{" to get individual question blocks roughly.

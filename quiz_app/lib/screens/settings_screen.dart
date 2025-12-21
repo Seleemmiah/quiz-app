@@ -28,7 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final StatisticsService _statisticsService = StatisticsService();
   final AchievementService _achievementService = AchievementService();
   final BookmarkService _bookmarkService = BookmarkService();
-  final PreferencesService _preferencesService = PreferencesService();
+
   final ApiService _apiService = ApiService();
   final GamificationService _gamificationService = GamificationService();
 
@@ -45,6 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   double _voicePitch = 1.0;
   double _voiceVolume = 1.0;
   final VoiceService _voiceService = VoiceService();
+  final GlobalKey _shareAppKey = GlobalKey();
 
   bool _studyRemindersEnabled = true;
 
@@ -80,12 +81,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadPreferences() async {
-    final fontSize = await _preferencesService.getFontSize();
-    final difficulty = await _preferencesService.getDefaultDifficulty();
-    final length = await _preferencesService.getQuizLength();
-    final category = await _preferencesService.getDefaultCategory();
-    int timeLimit = await _preferencesService.getDefaultTimeLimit();
-    final studyReminders = await _preferencesService.getStudyRemindersEnabled();
+    final fontSize = await PreferencesService.getFontSize();
+    final difficulty = await PreferencesService.getDefaultDifficulty();
+    final length = await PreferencesService.getQuizLength();
+    final category = await PreferencesService.getDefaultCategory();
+    int timeLimit = await PreferencesService.getDefaultTimeLimit();
+    final studyReminders = await PreferencesService.getStudyRemindersEnabled();
 
     // Define valid time limits
     const validTimeLimits = [2, 5, 10, 30];
@@ -108,28 +109,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _showResetConfirmationDialog(
       String title, String message, VoidCallback onConfirm) {
-    showDialog(
+    GlassDialog.show(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              onPressed: () {
-                Navigator.of(context).pop();
-                onConfirm();
-              },
-              child: const Text('Reset'),
-            ),
-          ],
-        );
-      },
+      title: title,
+      content: Text(message),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Cancel'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        TextButton(
+          style: TextButton.styleFrom(foregroundColor: Colors.red),
+          onPressed: () {
+            Navigator.of(context).pop();
+            onConfirm();
+          },
+          child: const Text('Reset'),
+        ),
+      ],
     );
   }
 
@@ -147,11 +144,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _resetAchievements() {
-    _achievementService.resetAchievements();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('All achievements have been reset')),
-    );
+  void _resetAchievements() async {
+    await _achievementService.resetAchievements();
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('All achievements have been reset')),
+      );
+    }
   }
 
   void _clearBookmarks() {
@@ -196,8 +195,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _shareApp() {
+    final box = _shareAppKey.currentContext?.findRenderObject() as RenderBox?;
+    Rect? shareOrigin;
+
+    if (box != null) {
+      final position = box.localToGlobal(Offset.zero);
+      shareOrigin = position & box.size;
+    } else {
+      // Fallback for iPad/Mac if key not found (center screen)
+      final size = MediaQuery.of(context).size;
+      shareOrigin = Rect.fromLTWH(size.width / 2, size.height / 2, 0, 0);
+    }
+
     Share.share(
       'Check out Mindly! Test your knowledge across multiple categories and difficulty levels. Track your progress and unlock achievements!',
+      sharePositionOrigin: shareOrigin,
     );
   }
 
@@ -228,7 +240,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   myAppState?.toggleOledMode(value);
                 },
                 secondary: const Icon(Icons.dark_mode),
-                activeColor: Theme.of(context).primaryColor,
+                activeThumbColor: Theme.of(context).primaryColor,
               ),
               ListTile(
                 leading: const Icon(Icons.brightness_6),
@@ -436,7 +448,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   myAppState?.toggleHaptic(value);
                 },
                 secondary: const Icon(Icons.vibration),
-                activeColor: Theme.of(context).primaryColor,
+                activeThumbColor: Theme.of(context).primaryColor,
               ),
               ListTile(
                 leading: const Icon(Icons.format_size, color: Colors.purple),
@@ -455,7 +467,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   selected: {_fontSize},
                   onSelectionChanged: (Set<double> newSelection) async {
                     final newSize = newSelection.first;
-                    await _preferencesService.setFontSize(newSize);
+                    await PreferencesService.setFontSize(newSize);
                     setState(() {
                       _fontSize = newSize;
                     });
@@ -480,7 +492,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                   onChanged: (int? value) async {
                     if (value != null) {
-                      await _preferencesService.setQuizLength(value);
+                      await PreferencesService.setQuizLength(value);
                       setState(() {
                         _quizLength = value;
                       });
@@ -518,7 +530,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                   onChanged: (String? value) async {
                     if (value != null) {
-                      await _preferencesService.setDefaultCategory(value);
+                      await PreferencesService.setDefaultCategory(value);
                     }
                     setState(() {
                       _defaultCategory = value;
@@ -541,7 +553,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                   onChanged: (int? value) async {
                     if (value != null) {
-                      await _preferencesService.setDefaultTimeLimit(value);
+                      await PreferencesService.setDefaultTimeLimit(value);
                       setState(() {
                         _defaultTimeLimit = value;
                       });
@@ -556,7 +568,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 subtitle: const Text('Get notified when cards are due'),
                 value: _studyRemindersEnabled,
                 onChanged: (bool value) async {
-                  await _preferencesService.setStudyRemindersEnabled(value);
+                  await PreferencesService.setStudyRemindersEnabled(value);
                   setState(() {
                     _studyRemindersEnabled = value;
                   });
@@ -579,7 +591,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                   onChanged: (Difficulty? value) async {
                     if (value != null) {
-                      await _preferencesService.setDefaultDifficulty(value);
+                      await PreferencesService.setDefaultDifficulty(value);
                       setState(() {
                         _defaultDifficulty = value;
                       });
@@ -746,6 +758,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onTap: _showAboutDialog,
               ),
               ListTile(
+                key: _shareAppKey,
                 leading: const Icon(Icons.share, color: Colors.green),
                 title: const Text('Share App'),
                 subtitle: const Text('Tell your friends about Mindly'),
@@ -773,24 +786,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 subtitle: const Text('Sign out of your account'),
                 onTap: () async {
-                  final confirmed = await showDialog<bool>(
+                  final confirmed = await GlassDialog.show<bool>(
                     context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Logout'),
-                      content: const Text('Are you sure you want to logout?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          style:
-                              TextButton.styleFrom(foregroundColor: Colors.red),
-                          onPressed: () => Navigator.pop(context, true),
-                          child: const Text('Logout'),
-                        ),
-                      ],
-                    ),
+                    title: 'Logout',
+                    content: const Text('Are you sure you want to logout?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        style:
+                            TextButton.styleFrom(foregroundColor: Colors.red),
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text('Logout'),
+                      ),
+                    ],
                   );
 
                   if (confirmed == true && mounted) {
