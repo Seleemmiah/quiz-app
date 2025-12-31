@@ -3,6 +3,7 @@ import 'package:quiz_app/models/quiz_model.dart';
 import 'package:quiz_app/services/firestore_service.dart';
 import 'package:quiz_app/services/auth_service.dart';
 import 'package:quiz_app/screens/create_quiz_screen.dart';
+import 'package:quiz_app/screens/offline_library_screen.dart';
 
 class MyQuizzesScreen extends StatefulWidget {
   const MyQuizzesScreen({super.key});
@@ -11,16 +12,25 @@ class MyQuizzesScreen extends StatefulWidget {
   State<MyQuizzesScreen> createState() => _MyQuizzesScreenState();
 }
 
-class _MyQuizzesScreenState extends State<MyQuizzesScreen> {
+class _MyQuizzesScreenState extends State<MyQuizzesScreen>
+    with SingleTickerProviderStateMixin {
   final FirestoreService _firestoreService = FirestoreService();
   final AuthService _authService = AuthService();
   List<Quiz> _quizzes = [];
   bool _isLoading = true;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     _loadQuizzes();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadQuizzes() async {
@@ -49,8 +59,7 @@ class _MyQuizzesScreenState extends State<MyQuizzesScreen> {
       context,
       '/quiz',
       arguments: {
-        'difficulty': quiz
-            .difficulty, // This needs to be mapped to enum if needed, or QuizScreen updated
+        'difficulty': quiz.difficulty,
         'category': quiz.category,
         'quizLength': quiz.questions.length,
         'customQuestions': quiz.questions,
@@ -59,106 +68,123 @@ class _MyQuizzesScreenState extends State<MyQuizzesScreen> {
     );
   }
 
+  Widget _buildCloudTab() {
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : _quizzes.isEmpty
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.quiz,
+                      size: 80,
+                      color: Colors.grey.shade400,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'No quizzes created yet',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: Colors.grey.shade600,
+                          ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Tap + to create your first quiz',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                  ],
+                ),
+              )
+            : RefreshIndicator(
+                onRefresh: _loadQuizzes,
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _quizzes.length,
+                  itemBuilder: (context, index) {
+                    final quiz = _quizzes[index];
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      child: ListTile(
+                        title: Text(
+                          quiz.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              quiz.description,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Chip(
+                                  label: Text(
+                                    quiz.difficulty,
+                                    style: const TextStyle(fontSize: 10),
+                                  ),
+                                  visualDensity: VisualDensity.compact,
+                                  padding: EdgeInsets.zero,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '${quiz.questions.length} Questions',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade600,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const Spacer(),
+                                if (quiz.isPublic)
+                                  const Icon(Icons.public,
+                                      size: 16, color: Colors.blue)
+                                else
+                                  const Icon(Icons.lock,
+                                      size: 16, color: Colors.grey),
+                              ],
+                            ),
+                          ],
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.play_arrow),
+                          onPressed: () => _playQuiz(quiz),
+                          tooltip: 'Play Quiz',
+                        ),
+                        onTap: () {
+                          // Show details or edit
+                        },
+                      ),
+                    );
+                  },
+                ),
+              );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Quizzes'),
+        title: const Text('Quizzes'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(icon: Icon(Icons.cloud), text: 'Cloud'),
+            Tab(icon: Icon(Icons.download_for_offline), text: 'Offline'),
+          ],
+        ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _quizzes.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.quiz,
-                        size: 80,
-                        color: Colors.grey.shade400,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No quizzes created yet',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: Colors.grey.shade600,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Tap + to create your first quiz',
-                        style: TextStyle(color: Colors.grey.shade600),
-                      ),
-                    ],
-                  ),
-                )
-              : RefreshIndicator(
-                  onRefresh: _loadQuizzes,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _quizzes.length,
-                    itemBuilder: (context, index) {
-                      final quiz = _quizzes[index];
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        child: ListTile(
-                          title: Text(
-                            quiz.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                quiz.description,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Chip(
-                                    label: Text(
-                                      quiz.difficulty,
-                                      style: const TextStyle(fontSize: 10),
-                                    ),
-                                    visualDensity: VisualDensity.compact,
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    '${quiz.questions.length} Questions',
-                                    style: TextStyle(
-                                      color: Colors.grey.shade600,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  if (quiz.isPublic)
-                                    const Icon(Icons.public,
-                                        size: 16, color: Colors.blue)
-                                  else
-                                    const Icon(Icons.lock,
-                                        size: 16, color: Colors.grey),
-                                ],
-                              ),
-                            ],
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.play_arrow),
-                            onPressed: () => _playQuiz(quiz),
-                            tooltip: 'Play Quiz',
-                          ),
-                          onTap: () {
-                            // Show details or edit
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildCloudTab(),
+          const OfflineLibraryScreen(),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           await Navigator.push(

@@ -1,92 +1,126 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:quiz_app/models/quiz_model.dart';
 import 'package:quiz_app/models/quiz_result.dart';
+import 'package:quiz_app/models/quiz_model.dart';
+import 'package:quiz_app/utils/firestore_error_handler.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // --- User Operations ---
+  // --- Quiz Operations ---
 
-  // Create or Update User
-  Future<void> saveUser(User user,
-      {String username = 'User',
-      String role = 'student',
-      String? matricNumber}) async {
-    try {
-      final userData = {
-        'uid': user.uid,
-        'email': user.email,
-        'username': username,
-        'role': role,
-        'createdAt': DateTime.now(),
-        'lastLogin': DateTime.now(),
-      };
+  Future<void> createQuiz(Quiz quiz) async {
+    await _db.collection('quizzes').doc(quiz.id).set(quiz.toJson());
+  }
 
-      if (matricNumber != null) {
-        userData['matricNumber'] = matricNumber;
-      }
+  Future<Quiz?> getQuiz(String quizId) async {
+    return await FirestoreErrorHandler.executeWithRetry<Quiz?>(
+      operationName: 'Fetch Quiz',
+      operation: () async {
+        final doc = await _db.collection('quizzes').doc(quizId).get();
+        if (doc.exists) {
+          return Quiz.fromJson(doc.data()!);
+        }
+        return null;
+      },
+    );
+  }
 
-      await _db
-          .collection('users')
-          .doc(user.uid)
-          .set(userData, SetOptions(merge: true));
-    } catch (e) {
-      throw Exception('Failed to save user data: $e');
+  Future<List<Quiz>> getQuizzes() async {
+    final snapshot = await FirestoreErrorHandler.executeWithRetry(
+      operationName: 'Fetch All Quizzes',
+      operation: () => _db.collection('quizzes').get(),
+    );
+    if (snapshot == null) return [];
+    return snapshot.docs.map((doc) => Quiz.fromJson(doc.data())).toList();
+  }
+
+  Future<List<Quiz>> getUserQuizzes(String userId) async {
+    final snapshot = await _db
+        .collection('quizzes')
+        .where('creatorId', isEqualTo: userId)
+        .get();
+    return snapshot.docs.map((doc) => Quiz.fromJson(doc.data())).toList();
+  }
+
+  Future<Quiz?> getQuizByAccessCode(String code) async {
+    final snapshot = await _db
+        .collection('quizzes')
+        .where('accessCode', isEqualTo: code)
+        .limit(1)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      return Quiz.fromJson(snapshot.docs.first.data());
     }
-  }
 
-  // Get User Data
-  Future<Map<String, dynamic>?> getUser(String uid) async {
-    final doc = await _db.collection('users').doc(uid).get();
-    return doc.data();
-  }
-
-  // Update User Fields
-  Future<void> updateUser(String uid, Map<String, dynamic> data) async {
-    await _db.collection('users').doc(uid).update(data);
-  }
-
-  // Get User Role
-  Future<String?> getUserRole(String uid) async {
-    try {
-      final doc = await _db.collection('users').doc(uid).get();
-      if (doc.exists) {
-        return doc.data()?['role'] as String?;
-      }
-      return null;
-    } catch (e) {
-      print('Error fetching user role: $e');
-      return null;
+    // Try exams collection
+    final examDoc = await _db.collection('exams').doc(code).get();
+    if (examDoc.exists) {
+      final examData = examDoc.data()!;
+      // Map exam data to Quiz model if possible
+      return Quiz(
+        id: examData['code'] ?? code,
+        title: examData['subject'] ?? 'Exam',
+        description: 'Scheduled Exam',
+        creatorId: examData['creatorId'] ?? '',
+        creatorName: 'Teacher',
+        createdAt: DateTime.now(),
+        questions: (examData['quizId'] != null)
+            ? [] // We'd need to fetch the actual quiz questions here if linked
+            : [], // Or use questions from the map if they were stored there
+        difficulty: examData['difficulty'] ?? 'Medium',
+        category: 'Exam',
+        accessCode: code,
+        isBlindMode: true, // Exams are blind by default
+        resultsReleased: examData['resultsReleased'] ?? false,
+      );
     }
+    return null;
   }
 
-  // --- Teacher Operations ---
+  // --- Result Operations ---
 
-  // Get All Students
-  Future<List<Map<String, dynamic>>> getStudents() async {
-    try {
-      final snapshot = await _db
-          .collection('users')
-          .where('role', isEqualTo: 'student')
-          .orderBy('username')
-          .get();
+  Future<void> saveQuizResult(QuizResult result) async {
+    await _db
+        .collection('user_results')
+        .doc(result.userId)
+        .collection('results')
+        .doc(result.id)
+        .set(result.toJson());
 
-      return snapshot.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      print('Error fetching students: $e');
-      return [];
+    // Also save to global registry for teacher dashboard analytics
+    await _db.collection('quiz_results').doc(result.id).set(result.toJson());
+  }
+
+  Future<List<QuizResult>> getUserResults(String userId, {int? limit}) async {
+    Query query = _db
+        .collection('user_results')
+        .doc(userId)
+        .collection('results')
+        .orderBy('date', descending: true);
+
+    if (limit != null) {
+      query = query.limit(limit);
     }
+
+    final snapshot = await query.get();
+    return snapshot.docs
+        .map((doc) => QuizResult.fromJson(doc.data() as Map<String, dynamic>))
+        .toList();
   }
 
-  // Get All Quiz Results (Teacher View)
   Future<List<QuizResult>> getAllQuizResults() async {
     try {
-      final snapshot = await _db
-          .collection('quiz_results')
-          .orderBy('completedAt', descending: true)
-          .limit(100) // Limit to last 100 for performance
-          .get();
+      final snapshot = await FirestoreErrorHandler.executeWithRetry(
+        operationName: 'Fetch All Results',
+        operation: () => _db
+            .collection('quiz_results')
+            .orderBy('date', descending: true)
+            .limit(100)
+            .get(),
+      );
+
+      if (snapshot == null) return [];
 
       return snapshot.docs
           .map((doc) => QuizResult.fromJson(doc.data()))
@@ -97,101 +131,43 @@ class FirestoreService {
     }
   }
 
-  // Create Exam
-  Future<void> createExam(Map<String, dynamic> examData) async {
-    await _db.collection('exams').doc(examData['code']).set(examData);
-  }
+  Future<List<QuizResult>> getResultsForStudents(
+      List<String> studentIds) async {
+    if (studentIds.isEmpty) return [];
 
-  // Get Exam by Code
-  Future<Map<String, dynamic>?> getExamByCode(String code) async {
     try {
-      final doc = await _db.collection('exams').doc(code).get();
-      return doc.data();
+      List<QuizResult> results = [];
+      // Firestore whereIn is limited to 30 items
+      for (var i = 0; i < studentIds.length; i += 30) {
+        final end = (i + 30 < studentIds.length) ? i + 30 : studentIds.length;
+        final chunk = studentIds.sublist(i, end);
+
+        final snapshot = await FirestoreErrorHandler.executeWithRetry(
+          operationName: 'Fetch Results for Student Chunk',
+          operation: () => _db
+              .collection('quiz_results')
+              .where('userId', whereIn: chunk)
+              .orderBy('date', descending: true)
+              .limit(100)
+              .get(),
+        );
+
+        if (snapshot != null) {
+          results.addAll(
+            snapshot.docs.map((doc) => QuizResult.fromJson(doc.data())),
+          );
+        }
+      }
+
+      // Sort by date globally after fetching chunks
+      results.sort((a, b) => b.date.compareTo(a.date));
+      return results;
     } catch (e) {
-      print('Error fetching exam: $e');
-      return null;
+      print('Error fetching student results: $e');
+      return [];
     }
   }
 
-  // --- Quiz Operations ---
-
-  // Create Quiz
-  Future<void> createQuiz(Quiz quiz) async {
-    await _db.collection('quizzes').doc(quiz.id).set(quiz.toJson());
-  }
-
-  // Get Public Quizzes
-  Future<List<Quiz>> getPublicQuizzes() async {
-    final snapshot = await _db
-        .collection('quizzes')
-        .where('isPublic', isEqualTo: true)
-        .orderBy('createdAt', descending: true)
-        .get();
-
-    return snapshot.docs.map((doc) => Quiz.fromJson(doc.data())).toList();
-  }
-
-  // Get User Quizzes
-  Future<List<Quiz>> getUserQuizzes(String userId) async {
-    final snapshot = await _db
-        .collection('quizzes')
-        .where('creatorId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
-        .get();
-
-    return snapshot.docs.map((doc) => Quiz.fromJson(doc.data())).toList();
-  }
-
-  // Get Single Quiz
-  Future<Quiz?> getQuiz(String quizId) async {
-    final doc = await _db.collection('quizzes').doc(quizId).get();
-    if (doc.exists) {
-      return Quiz.fromJson(doc.data()!);
-    }
-    return null;
-  }
-
-  // Get Quiz by Access Code
-  Future<Quiz?> getQuizByAccessCode(String accessCode) async {
-    final snapshot = await _db
-        .collection('quizzes')
-        .where('accessCode', isEqualTo: accessCode)
-        .limit(1)
-        .get();
-
-    if (snapshot.docs.isNotEmpty) {
-      return Quiz.fromJson(snapshot.docs.first.data());
-    }
-    return null;
-  }
-
-  // --- Analytics Operations ---
-
-  // Save Quiz Result
-  Future<void> saveQuizResult(QuizResult result) async {
-    await _db
-        .collection('user_results')
-        .doc(result.userId)
-        .collection('results')
-        .doc(result.id)
-        .set(result.toJson());
-  }
-
-  // Get User Results
-  Future<List<QuizResult>> getUserResults(String userId,
-      {int limit = 20}) async {
-    final snapshot = await _db
-        .collection('user_results')
-        .doc(userId)
-        .collection('results')
-        .orderBy('date', descending: true)
-        .limit(limit)
-        .get();
-
-    return snapshot.docs.map((doc) => QuizResult.fromJson(doc.data())).toList();
-  }
-
-  // Check if user has taken a specific quiz
   Future<bool> hasUserTakenQuiz(String userId, String quizId) async {
     final snapshot = await _db
         .collection('user_results')
@@ -200,132 +176,197 @@ class FirestoreService {
         .where('quizId', isEqualTo: quizId)
         .limit(1)
         .get();
-
     return snapshot.docs.isNotEmpty;
   }
 
-  // --- Group Operations (Placeholder) ---
+  // --- User Profile Operations ---
 
-  // --- Multiplayer Leaderboard Operations ---
+  Future<void> saveUser(User user,
+      {required String username,
+      String role = 'student',
+      String? matricNumber}) async {
+    await _db.collection('users').doc(user.uid).set({
+      'uid': user.uid,
+      'email': user.email,
+      'username': username,
+      'role': role,
+      'matricNumber': matricNumber,
+      'createdAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
 
-  // Update Multiplayer Stats
-  Future<void> updateMultiplayerStats(String uid,
-      {bool isWin = false, int points = 0}) async {
-    try {
-      final userRef = _db.collection('users').doc(uid);
-      await _db.runTransaction((transaction) async {
-        final snapshot = await transaction.get(userRef);
-        if (!snapshot.exists) {
-          throw Exception('User does not exist!');
+  Future<Map<String, dynamic>?> getUser(String userId) async {
+    return await FirestoreErrorHandler.executeWithRetry<Map<String, dynamic>?>(
+      operationName: 'Fetch User',
+      operation: () async {
+        final doc = await _db.collection('users').doc(userId).get();
+        return doc.exists ? doc.data() : null;
+      },
+    );
+  }
+
+  Future<String?> getUserRole(String userId) async {
+    return await FirestoreErrorHandler.executeWithRetry<String?>(
+      operationName: 'Fetch User Role',
+      operation: () async {
+        final doc = await _db.collection('users').doc(userId).get();
+        if (doc.exists) {
+          return doc.data()?['role'] as String?;
         }
-
-        final currentWins = snapshot.data()?['multiplayerWins'] ?? 0;
-        final currentPoints = snapshot.data()?['multiplayerPoints'] ?? 0;
-
-        transaction.update(userRef, {
-          'multiplayerWins': isWin ? currentWins + 1 : currentWins,
-          'multiplayerPoints': currentPoints + points,
-        });
-      });
-    } catch (e) {
-      print('Error updating multiplayer stats: $e');
-      throw Exception('Failed to update multiplayer stats: $e');
-    }
+        return null;
+      },
+    );
   }
 
-  // Get Leaderboard
-  Future<List<Map<String, dynamic>>> getLeaderboard({int limit = 10}) async {
-    try {
-      final snapshot = await _db
-          .collection('users')
-          .orderBy('multiplayerPoints', descending: true)
-          .limit(limit)
-          .get();
+  // --- Teacher & Student Linking ---
 
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        return {
-          'uid': doc.id,
-          'username': data['username'] ?? 'Anonymous',
-          'multiplayerWins': data['multiplayerWins'] ?? 0,
-          'multiplayerPoints': data['multiplayerPoints'] ?? 0,
-        };
-      }).toList();
-    } catch (e) {
-      print('Error fetching leaderboard: $e');
-      return [];
-    }
-  }
-
-  // Get User Rank
-  Future<int> getUserRank(String uid) async {
-    try {
-      final userDoc = await _db.collection('users').doc(uid).get();
-      if (!userDoc.exists) return -1;
-
-      final userPoints = userDoc.data()?['multiplayerPoints'] ?? 0;
-
-      final snapshot = await _db
-          .collection('users')
-          .where('multiplayerPoints', isGreaterThan: userPoints)
-          .get();
-
-      return snapshot.docs.length + 1;
-    } catch (e) {
-      print('Error fetching user rank: $e');
-      return -1;
-    }
-  }
-  // --- Teacher-Student Relationship ---
-
-  // Add students to teacher's list
   Future<void> addStudentsToTeacher(
       String teacherId, List<String> studentIds) async {
     final batch = _db.batch();
-    for (var studentId in studentIds) {
-      final ref = _db
+    for (var id in studentIds) {
+      final docRef = _db
           .collection('teachers')
           .doc(teacherId)
           .collection('students')
-          .doc(studentId);
-      batch.set(ref, {'addedAt': DateTime.now()}, SetOptions(merge: true));
+          .doc(id);
+      batch.set(docRef, {'addedAt': FieldValue.serverTimestamp()},
+          SetOptions(merge: true));
     }
     await batch.commit();
   }
 
-  // Get Teacher's Students
   Future<List<Map<String, dynamic>>> getTeacherStudents(
       String teacherId) async {
     try {
-      // Get IDs
-      final snapshot = await _db
-          .collection('teachers')
-          .doc(teacherId)
-          .collection('students')
-          .get();
+      final snapshot = await FirestoreErrorHandler.executeWithRetry(
+        operationName: 'Fetch Teacher Students List',
+        operation: () => _db
+            .collection('teachers')
+            .doc(teacherId)
+            .collection('students')
+            .get(),
+      );
 
-      if (snapshot.docs.isEmpty) return [];
+      if (snapshot == null || snapshot.docs.isEmpty) return [];
 
       final studentIds = snapshot.docs.map((d) => d.id).toList();
-
-      // Fetch User Profiles (chunked if > 10)
       List<Map<String, dynamic>> students = [];
 
       for (var i = 0; i < studentIds.length; i += 10) {
         final end = (i + 10 < studentIds.length) ? i + 10 : studentIds.length;
         final chunk = studentIds.sublist(i, end);
 
-        final userSnap = await _db
-            .collection('users')
-            .where(FieldPath.documentId, whereIn: chunk)
-            .get();
-        students.addAll(userSnap.docs.map((d) => d.data()).toList());
-      }
+        final userSnap = await FirestoreErrorHandler.executeWithRetry(
+          operationName: 'Fetch Student Profiles Chunk',
+          operation: () => _db
+              .collection('users')
+              .where(FieldPath.documentId, whereIn: chunk)
+              .get(),
+        );
 
+        if (userSnap != null) {
+          students.addAll(userSnap.docs.map((d) => d.data()).toList());
+        }
+      }
       return students;
     } catch (e) {
       print('Error fetching teacher students: $e');
       return [];
     }
+  }
+
+  Future<List<Map<String, dynamic>>> getStudents() async {
+    try {
+      final snapshot = await _db
+          .collection('users')
+          .where('role', isEqualTo: 'student')
+          .orderBy('username')
+          .get();
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      print('Error fetching students: $e');
+      return [];
+    }
+  }
+
+  // --- Exam Operations ---
+
+  Future<void> createExam(Map<String, dynamic> examData) async {
+    await _db.collection('exams').doc(examData['code']).set(examData);
+  }
+
+  Future<Map<String, dynamic>?> getExamByCode(String code) async {
+    final doc = await _db.collection('exams').doc(code).get();
+    return doc.exists ? doc.data() : null;
+  }
+
+  Future<void> releaseExamResults(String code) async {
+    final docRef = _db.collection('exams').doc(code);
+    final doc = await docRef.get();
+
+    if (!doc.exists) {
+      throw 'Exam with code "$code" not found. Please verify the code.';
+    }
+
+    await docRef.update({'resultsReleased': true});
+
+    // Also update in quizzes if it exists there
+    final quizQuery = await _db
+        .collection('quizzes')
+        .where('accessCode', isEqualTo: code)
+        .limit(1)
+        .get();
+    if (quizQuery.docs.isNotEmpty) {
+      await quizQuery.docs.first.reference.update({'resultsReleased': true});
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getExamsByTeacher(String userId) async {
+    final snapshot = await _db
+        .collection('exams')
+        .where('creatorId', isEqualTo: userId)
+        .get();
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  // --- Leaderboard Operations ---
+
+  Future<List<Map<String, dynamic>>> getLeaderboard({int? limit}) async {
+    Query query =
+        _db.collection('users').orderBy('multiplayerPoints', descending: true);
+
+    if (limit != null) {
+      query = query.limit(limit);
+    }
+
+    final snapshot = await query.get();
+    return snapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
+  }
+
+  Future<int> getUserRank(String userId) async {
+    final snapshot = await _db
+        .collection('users')
+        .orderBy('multiplayerPoints', descending: true)
+        .get();
+
+    for (int i = 0; i < snapshot.docs.length; i++) {
+      if (snapshot.docs[i].id == userId) {
+        return i + 1;
+      }
+    }
+    return -1;
+  }
+
+  Future<void> updateMultiplayerStats(String userId,
+      {required bool isWin, required int points}) async {
+    final Map<String, dynamic> updates = {
+      'multiplayerPoints': FieldValue.increment(points),
+    };
+    if (isWin) {
+      updates['multiplayerWins'] = FieldValue.increment(1);
+    }
+    await _db.collection('users').doc(userId).update(updates);
   }
 }

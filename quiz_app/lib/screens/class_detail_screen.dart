@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/models/class_model.dart';
 import 'package:quiz_app/models/class_member.dart';
 import 'package:quiz_app/services/class_service.dart';
+import 'package:quiz_app/services/pdf_service.dart';
+import 'package:quiz_app/services/docx_service.dart';
 import 'package:intl/intl.dart';
 
 class ClassDetailScreen extends StatefulWidget {
@@ -40,6 +42,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(_handleTabChange);
     _classModel = widget.classModel;
     _checkTeacherStatus();
     _loadMembers();
@@ -55,8 +58,71 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
 
   @override
   void dispose() {
+    _tabController.removeListener(_handleTabChange);
     _tabController.dispose();
     super.dispose();
+  }
+
+  void _handleTabChange() {
+    if (mounted) {
+      setState(() {
+        // Just trigger rebuild to update AppBar actions
+      });
+    }
+  }
+
+  Future<void> _exportResults({bool isPdf = true}) async {
+    if (_leaderboard.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No results available to export.')),
+      );
+      return;
+    }
+
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      if (isPdf) {
+        await PdfService.generateResultsPdf(
+          className: _classModel!.className,
+          quizTitle: _selectedCategory ?? 'Class Performance',
+          results: _leaderboard,
+        );
+      } else {
+        // Calculate share origin for iPad / Mac
+        final RenderBox? box = context.findRenderObject() as RenderBox?;
+        final Rect? rect =
+            box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+
+        await DocxService.generateResultsDocx(
+          className: _classModel!.className,
+          quizTitle: _selectedCategory ?? 'Class Performance',
+          results: _leaderboard,
+          sharePositionOrigin: rect,
+        );
+      }
+
+      if (mounted) {
+        Navigator.pop(context); // Close loading dialog
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text('${isPdf ? 'PDF' : 'Word'} generated successfully!')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); // Close loading dialog
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error generating file: $e')),
+        );
+      }
+    }
   }
 
   Future<void> _checkTeacherStatus() async {
@@ -177,6 +243,40 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
       appBar: AppBar(
         title: Text(_classModel!.className),
         actions: [
+          if (_isTeacher && _tabController.index == 0)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.download),
+              tooltip: 'Export Results',
+              onSelected: (value) {
+                if (value == 'pdf') {
+                  _exportResults(isPdf: true);
+                } else if (value == 'word') {
+                  _exportResults(isPdf: false);
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'pdf',
+                  child: Row(
+                    children: [
+                      Icon(Icons.picture_as_pdf, color: Colors.red),
+                      SizedBox(width: 8),
+                      Text('Export as PDF'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'word',
+                  child: Row(
+                    children: [
+                      Icon(Icons.description, color: Colors.blue),
+                      SizedBox(width: 8),
+                      Text('Export as Word (DOCX)'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: _leaveClass,
@@ -339,12 +439,16 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                           rankIcon = Icons.emoji_events;
                         }
 
+                        final isExam = score['isExam'] ?? false;
+                        final isTeacher =
+                            _isTeacher; // Using the localized check
+                        final canSeeScore =
+                            !isExam || isTeacher || isCurrentUser;
+
                         return Card(
                           margin: const EdgeInsets.only(bottom: 4),
                           color: isCurrentUser
-                              ? Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.1)
+                              ? Theme.of(context).primaryColor.withOpacity(0.1)
                               : null,
                           child: ListTile(
                             leading: CircleAvatar(
@@ -359,32 +463,40 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                                     ),
                             ),
                             title: Text(
-                              score['userName'],
+                              canSeeScore
+                                  ? score['userName']
+                                  : 'Private Student',
                               style: TextStyle(
                                 fontWeight: isCurrentUser
                                     ? FontWeight.bold
                                     : FontWeight.normal,
+                                color: canSeeScore ? null : Colors.grey,
                               ),
                             ),
                             subtitle: Text(
-                              '${score['category']} • ${score['difficulty']}',
+                              '${score['category']} • ${score['difficulty']}${isExam ? ' (Exam)' : ''}',
                             ),
                             trailing: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  '${score['percentage'].toStringAsFixed(1)}%',
+                                  canSeeScore
+                                      ? '${score['percentage'].toStringAsFixed(1)}%'
+                                      : '🔒',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).primaryColor,
+                                    color: canSeeScore
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.grey,
                                   ),
                                 ),
-                                Text(
-                                  '${score['score']}/${score['totalQuestions']}',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
+                                if (canSeeScore)
+                                  Text(
+                                    '${score['score']}/${score['totalQuestions']}',
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
                               ],
                             ),
                           ),

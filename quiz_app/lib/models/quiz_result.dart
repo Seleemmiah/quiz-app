@@ -10,6 +10,7 @@ class QuizResult {
   final int timeTakenSeconds;
   final DateTime date;
   final String? quizId; // Optional, for custom quizzes
+  final bool isExam;
 
   QuizResult({
     required this.id,
@@ -21,6 +22,7 @@ class QuizResult {
     required this.timeTakenSeconds,
     required this.date,
     this.quizId,
+    this.isExam = false,
   });
 
   double get percentage =>
@@ -37,10 +39,20 @@ class QuizResult {
       'timeTakenSeconds': timeTakenSeconds,
       'date': Timestamp.fromDate(date),
       'quizId': quizId,
+      'isExam': isExam,
     };
   }
 
   factory QuizResult.fromJson(Map<String, dynamic> json) {
+    DateTime dateValue;
+    if (json['date'] != null) {
+      dateValue = (json['date'] as Timestamp).toDate();
+    } else if (json['completedAt'] != null) {
+      dateValue = (json['completedAt'] as Timestamp).toDate();
+    } else {
+      dateValue = DateTime.now();
+    }
+
     return QuizResult(
       id: json['id'] ?? '',
       userId: json['userId'] ?? '',
@@ -49,8 +61,9 @@ class QuizResult {
       category: json['category'] ?? 'General',
       difficulty: json['difficulty'] ?? 'Medium',
       timeTakenSeconds: json['timeTakenSeconds'] ?? 0,
-      date: (json['date'] as Timestamp).toDate(),
+      date: dateValue,
       quizId: json['quizId'],
+      isExam: json['isExam'] ?? false,
     );
   }
 }

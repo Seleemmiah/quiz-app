@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/models/question_model.dart';
 import 'package:quiz_app/services/ai_service.dart';
 import 'package:quiz_app/services/file_parsing_service.dart';
+import 'package:quiz_app/services/offline_cache_service.dart';
+import 'package:quiz_app/services/quota_service.dart';
+import 'package:quiz_app/utils/profile_validator.dart';
 
 class GenerateQuizScreen extends StatefulWidget {
   const GenerateQuizScreen({super.key});
@@ -13,10 +16,12 @@ class GenerateQuizScreen extends StatefulWidget {
 class _GenerateQuizScreenState extends State<GenerateQuizScreen> {
   final AIService _aiService = AIService();
   final FileParsingService _fileParsingService = FileParsingService();
+  final QuotaService _quotaService = QuotaService();
 
   String? _fileName;
   String? _extractedText;
   bool _isGenerating = false;
+  bool _isSaving = false;
   List<Question> _generatedQuestions = [];
 
   int _numberOfQuestions = 10;
@@ -28,15 +33,10 @@ class _GenerateQuizScreenState extends State<GenerateQuizScreen> {
       if (text != null && text.isNotEmpty) {
         setState(() {
           _extractedText = text;
-          _fileName =
-              'Document Loaded'; // Ideally get real filename if possible
+          _fileName = 'Document Loaded';
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('File loaded successfully!')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No text found in file or cancelled.')),
         );
       }
     } catch (e) {
@@ -48,6 +48,30 @@ class _GenerateQuizScreenState extends State<GenerateQuizScreen> {
 
   Future<void> _generateQuiz() async {
     if (_extractedText == null) return;
+
+    // Check quota before generating
+    final hasQuota =
+        await _quotaService.hasRemainingQuota('ai_quiz_generation');
+    if (!hasQuota) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Daily Limit Reached 🛑'),
+            content: const Text(
+              'You have used up your ${QuotaService.DAILY_AI_LIMIT} AI generations for today. This limit helps us keep the service free for everyone. Please try again tomorrow!',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+      return;
+    }
 
     setState(() {
       _isGenerating = true;
@@ -78,7 +102,48 @@ class _GenerateQuizScreenState extends State<GenerateQuizScreen> {
     }
   }
 
-  void _startQuiz() {
+  Future<void> _saveForOffline() async {
+    if (_generatedQuestions.isEmpty) return;
+
+    setState(() => _isSaving = true);
+    try {
+      await OfflineCacheService.saveQuiz(
+        title: 'Quiz from ${_fileName ?? "AI"}',
+        category: 'Generated',
+        questions: _generatedQuestions,
+        isGenerated: true,
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Quiz saved to offline library!')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  void _startQuiz() async {
+    final profileError = await ProfileValidator.validateProfileForExam();
+    if (profileError != null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(profileError),
+            backgroundColor: Colors.orange,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+      return;
+    }
+
     Navigator.pushNamed(
       context,
       '/customQuiz',
@@ -92,7 +157,7 @@ class _GenerateQuizScreenState extends State<GenerateQuizScreen> {
       appBar: AppBar(
         title: const Text('AI Quiz Generator'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -123,13 +188,47 @@ class _GenerateQuizScreenState extends State<GenerateQuizScreen> {
 
             // Settings Section
             if (_extractedText != null) ...[
+              FutureBuilder<int>(
+                future: _quotaService.getRemainingQuota('ai_quiz_generation'),
+                builder: (context, snapshot) {
+                  final remaining = snapshot.data ?? 0;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.info_outline,
+                              size: 20, color: Colors.blue),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Daily Allowance: $remaining / ${QuotaService.DAILY_AI_LIMIT} generations left',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
               Text('Settings', style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      initialValue: _difficulty,
+                      value: _difficulty,
                       decoration:
                           const InputDecoration(labelText: 'Difficulty'),
                       items: ['easy', 'medium', 'hard']
@@ -148,7 +247,7 @@ class _GenerateQuizScreenState extends State<GenerateQuizScreen> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: DropdownButtonFormField<int>(
-                      initialValue: _numberOfQuestions,
+                      value: _numberOfQuestions,
                       decoration: const InputDecoration(labelText: 'Questions'),
                       items: [5, 10, 15, 20]
                           .map((n) => DropdownMenuItem(
@@ -194,18 +293,47 @@ class _GenerateQuizScreenState extends State<GenerateQuizScreen> {
                       '${_generatedQuestions.length} questions created',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
+                      child: ElevatedButton.icon(
                         onPressed: _startQuiz,
+                        icon: const Icon(Icons.play_arrow),
+                        label: const Text('Start Quiz Now'),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           backgroundColor: Colors.green,
                           foregroundColor: Colors.white,
                         ),
-                        child: const Text('Start Quiz Now'),
                       ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _isSaving ? null : _saveForOffline,
+                        icon: _isSaving
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2))
+                            : const Icon(Icons.download_for_offline),
+                        label:
+                            Text(_isSaving ? 'Saving...' : 'Save for Offline'),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _generatedQuestions = [];
+                        });
+                      },
+                      child: const Text('Discard and Start Over'),
                     ),
                   ],
                 ),

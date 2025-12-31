@@ -110,6 +110,8 @@ class Question {
     };
   }
 
+  Map<String, dynamic> toMap() => toJson();
+
   // Helper to check if question contains LaTeX
   bool get isLatex {
     return question.contains(r'$') ||

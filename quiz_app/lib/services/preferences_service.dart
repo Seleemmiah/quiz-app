@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quiz_app/settings.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:quiz_app/utils/firestore_error_handler.dart';
 
 class PreferencesService {
   static const String _fontSizeKey = 'font_size';
@@ -16,6 +19,7 @@ class PreferencesService {
   static const String _autoSaveKey = 'auto_save_enabled';
   static const String _offlineModeKey = 'offline_mode_enabled';
   static const String _analyticsEnabledKey = 'analytics_enabled';
+  static const String _savedResultsKey = 'saved_results';
 
   // Validation constants
   static const double _minFontSize = 0.5;
@@ -28,19 +32,51 @@ class PreferencesService {
   // Avatar
   static Future<String> getAvatar() async {
     try {
+      final user = FirebaseAuth.instance.currentUser;
       final prefs = await SharedPreferences.getInstance();
-      return prefs.getString(_avatarKey) ?? '👨‍🎓';
+
+      // Locally cached value
+      String avatar = prefs.getString(_avatarKey) ?? '👨‍🎓';
+
+      if (user != null) {
+        // Try to fetch from Firestore for sync
+        final doc = await FirestoreErrorHandler.executeWithRetry(
+          operation: () => FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get(),
+          operationName: 'Fetch avatar from cloud',
+        );
+        if (doc != null && doc.exists) {
+          final cloudAvatar = doc.data()?['avatar'] as String?;
+          if (cloudAvatar != null && cloudAvatar != avatar) {
+            avatar = cloudAvatar;
+            await prefs.setString(_avatarKey, avatar);
+          }
+        }
+      }
+      return avatar;
     } catch (e) {
-      return '👨‍🎓'; // Return default on error
+      return '👨‍🎓';
     }
   }
 
   static Future<void> setAvatar(String avatar) async {
     try {
+      final user = FirebaseAuth.instance.currentUser;
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_avatarKey, avatar);
+
+      if (user != null) {
+        await FirestoreErrorHandler.executeWithRetry(
+          operation: () =>
+              FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+            'avatar': avatar,
+          }, SetOptions(merge: true)),
+          operationName: 'Save avatar to cloud',
+        );
+      }
     } catch (e) {
-      // Log error in production
       rethrow;
     }
   }
@@ -48,8 +84,28 @@ class PreferencesService {
   // Username
   static Future<String> getUsername() async {
     try {
+      final user = FirebaseAuth.instance.currentUser;
       final prefs = await SharedPreferences.getInstance();
-      return prefs.getString(_usernameKey) ?? 'Mindly User';
+
+      String username = prefs.getString(_usernameKey) ?? 'Mindly User';
+
+      if (user != null) {
+        final doc = await FirestoreErrorHandler.executeWithRetry(
+          operation: () => FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get(),
+          operationName: 'Fetch username from cloud',
+        );
+        if (doc != null && doc.exists) {
+          final cloudName = doc.data()?['username'] as String?;
+          if (cloudName != null && cloudName != username) {
+            username = cloudName;
+            await prefs.setString(_usernameKey, username);
+          }
+        }
+      }
+      return username;
     } catch (e) {
       return 'Mindly User';
     }
@@ -60,8 +116,19 @@ class PreferencesService {
       throw ArgumentError('Username cannot be empty');
     }
     try {
+      final user = FirebaseAuth.instance.currentUser;
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_usernameKey, username.trim());
+
+      if (user != null) {
+        await FirestoreErrorHandler.executeWithRetry(
+          operation: () =>
+              FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+            'username': username.trim(),
+          }, SetOptions(merge: true)),
+          operationName: 'Save username to cloud',
+        );
+      }
     } catch (e) {
       rethrow;
     }
@@ -294,6 +361,65 @@ class PreferencesService {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_analyticsEnabledKey, enabled);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Saved Results Management
+  static Future<List<Map<String, dynamic>>> getSavedResults() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String> savedInfo =
+          prefs.getStringList(_savedResultsKey) ?? [];
+      return savedInfo
+          .map((item) => jsonDecode(item) as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static Future<void> saveResult(Map<String, dynamic> resultData) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String> savedInfo =
+          prefs.getStringList(_savedResultsKey) ?? [];
+
+      // Check for duplicates based on 'id'
+      final String newItem = jsonEncode(resultData);
+      bool exists = false;
+      if (resultData['id'] != null) {
+        for (var item in savedInfo) {
+          final map = jsonDecode(item) as Map<String, dynamic>;
+          if (map['id'] == resultData['id']) {
+            exists = true;
+            break;
+          }
+        }
+      }
+
+      if (!exists) {
+        savedInfo.add(newItem);
+        await prefs.setStringList(_savedResultsKey, savedInfo);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<void> removeSavedResult(String resultId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String> savedInfo =
+          prefs.getStringList(_savedResultsKey) ?? [];
+
+      savedInfo.removeWhere((item) {
+        final map = jsonDecode(item) as Map<String, dynamic>;
+        return map['id'] == resultId;
+      });
+
+      await prefs.setStringList(_savedResultsKey, savedInfo);
     } catch (e) {
       rethrow;
     }

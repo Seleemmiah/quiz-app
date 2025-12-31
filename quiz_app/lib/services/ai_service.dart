@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:quiz_app/models/question_model.dart';
+import 'package:quiz_app/services/quota_service.dart';
 
 import 'package:quiz_app/config/env.dart';
 
@@ -8,6 +9,7 @@ class AIService {
   // Key moved to Env
   static const String _apiKey = Env.geminiApiKey;
   late final GenerativeModel _model;
+  final QuotaService _quotaService = QuotaService();
 
   AIService() {
     _model = GenerativeModel(
@@ -63,6 +65,9 @@ class AIService {
 
       final List<dynamic> jsonList = jsonDecode(jsonString);
 
+      // Increment usage on success
+      await _quotaService.incrementUsage('ai_quiz_generation');
+
       return jsonList.map((json) {
         // Ensure incorrect_answers is a list of strings
         final incorrect = (json['incorrect_answers'] as List)
@@ -107,6 +112,11 @@ class AIService {
     try {
       final content = [Content.text(prompt)];
       final response = await _model.generateContent(content);
+
+      if (response.text != null) {
+        await _quotaService.incrementUsage('ai_explanation');
+      }
+
       return response.text ?? 'Could not generate explanation.';
     } catch (e) {
       return 'Error: $e';

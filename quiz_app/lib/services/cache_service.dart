@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Advanced caching service for API responses and data
 class CacheService {
@@ -11,14 +12,33 @@ class CacheService {
   static Future<void> set(String key, dynamic data,
       {Duration? expiration, List<String>? tags}) async {
     final prefs = await SharedPreferences.getInstance();
+
+    // Sanitize data recursively to handle Timestamps and other non-JSON types
+    final sanitizedData = _sanitizeData(data);
+
     final cacheData = {
-      'data': data,
+      'data': sanitizedData,
       'timestamp': DateTime.now().toIso8601String(),
       'duration': (expiration ?? _defaultCacheDuration).inMilliseconds,
       'tags': tags ?? [],
     };
 
     await prefs.setString(_cachePrefix + key, jsonEncode(cacheData));
+  }
+
+  /// Recursively sanitize data for JSON encoding
+  static dynamic _sanitizeData(dynamic data) {
+    if (data is Timestamp) {
+      return data.toDate().toIso8601String();
+    } else if (data is DateTime) {
+      return data.toIso8601String();
+    } else if (data is Map) {
+      return data
+          .map((key, value) => MapEntry(key.toString(), _sanitizeData(value)));
+    } else if (data is List) {
+      return data.map((item) => _sanitizeData(item)).toList();
+    }
+    return data;
   }
 
   /// Get cached data if not expired

@@ -12,10 +12,14 @@ class HandwritingInputWidget extends StatefulWidget {
 
 class _HandwritingInputWidgetState extends State<HandwritingInputWidget> {
   DigitalInkRecognizer? _digitalInkRecognizer;
-  final Ink _ink = Ink();
+  final DigitalInkRecognizerModelManager _modelManager =
+      DigitalInkRecognizerModelManager();
+  final String _languageCode = 'en-US';
+  final ValueNotifier<Ink> _inkNotifier = ValueNotifier<Ink>(Ink());
   List<StrokePoint> _points = [];
   String _recognizedText = '';
   bool _isInitialized = false;
+  bool _isDownloading = false;
 
   @override
   void initState() {
@@ -25,17 +29,31 @@ class _HandwritingInputWidgetState extends State<HandwritingInputWidget> {
 
   Future<void> _initializeRecognizer() async {
     try {
-      _digitalInkRecognizer = DigitalInkRecognizer(languageCode: 'en-US');
-      setState(() => _isInitialized = true);
+      final isDownloaded = await _modelManager.isModelDownloaded(_languageCode);
+      if (!isDownloaded) {
+        setState(() => _isDownloading = true);
+        await _modelManager.downloadModel(_languageCode);
+        setState(() => _isDownloading = false);
+      }
+      _digitalInkRecognizer = DigitalInkRecognizer(languageCode: _languageCode);
+      if (mounted) {
+        setState(() => _isInitialized = true);
+      }
     } catch (e) {
       debugPrint('ML Kit initialization failed (simulator?): $e');
-      setState(() => _isInitialized = false);
+      if (mounted) {
+        setState(() {
+          _isInitialized = false;
+          _isDownloading = false;
+        });
+      }
     }
   }
 
   @override
   void dispose() {
     _digitalInkRecognizer?.close();
+    _inkNotifier.dispose();
     super.dispose();
   }
 
@@ -49,11 +67,13 @@ class _HandwritingInputWidgetState extends State<HandwritingInputWidget> {
     }
 
     try {
-      final candidates = await _digitalInkRecognizer!.recognize(_ink);
+      final candidates =
+          await _digitalInkRecognizer!.recognize(_inkNotifier.value);
       if (candidates.isNotEmpty) {
-        _recognizedText = candidates.first.text;
+        setState(() {
+          _recognizedText = candidates.first.text;
+        });
         widget.onRecognized(_recognizedText);
-        setState(() {});
       }
     } catch (e) {
       debugPrint('Error recognizing ink: $e');
@@ -66,7 +86,7 @@ class _HandwritingInputWidgetState extends State<HandwritingInputWidget> {
 
   void _clear() {
     setState(() {
-      _ink.strokes.clear();
+      _inkNotifier.value = Ink();
       _points.clear();
       _recognizedText = '';
     });
@@ -83,33 +103,75 @@ class _HandwritingInputWidgetState extends State<HandwritingInputWidget> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: GestureDetector(
-            onPanStart: (details) {
-              _points = [];
-              _ink.strokes.add(Stroke());
-            },
-            onPanUpdate: (details) {
-              setState(() {
-                final point = StrokePoint(
-                  x: details.localPosition.dx,
-                  y: details.localPosition.dy,
-                  t: DateTime.now().millisecondsSinceEpoch,
-                );
-                _points.add(point);
-                // Also update the last stroke in _ink
-                if (_ink.strokes.isNotEmpty) {
-                  _ink.strokes.last.points.add(point);
-                }
-              });
-            },
-            onPanEnd: (details) {
-              _points = [];
-              _recognize();
-            },
-            child: CustomPaint(
-              painter: InkPainter(ink: _ink),
-              size: Size.infinite,
-            ),
+          child: Stack(
+            children: [
+              GestureDetector(
+                onPanStart: (details) {
+                  _points = [];
+                  _inkNotifier.value.strokes.add(Stroke());
+                },
+                onPanUpdate: (details) {
+                  final point = StrokePoint(
+                    x: details.localPosition.dx,
+                    y: details.localPosition.dy,
+                    t: DateTime.now().millisecondsSinceEpoch,
+                  );
+                  _points.add(point);
+                  if (_inkNotifier.value.strokes.isNotEmpty) {
+                    _inkNotifier.value.strokes.last.points.add(point);
+                    // Trigger rebuild of listener only
+                    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                    _inkNotifier.notifyListeners();
+                  }
+                },
+                onPanEnd: (details) {
+                  _points = [];
+                  _recognize();
+                },
+                child: RepaintBoundary(
+                  child: ValueListenableBuilder<Ink>(
+                    valueListenable: _inkNotifier,
+                    builder: (context, ink, child) {
+                      return CustomPaint(
+                        painter: InkPainter(ink: ink),
+                        size: Size.infinite,
+                      );
+                    },
+                  ),
+                ),
+              ),
+              if (_isDownloading)
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 12),
+                        Text(
+                          'Downloading recognition model...',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
         Row(

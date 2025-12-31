@@ -4,6 +4,7 @@ import 'package:quiz_app/models/class_model.dart';
 import 'package:quiz_app/models/class_member.dart';
 import 'package:quiz_app/services/notification_service.dart';
 import 'package:quiz_app/models/notification_model.dart';
+import 'package:quiz_app/utils/firestore_error_handler.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart';
 
@@ -143,6 +144,18 @@ class ClassService {
           .doc(classData.classId)
           .update({'memberCount': FieldValue.increment(1)});
 
+      // Also link student to teacher in the global teacher-student relationship
+      try {
+        await _firestore
+            .collection('teachers')
+            .doc(classData.teacherId)
+            .collection('students')
+            .doc(userId)
+            .set({'addedAt': DateTime.now()}, SetOptions(merge: true));
+      } catch (e) {
+        debugPrint('Error linking student to teacher: $e');
+      }
+
       return classData.copyWith(
         memberCount: classData.memberCount + 1,
       );
@@ -155,12 +168,15 @@ class ClassService {
   Future<List<ClassModel>> getUserClasses(String userId) async {
     try {
       // Get all class memberships for this user
-      final memberQuery = await _firestore
-          .collection('class_members')
-          .where('userId', isEqualTo: userId)
-          .get();
+      final memberQuery = await FirestoreErrorHandler.executeWithRetry(
+        operationName: 'Fetch User Classes',
+        operation: () => _firestore
+            .collection('class_members')
+            .where('userId', isEqualTo: userId)
+            .get(),
+      );
 
-      if (memberQuery.docs.isEmpty) {
+      if (memberQuery == null || memberQuery.docs.isEmpty) {
         return [];
       }
 
@@ -172,9 +188,11 @@ class ClassService {
       // Fetch all classes
       final classes = <ClassModel>[];
       for (final classId in classIds) {
-        final classDoc =
-            await _firestore.collection('classes').doc(classId).get();
-        if (classDoc.exists) {
+        final classDoc = await FirestoreErrorHandler.executeWithRetry(
+          operationName: 'Fetch Class Details',
+          operation: () => _firestore.collection('classes').doc(classId).get(),
+        );
+        if (classDoc != null && classDoc.exists) {
           classes.add(ClassModel.fromJson(classDoc.data()!));
         }
       }
@@ -209,8 +227,19 @@ class ClassService {
     required int totalQuestions,
     required String category,
     required String difficulty,
+    String? matricNumber,
+    bool isExam = false,
   }) async {
     try {
+      // Fetch matric number if not provided
+      String? finalMatricValue = matricNumber;
+      if (finalMatricValue == null) {
+        final userDoc = await _firestore.collection('users').doc(userId).get();
+        if (userDoc.exists) {
+          finalMatricValue = userDoc.data()?['matricNumber'] as String?;
+        }
+      }
+
       // Get all user's classes
       final memberQuery = await _firestore
           .collection('class_members')
@@ -227,11 +256,13 @@ class ClassService {
           'classId': member.classId,
           'userId': userId,
           'userName': userName,
+          'matricNumber': finalMatricValue ?? 'N/A',
           'score': score,
           'totalQuestions': totalQuestions,
           'percentage': percentage,
           'category': category,
           'difficulty': difficulty,
+          'isExam': isExam,
           'completedAt': DateTime.now().millisecondsSinceEpoch,
         };
 
@@ -262,8 +293,13 @@ class ClassService {
         query = query.where('difficulty', isEqualTo: difficulty);
       }
 
-      // Fetch all scores for the class (without ordering to avoid index issues)
-      final scoresQuery = await query.get();
+      // Fetch all scores for the class
+      final scoresQuery = await FirestoreErrorHandler.executeWithRetry(
+        operationName: 'Fetch Class Leaderboard',
+        operation: () => query.get(),
+      );
+
+      if (scoresQuery == null) return [];
 
       final scores = scoresQuery.docs
           .map((doc) => doc.data() as Map<String, dynamic>)

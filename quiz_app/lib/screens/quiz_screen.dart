@@ -11,6 +11,7 @@ import 'package:quiz_app/services/leaderboard_service.dart';
 import 'package:quiz_app/models/leaderboard_entry.dart';
 import 'package:quiz_app/services/quiz_state_service.dart';
 import 'package:quiz_app/services/class_service.dart';
+import 'package:quiz_app/services/shop_service.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/widgets/question_display.dart';
@@ -25,6 +26,9 @@ import 'package:screen_protector/screen_protector.dart';
 import 'package:quiz_app/services/exam_session_service.dart';
 import 'package:quiz_app/services/scalable_firestore_service.dart';
 import 'package:quiz_app/widgets/glass_dialog.dart';
+import 'package:quiz_app/services/ai_service.dart';
+import 'package:quiz_app/services/spaced_repetition_service.dart';
+import 'package:quiz_app/services/statistics_service.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({
@@ -38,6 +42,7 @@ class QuizScreen extends StatefulWidget {
     this.isDailyChallenge = false,
     this.levelId,
     this.isExamMode = false,
+    this.isSpacedRepetition = false,
   });
   final Difficulty difficulty;
   final String? category;
@@ -49,6 +54,7 @@ class QuizScreen extends StatefulWidget {
   final bool isDailyChallenge;
   final String? levelId; // For Campaign Mode
   final bool isExamMode; // New: Enable anti-cheating measures
+  final bool isSpacedRepetition; // New: For Memory Refresh mission
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -75,10 +81,12 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
 
   // --- TIMER STATE ---
   Timer? _timer;
+  final ValueNotifier<int> _remainingTimeNotifier = ValueNotifier<int>(0);
   int _remainingTime = 0;
 
   // --- STREAK STATE ---
   int _currentStreak = 0;
+  int _maxStreak = 0;
 
   // --- LIVES STATE ---
   int _lives = 3;
@@ -95,6 +103,20 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
   // --- VOICE MODE STATE ---
   bool _isVoiceMode = false;
   final VoiceService _voiceService = VoiceService();
+  final AIService _aiService = AIService();
+  final SpacedRepetitionService _srService = SpacedRepetitionService();
+
+  // --- LEARNING MODE STATE ---
+  bool _isFlashcardMode = false;
+  bool _showExplanation = false;
+  String? _explanationText;
+  bool _isLoadingExplanation = false;
+
+  // --- POWER-UPS STATE ---
+  final ShopService _shopService = ShopService();
+  Map<String, int> _ownedPowerUps = {};
+  final List<String> _hiddenAnswers = [];
+  bool _isUsingPowerUp = false;
 
   Future<void> _toggleVoiceMode() async {
     setState(() {
@@ -138,6 +160,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     if (options.length > 3) sb.write("Option D. ${options[3]}. ");
 
     await _voiceService.speak(sb.toString());
+    StatisticsService().recordTTSUsage();
   }
 
   @override
@@ -148,10 +171,14 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     // Enable Screen Protection and Session Management for Exam Mode
     if (widget.isExamMode) {
       _initializeExamMode();
+    } else {
+      _loadPowerUps();
     }
 
     if (widget.customQuestions != null && widget.customQuestions!.isNotEmpty) {
       _questionFuture = Future.value(widget.customQuestions);
+    } else if (widget.isSpacedRepetition) {
+      _questionFuture = _srService.getDueQuestions();
     } else {
       _questionFuture = _apiService.fetchQuestions(
           amount: widget.quizLength,
@@ -215,6 +242,8 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
 
     // Dispose services
     _examSessionService.dispose();
+
+    _remainingTimeNotifier.dispose();
 
     // Save state if quiz is incomplete
     if (_questions.isNotEmpty && !_selectedAnswers.every((a) => a != null)) {
@@ -302,6 +331,61 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     );
   }
 
+  Future<void> _loadPowerUps() async {
+    final powerups = await _shopService.getOwnedPowerUps();
+    if (mounted) {
+      setState(() {
+        _ownedPowerUps = powerups;
+      });
+    }
+  }
+
+  Future<void> _usePowerUp(String id) async {
+    if (_isUsingPowerUp) return;
+    if ((_ownedPowerUps[id] ?? 0) <= 0) return;
+
+    setState(() => _isUsingPowerUp = true);
+
+    final success = await _shopService.usePowerUp(id);
+    if (success) {
+      if (mounted) {
+        setState(() {
+          _ownedPowerUps[id] = (_ownedPowerUps[id] ?? 1) - 1;
+          _isUsingPowerUp = false;
+        });
+
+        // Apply effect
+        _applyPowerUpEffect(id);
+      }
+    } else {
+      if (mounted) setState(() => _isUsingPowerUp = false);
+    }
+  }
+
+  void _applyPowerUpEffect(String id) {
+    switch (id) {
+      case '50:50':
+        final currentQuestion = _questions[_questionIndex];
+        final wrongAnswers = currentQuestion.shuffledAnswers
+            .where((a) => a != currentQuestion.correctAnswer)
+            .toList();
+        wrongAnswers.shuffle();
+        setState(() {
+          _hiddenAnswers.addAll(wrongAnswers.take(2));
+        });
+        break;
+      case 'Extra Time':
+        setState(() {
+          _remainingTime += 30; // Add 30 seconds
+          _remainingTimeNotifier.value = _remainingTime;
+        });
+        break;
+      case 'Skip':
+        _goToQuestion(_questionIndex + 1);
+        break;
+    }
+  }
+
   Future<void> _saveQuizState() async {
     if (_questions.isEmpty) return;
     await _quizStateService.saveQuizState(
@@ -335,27 +419,21 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     // Start a periodic timer
     _timer?.cancel(); // Cancel any existing timer
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (timeLimit != null) {
-          // Countdown mode
-          if (_remainingTime > 0) {
-            _remainingTime--;
-          } else {
-            timer.cancel();
-            _finishQuiz(timeUp: true); // End the quiz when time is up
-          }
+      if (timeLimit != null) {
+        // Countdown mode
+        if (_remainingTime > 0) {
+          _remainingTime--;
+          _remainingTimeNotifier.value = _remainingTime;
         } else {
-          // Stopwatch mode - count up
-          _remainingTime++;
+          timer.cancel();
+          _finishQuiz(timeUp: true); // End the quiz when time is up
         }
-      });
+      } else {
+        // Stopwatch mode - count up
+        _remainingTime++;
+        _remainingTimeNotifier.value = _remainingTime;
+      }
     });
-  }
-
-  String get _formattedTime {
-    final minutes = (_remainingTime ~/ 60).toString().padLeft(2, '0');
-    final seconds = (_remainingTime % 60).toString().padLeft(2, '0');
-    return '$minutes:$seconds';
   }
 
   int get _totalScore {
@@ -391,16 +469,23 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
         }
         SoundService().playCorrectSound(); // Play correct sound
         _currentStreak++;
+        if (_currentStreak > _maxStreak) {
+          _maxStreak = _currentStreak;
+        }
         if (!isBlindMode) {
           _answerColors[selectedAnswer] = Colors.green;
         } else {
           _answerColors[selectedAnswer] = Colors.grey.shade300;
         }
       } else {
+        _currentStreak = 0;
         if (hapticEnabled) HapticFeedback.heavyImpact();
         SoundService().playWrongSound(); // Play wrong sound
 
-        // Save to Mistakes Bank
+        // Save to Spaced Repetition Service (Cloud Synced)
+        _srService.recordReview(currentQuestion, false);
+
+        // Also save to legacy Mistakes Bank for compatibility
         MistakesService().addMistake(currentQuestion);
 
         _lives--;
@@ -418,7 +503,50 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
         }
         _currentStreak = 0; // Reset streak on incorrect answer
       }
+
+      // Record positive review if correct
+      if (isCorrect) {
+        _srService.recordReview(currentQuestion, true);
+      }
+
+      // Automatically fetch AI explanation for incorrect answers
+      if (!isCorrect && !widget.isExamMode) {
+        _fetchAIExplanation(selectedAnswer);
+      }
+      StatisticsService().recordManualExplanationRead();
     });
+  }
+
+  Future<void> _fetchAIExplanation(String userAnswer) async {
+    setState(() {
+      _isLoadingExplanation = true;
+      _showExplanation = true;
+      _explanationText = null;
+    });
+
+    try {
+      final question = _questions[_questionIndex];
+      final explanation = await _aiService.getExplanation(
+        question: question.question,
+        correctAnswer: question.correctAnswer,
+        userAnswer: userAnswer,
+      );
+      if (mounted) {
+        setState(() {
+          _explanationText = explanation;
+          _isLoadingExplanation = false;
+        });
+        StatisticsService().recordAIExplanationRead();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _explanationText =
+              "Could not load tutoring explanation at this time.";
+          _isLoadingExplanation = false;
+        });
+      }
+    }
   }
 
   void _updateAnswerColors() {
@@ -473,6 +601,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     }
     setState(() {
       _questionIndex = index;
+      _hiddenAnswers.clear(); // Clear hidden answers for new question
       _updateAnswerColors();
     });
 
@@ -498,84 +627,91 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
           'Please answer all questions before finishing.');
       return;
     }
-    // Save to Leaderboard
-    final leaderboardService = LeaderboardService();
-    leaderboardService.addScore(LeaderboardEntry(
-      playerName: 'You', // Default name for now
+
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final String category = widget.category ?? 'General';
+    final String difficulty = widget.difficulty.name;
+
+    // Save to Leaderboard (Background)
+    LeaderboardService().addScore(LeaderboardEntry(
+      playerName: 'You',
       score: _totalScore,
       totalQuestions: _questions.length,
       date: DateTime.now(),
-      category: widget.category ?? 'General',
-      difficulty: widget.difficulty.name,
+      category: category,
+      difficulty: difficulty,
     ));
 
-    // Submit score to all user's classes
-    final currentUser = FirebaseAuth.instance.currentUser;
+    // Submit score to classes (Background)
     if (currentUser != null) {
-      try {
-        final classService = ClassService();
-        await classService.submitScoreToClasses(
-          userId: currentUser.uid,
-          userName: currentUser.displayName ?? 'Student',
-          score: _totalScore,
-          totalQuestions: _questions.length,
-          category: widget.category ?? 'General',
-          difficulty: widget.difficulty.name,
-        );
-      } catch (e) {
-        debugPrint('Failed to submit score to classes: $e');
-      }
+      ClassService()
+          .submitScoreToClasses(
+            userId: currentUser.uid,
+            userName: currentUser.displayName ?? 'Student',
+            score: _totalScore,
+            totalQuestions: _questions.length,
+            category: category,
+            difficulty: difficulty,
+            isExam: widget.isExamMode,
+          )
+          .catchError((e) => debugPrint('Class score submission error: $e'));
     }
 
-    // Record Streak Activity
+    // Record Streak Activity (Wait for this as it's quick and needed for ResultScreen)
     final streakService = StreakService();
-    final streakIncreased = await streakService.recordActivity();
+    final bool streakIncreased = await streakService.recordActivity();
 
-    // Send Notification
+    // Send Notification (Background)
     if (currentUser != null) {
-      try {
-        final notificationService = ProfessionalNotificationService();
-        await notificationService.sendQuizScoreNotification(
-          userId: currentUser.uid,
-          score: _totalScore,
-          totalQuestions: _questions.length,
-          quizTitle: widget.category ?? 'Quiz',
-        );
-
-        // Check for perfect score
-        if (_totalScore == _questions.length) {
-          await notificationService.sendPerfectScoreNotification(
+      final notificationService = ProfessionalNotificationService();
+      notificationService
+          .sendQuizScoreNotification(
             userId: currentUser.uid,
-            quizTitle: widget.category ?? 'Quiz',
-          );
-        }
-      } catch (e) {
-        debugPrint('Failed to send notification: $e');
+            score: _totalScore,
+            totalQuestions: _questions.length,
+            quizTitle: category,
+          )
+          .catchError((e) => debugPrint('Notification error: $e'));
+
+      if (_totalScore == _questions.length) {
+        notificationService
+            .sendPerfectScoreNotification(
+              userId: currentUser.uid,
+              quizTitle: category,
+            )
+            .catchError(
+                (e) => debugPrint('Perfect score notification error: $e'));
       }
     }
 
     // End of quiz: Navigate to results
+    if (!mounted) return;
+
     Navigator.pushReplacementNamed(
       context,
       '/result',
       arguments: {
         'score': _totalScore,
-        'totalQuestions': _questions.length, // Pass the total here
+        'totalQuestions': _questions.length,
         'difficulty': widget.difficulty,
         'category': widget.category,
         'questions': _questions,
         'selectedAnswers': _selectedAnswers,
-        'quizDurationSeconds': _quizCompletionTimeSeconds,
+        'timeTaken': _quizCompletionTimeSeconds, // Note: param name check
         'isBlindMode': widget.quiz?.isBlindMode ?? false,
         'levelId': widget.levelId,
         'streakIncreased': streakIncreased,
         'quizId': widget.quiz?.id,
-        'showAnswers': !widget.isExamMode, // Hide answers in Exam Mode
+        'showAnswers': widget.quiz?.resultsReleased ?? true,
+        'isFlashcardMode': _isFlashcardMode,
+        'maxStreak': _maxStreak,
+        'isExam': widget.isExamMode,
       },
     );
   }
 
   void _handleHandwritingInput(String text) {
+    StatisticsService().recordHandwritingUsage();
     final cleanText = text.trim().toUpperCase();
     if (_questions.isEmpty) return;
     final question = _questions[_questionIndex];
@@ -715,109 +851,176 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                 },
               ),
             ],
-            title: Row(
-              children: [
-                const Hero(
-                  tag: 'app_icon',
-                  child: Icon(Icons.school, color: Colors.white),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    widget.category ?? 'Mindly',
-                    overflow: TextOverflow.ellipsis,
+            title: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  const Hero(
+                    tag: 'app_icon',
+                    child: Icon(Icons.school, color: Colors.white),
                   ),
-                ),
-                // const Spacer(), // Removed Spacer as Expanded takes available space
-                // --- Lives Counter ---
-                Row(
-                  children: List.generate(3, (index) {
-                    return Icon(
-                      index < _lives ? Icons.favorite : Icons.favorite_border,
-                      color: Colors.red,
-                      size: 20, // Reduced size
-                    );
-                  }),
-                ),
-                const SizedBox(width: 16),
-                // --- Animated Streak Counter ---
-                if (_questions.isNotEmpty && _currentStreak > 1)
-                  Pulse(
-                    key: ValueKey<int>(
-                        _currentStreak), // Animate when streak changes
-                    child: Row(
-                      children: [
-                        const Icon(Icons.local_fire_department,
-                            color: Colors.orange, size: 20),
-                        const SizedBox(width: 4),
-                        Text('$_currentStreak',
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                      ],
+                  const SizedBox(width: 8),
+                  ConstrainedBox(
+                    constraints:
+                        const BoxConstraints(minWidth: 80, maxWidth: 120),
+                    child: Text(
+                      widget.category ?? 'Mindly',
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                // Always show the timer
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _remainingTime <= 30
-                        ? Colors.red.withOpacity(0.2)
-                        : _remainingTime <= 60
-                            ? Colors.orange.withOpacity(0.2)
-                            : Colors.blue.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
+                  // const Spacer(), // Removed Spacer as Expanded takes available space
+                  // --- Lives Counter ---
+                  Row(
+                    children: List.generate(3, (index) {
+                      return Icon(
+                        index < _lives ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                        size: 18, // Further reduced size
+                      );
+                    }),
+                  ),
+                  const SizedBox(width: 12),
+                  // --- Animated Streak Counter ---
+                  if (_questions.isNotEmpty && _currentStreak > 1)
+                    Pulse(
+                      key: ValueKey<int>(
+                          _currentStreak), // Animate when streak changes
+                      child: Row(
+                        children: [
+                          const Icon(Icons.local_fire_department,
+                              color: Colors.orange, size: 18),
+                          const SizedBox(width: 2),
+                          Text('$_currentStreak',
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  // Always show the timer
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                    decoration: BoxDecoration(
                       color: _remainingTime <= 30
-                          ? Colors.red
+                          ? Colors.red.withOpacity(0.2)
                           : _remainingTime <= 60
-                              ? Colors.orange
-                              : Colors.blue,
-                      width: 2,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.timer,
+                              ? Colors.orange.withOpacity(0.2)
+                              : Colors.blue.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
                         color: _remainingTime <= 30
                             ? Colors.red
                             : _remainingTime <= 60
                                 ? Colors.orange
                                 : Colors.blue,
-                        size: 16,
+                        width: 1.5,
                       ),
-                      const SizedBox(width: 4),
-                      TweenAnimationBuilder<double>(
-                        duration: _remainingTime <= 30
-                            ? const Duration(milliseconds: 500)
-                            : const Duration(milliseconds: 0),
-                        tween: Tween(
-                            begin: 1.0, end: _remainingTime <= 30 ? 1.2 : 1.0),
-                        curve: Curves.easeInOut,
-                        builder: (context, scale, child) {
-                          return Transform.scale(
-                            scale: scale,
-                            child: Text(
-                              _formattedTime,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: _remainingTime <= 30
-                                    ? Colors.red
-                                    : _remainingTime <= 60
+                    ),
+                    child: ValueListenableBuilder<int>(
+                      valueListenable: _remainingTimeNotifier,
+                      builder: (context, time, child) {
+                        final color = time <= 30
+                            ? Colors.red
+                            : time <= 60
+                                ? Colors.orange
+                                : Colors.blue;
+                        final minutes = (time ~/ 60).toString().padLeft(2, '0');
+                        final seconds = (time % 60).toString().padLeft(2, '0');
+                        final formattedTime = '$minutes:$seconds';
+
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.timer,
+                              color: color,
+                              size: 14,
+                            ),
+                            const SizedBox(width: 2),
+                            TweenAnimationBuilder<double>(
+                              duration: time <= 30
+                                  ? const Duration(milliseconds: 500)
+                                  : Duration.zero,
+                              tween: Tween(
+                                  begin: 1.0, end: time <= 30 ? 1.1 : 1.0),
+                              curve: Curves.easeInOut,
+                              builder: (context, scale, child) {
+                                return Transform.scale(
+                                  scale: scale,
+                                  child: Text(
+                                    formattedTime,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: color,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  // Flashcard Mode Toggle
+                  if (!widget.isExamMode)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6.0),
+                      child: Center(
+                        child: Tooltip(
+                          message: 'Flashcard Mode',
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                _isFlashcardMode = !_isFlashcardMode;
+                              });
+                            },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: _isFlashcardMode
+                                    ? Colors.orange.withOpacity(0.2)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: _isFlashcardMode
+                                      ? Colors.orange
+                                      : Colors.blue.withOpacity(0.5),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.style,
+                                    size: 14,
+                                    color: _isFlashcardMode
                                         ? Colors.orange
                                         : Colors.blue,
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    'Flash',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: _isFlashcardMode
+                                          ? Colors.orange
+                                          : Colors.blue,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          );
-                        },
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                ],
+              ),
             ),
             automaticallyImplyLeading:
                 false, // We are providing a custom leading widget
@@ -950,221 +1153,9 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                   padding: const EdgeInsets.all(20.0),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
-                    transitionBuilder:
-                        (Widget child, Animation<double> animation) {
-                      // Add a fade and slight slide-up effect
-                      return FadeTransition(
-                        opacity: animation,
-                        child: SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0.0, 0.1),
-                            end: Offset.zero,
-                          ).animate(animation),
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: Column(
-                      // The key is crucial for AnimatedSwitcher to detect a change
-                      key: ValueKey<int>(_questionIndex),
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          'Question ${_questionIndex + 1} of ${_questions.length}',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 10),
-                        QuestionDisplay(
-                          questionText: currentQuestion.question,
-                          imageUrl: currentQuestion.imageUrl,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                        const SizedBox(height: 30),
-                        // Different UI for True/False vs Multiple Choice
-                        if (currentQuestion.isTrueFalse)
-                          // True/False Buttons
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: ElevatedButton.icon(
-                                    onPressed:
-                                        _selectedAnswers[_questionIndex] != null
-                                            ? null
-                                            : () => _answerQuestion('True'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: _answerColors['True'],
-                                      disabledBackgroundColor:
-                                          _answerColors['True'],
-                                      padding: const EdgeInsets.all(12),
-                                    ),
-                                    icon: const Icon(Icons.check_circle,
-                                        size: 20),
-                                    label: const Text('True',
-                                        style: TextStyle(fontSize: 16)),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: ElevatedButton.icon(
-                                    onPressed:
-                                        _selectedAnswers[_questionIndex] != null
-                                            ? null
-                                            : () => _answerQuestion('False'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: _answerColors['False'],
-                                      disabledBackgroundColor:
-                                          _answerColors['False'],
-                                      padding: const EdgeInsets.all(12),
-                                    ),
-                                    icon: const Icon(Icons.cancel, size: 20),
-                                    label: const Text('False',
-                                        style: TextStyle(fontSize: 16)),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        else
-                          // Multiple Choice Buttons
-                          ...List.generate(
-                              currentQuestion.shuffledAnswers.length, (index) {
-                            final answer =
-                                currentQuestion.shuffledAnswers[index];
-                            final buttonColor = _answerColors[answer];
-                            final label =
-                                String.fromCharCode('A'.codeUnitAt(0) + index);
-
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                              child: ElevatedButton(
-                                onPressed:
-                                    _selectedAnswers[_questionIndex] != null
-                                        ? null
-                                        : () => _answerQuestion(answer),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: buttonColor,
-                                  disabledBackgroundColor: buttonColor,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 16),
-                                ),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Row(
-                                    children: [
-                                      Text('$label. ',
-                                          style: const TextStyle(fontSize: 16)),
-                                      Expanded(
-                                        child: QuestionDisplay(
-                                          questionText: answer,
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
-
-                        // Video Explanation Button
-                        if (_selectedAnswers[_questionIndex] != null &&
-                            currentQuestion.videoUrl != null &&
-                            currentQuestion.videoUrl!.isNotEmpty)
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(top: 16.0, bottom: 8.0),
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => VideoPlayerScreen(
-                                      videoUrl: currentQuestion.videoUrl!,
-                                    ),
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.play_circle_fill),
-                              label: const Text('Watch Explanation'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
-                              ),
-                            ),
-                          ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Previous Button
-                            ElevatedButton(
-                              onPressed: _questionIndex > 0
-                                  ? () => _goToQuestion(_questionIndex - 1)
-                                  : null,
-                              child: const Text('Previous'),
-                            ),
-                            // Next / Finish Button
-                            if (_questionIndex < _questions.length - 1)
-                              ElevatedButton(
-                                onPressed: () =>
-                                    _goToQuestion(_questionIndex + 1),
-                                child: const Text('Next'),
-                              )
-                            else
-                              ElevatedButton(
-                                onPressed: _finishQuiz,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                ),
-                                child: const Text('Finish'),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 30),
-                        // Explanation Section
-                        if (_selectedAnswers[_questionIndex] != null) ...[
-                          const SizedBox(height: 20),
-                          FadeIn(
-                              child: Container(
-                            padding: const EdgeInsets.all(16.0),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .cardColor
-                                  .withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Explanation:',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 8),
-                                QuestionDisplay(
-                                  questionText: currentQuestion.explanation ??
-                                      'No explanation available for this question.',
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ],
-                            ),
-                          ))
-                        ],
-                      ],
-                    ),
+                    child: _isFlashcardMode
+                        ? _buildFlashcardView(currentQuestion)
+                        : _buildStandardQuizView(currentQuestion),
                   ),
                 ),
               );
@@ -1179,5 +1170,441 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
         ),
       ), // Close WillPopScope child (Scaffold)
     ); // Close WillPopScope
+  }
+
+  Widget _buildFlashcardView(Question question) {
+    return Column(
+      key: ValueKey<String>('flash_${_questionIndex}_$_showExplanation'),
+      children: [
+        FadeInDown(
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                _showExplanation = !_showExplanation;
+              });
+            },
+            child: AspectRatio(
+              aspectRatio: 0.8,
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                  border: Border.all(
+                    color: _showExplanation
+                        ? Colors.blue.shade200
+                        : Colors.orange.shade200,
+                    width: 2,
+                  ),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        _showExplanation ? 'ANSWER 🧠' : 'QUESTION 📝',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: _showExplanation ? Colors.blue : Colors.orange,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Expanded(
+                        child: Center(
+                          child: SingleChildScrollView(
+                            child: Text(
+                              _showExplanation
+                                  ? question.correctAnswer
+                                  : question.question,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey.shade800,
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (!_showExplanation)
+                        const Text(
+                          'Tap to reveal answer',
+                          style: TextStyle(color: Colors.grey, fontSize: 12),
+                        ),
+                      if (_showExplanation && question.explanation != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Text(
+                            question.explanation!,
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 12),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 40),
+        if (_showExplanation)
+          FadeInUp(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildFlashcardFeedbackButton(
+                  icon: Icons.refresh,
+                  label: 'Again',
+                  color: Colors.red,
+                  onTap: () {
+                    _srService.recordReview(question, false);
+                    _goToQuestion((_questionIndex + 1) % _questions.length);
+                  },
+                ),
+                _buildFlashcardFeedbackButton(
+                  icon: Icons.check,
+                  label: 'Got it',
+                  color: Colors.green,
+                  onTap: () {
+                    _srService.recordReview(question, true);
+                    _goToQuestion((_questionIndex + 1) % _questions.length);
+                  },
+                ),
+              ],
+            ),
+          )
+        else
+          const Text(
+            'Think about the answer before tapping!',
+            style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildFlashcardFeedbackButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              shape: BoxShape.circle,
+              border: Border.all(color: color.withOpacity(0.3)),
+            ),
+            child: Icon(icon, color: color, size: 30),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStandardQuizView(Question currentQuestion) {
+    return Column(
+      key: ValueKey<int>(_questionIndex),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Question ${_questionIndex + 1} of ${_questions.length}',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 10),
+        QuestionDisplay(
+          questionText: currentQuestion.question,
+          imageUrl: currentQuestion.imageUrl,
+          style: Theme.of(context)
+              .textTheme
+              .headlineSmall
+              ?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 30),
+        if (currentQuestion.isTrueFalse)
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: ElevatedButton.icon(
+                    onPressed: _selectedAnswers[_questionIndex] != null
+                        ? null
+                        : () => _answerQuestion('True'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _answerColors['True'],
+                      disabledBackgroundColor: _answerColors['True'],
+                      padding: const EdgeInsets.all(12),
+                    ),
+                    icon: const Icon(Icons.check_circle, size: 20),
+                    label: const Text('True', style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: ElevatedButton.icon(
+                    onPressed: _selectedAnswers[_questionIndex] != null
+                        ? null
+                        : () => _answerQuestion('False'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _answerColors['False'],
+                      disabledBackgroundColor: _answerColors['False'],
+                      padding: const EdgeInsets.all(12),
+                    ),
+                    icon: const Icon(Icons.cancel, size: 20),
+                    label: const Text('False', style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+              ),
+            ],
+          )
+        else
+          ...List.generate(currentQuestion.shuffledAnswers.length, (index) {
+            final answer = currentQuestion.shuffledAnswers[index];
+            if (_hiddenAnswers.contains(answer)) return const SizedBox.shrink();
+
+            final buttonColor = _answerColors[answer];
+            final label = String.fromCharCode('A'.codeUnitAt(0) + index);
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: ElevatedButton(
+                onPressed: _selectedAnswers[_questionIndex] != null
+                    ? null
+                    : () => _answerQuestion(answer),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: buttonColor,
+                  disabledBackgroundColor: buttonColor,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                ),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      Text('$label. ', style: const TextStyle(fontSize: 16)),
+                      Expanded(
+                        child: QuestionDisplay(
+                          questionText: answer,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
+        if (_showExplanation && !widget.isExamMode)
+          FadeInUp(
+            duration: const Duration(milliseconds: 500),
+            child: Container(
+              margin: const EdgeInsets.only(top: 24),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.blue.withOpacity(0.3)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.psychology, color: Colors.blue),
+                      const SizedBox(width: 8),
+                      Text(
+                        'AI Tutor Explanation',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade800,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  if (_isLoadingExplanation)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    )
+                  else
+                    Text(
+                      _explanationText ?? '',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade800,
+                          height: 1.4),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        if (_selectedAnswers[_questionIndex] != null &&
+            currentQuestion.videoUrl != null &&
+            currentQuestion.videoUrl!.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => VideoPlayerScreen(
+                      videoUrl: currentQuestion.videoUrl!,
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.play_circle_fill),
+              label: const Text('Watch Explanation'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ),
+        const SizedBox(height: 20),
+        if (!widget.isExamMode) _buildPowerUpBar(),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ElevatedButton(
+              onPressed: _questionIndex > 0
+                  ? () => _goToQuestion(_questionIndex - 1)
+                  : null,
+              child: const Text('Previous'),
+            ),
+            if (_questionIndex < _questions.length - 1)
+              ElevatedButton(
+                onPressed: () => _goToQuestion(_questionIndex + 1),
+                child: const Text('Next'),
+              )
+            else
+              ElevatedButton(
+                onPressed: _finishQuiz,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                ),
+                child: const Text('Finish'),
+              ),
+          ],
+        ),
+        if (_selectedAnswers[_questionIndex] != null) ...[
+          const SizedBox(height: 20),
+          FadeIn(
+              child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Explanation:',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                QuestionDisplay(
+                  questionText: currentQuestion.explanation ??
+                      'No explanation available for this question.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          ))
+        ],
+      ],
+    );
+  }
+
+  Widget _buildPowerUpBar() {
+    final powerUps = [
+      {'id': '50:50', 'icon': Icons.exposure_minus_1, 'color': Colors.orange},
+      {'id': 'Extra Time', 'icon': Icons.timer, 'color': Colors.blue},
+      {'id': 'Skip', 'icon': Icons.skip_next, 'color': Colors.purple},
+    ];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: powerUps.map((pu) {
+          final count = _ownedPowerUps[pu['id']] ?? 0;
+          final isAvailable = count > 0;
+          final color = pu['color'] as Color;
+
+          return InkWell(
+            onTap: isAvailable ? () => _usePowerUp(pu['id'] as String) : null,
+            child: Opacity(
+              opacity: isAvailable ? 1.0 : 0.3,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: color.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(pu['icon'] as IconData, color: color, size: 20),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${pu['id']} ($count)',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: color,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
   }
 }

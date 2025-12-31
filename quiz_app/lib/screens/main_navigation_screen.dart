@@ -7,6 +7,7 @@ import 'package:quiz_app/screens/settings_screen.dart';
 import 'package:quiz_app/screens/profile_screen.dart';
 import 'package:quiz_app/widgets/offline_indicator.dart';
 import 'package:quiz_app/services/achievement_service.dart';
+import 'package:quiz_app/widgets/persistent_ai_tutor.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -79,6 +80,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         children: [
           _screens[_currentIndex],
           const OfflineIndicator(),
+          const PersistentAITutor(),
         ],
       ),
       bottomNavigationBar: Container(

@@ -27,7 +27,7 @@ class TeacherAnalytics extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Analytics will appear after students complete exams',
+              'Analytics and trends will appear once your students complete their exams using your dedicated codes.',
               style: TextStyle(fontSize: 14, color: Colors.grey[500]),
               textAlign: TextAlign.center,
             ),

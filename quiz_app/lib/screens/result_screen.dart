@@ -16,6 +16,8 @@ import 'package:quiz_app/services/sound_service.dart';
 import 'package:quiz_app/services/gamification_service.dart';
 import 'package:quiz_app/services/campaign_service.dart';
 import 'package:quiz_app/services/shop_service.dart';
+import 'package:quiz_app/services/ai_service.dart';
+import 'package:quiz_app/services/quota_service.dart';
 import 'package:quiz_app/widgets/glass_card.dart';
 import 'package:quiz_app/models/theme_preset.dart';
 
@@ -33,6 +35,9 @@ class ResultScreen extends StatefulWidget {
   final bool streakIncreased;
   final String? quizId;
   final bool showAnswers;
+  final bool isFlashcardMode;
+  final int maxStreak;
+  final bool isExam;
 
   const ResultScreen({
     super.key,
@@ -48,6 +53,9 @@ class ResultScreen extends StatefulWidget {
     this.streakIncreased = false,
     this.quizId,
     this.showAnswers = true,
+    this.isFlashcardMode = false,
+    this.maxStreak = 0,
+    this.isExam = false,
   });
 
   @override
@@ -66,6 +74,12 @@ class _ResultScreenState extends State<ResultScreen> {
   late ConfettiController _confettiController;
   final GlobalKey _shareButtonKey = GlobalKey();
   StreamSubscription? _achievementSubscription;
+
+  // --- AI SUMMARY STATE ---
+  final AIService _aiService = AIService();
+  final QuotaService _quotaService = QuotaService();
+  String? _aiSummary;
+  bool _isGeneratingSummary = false;
 
   @override
   void initState() {
@@ -134,6 +148,54 @@ class _ResultScreenState extends State<ResultScreen> {
     }
   }
 
+  Future<void> _generateAISummary() async {
+    final remaining = await _quotaService.getRemainingQuota('ai_explanation');
+    if (remaining <= 0) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Daily Limit Reached'),
+            content: const Text(
+                'You have reached your daily limit for AI-powered explanations and summaries. Please try again tomorrow!'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+      return;
+    }
+
+    setState(() => _isGeneratingSummary = true);
+
+    try {
+      final summary = await _aiService.getExplanation(
+        question: _buildSummaryPrompt(),
+        correctAnswer: '', // No specific answer
+        userAnswer: '', // No specific answer
+      );
+
+      if (mounted) {
+        setState(() {
+          _aiSummary = summary;
+          _isGeneratingSummary = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) setState(() => _isGeneratingSummary = false);
+    }
+  }
+
+  String _buildSummaryPrompt() {
+    final percentage = (widget.score / widget.totalQuestions) * 100;
+    return "Analyze my quiz performance: I scored ${widget.score}/${widget.totalQuestions} ($percentage%) in ${widget.category}. "
+        "The difficulty was ${widget.difficulty.name}. Give me a 3-sentence summary of my strengths and what topics I should focus on next based on this result.";
+  }
+
   Future<void> _saveQuizResult() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -147,6 +209,7 @@ class _ResultScreenState extends State<ResultScreen> {
         timeTakenSeconds: widget.timeTaken ?? 0,
         date: DateTime.now(),
         quizId: widget.quizId,
+        isExam: widget.isExam,
       );
 
       await FirestoreService().saveQuizResult(result);
@@ -183,7 +246,12 @@ class _ResultScreenState extends State<ResultScreen> {
       totalQuestions: widget.totalQuestions,
       difficulty: widget.difficulty,
       category: widget.category,
+      maxStreak: widget.maxStreak,
     );
+
+    if (widget.isFlashcardMode) {
+      await _statisticsService.recordFlashcardSession();
+    }
 
     // Calculate and award XP
     final earnedXP = _gamificationService.calculateQuizXP(
@@ -217,9 +285,8 @@ class _ResultScreenState extends State<ResultScreen> {
 
     // Check for new achievements
     await _achievementService.checkAndUnlockAchievements(
-      quizCount: stats.totalQuizzes,
-      questionCount: stats.totalQuestions,
-      streak: streak,
+      stats: stats,
+      loginStreak: streak,
       lastScore: widget.totalQuestions > 0
           ? (widget.score / widget.totalQuestions) * 100
           : 0,
@@ -454,6 +521,60 @@ class _ResultScreenState extends State<ResultScreen> {
                       ),
                     ),
                   ],
+
+                  const SizedBox(height: 20),
+                  if (_aiSummary != null)
+                    FadeIn(
+                      child: GlassCard(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(Icons.psychology,
+                                      color: Colors.blue, size: 20),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'AI Brain Summary 🧠',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                _aiSummary!,
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (_aiSummary == null &&
+                      !widget.isExam &&
+                      !widget.isBlindMode)
+                    FadeInUp(
+                      child: TextButton.icon(
+                        onPressed:
+                            _isGeneratingSummary ? null : _generateAISummary,
+                        icon: _isGeneratingSummary
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Icon(Icons.auto_awesome, size: 18),
+                        label: Text(_isGeneratingSummary
+                            ? 'Analyzing Performance...'
+                            : 'Get AI Performance Analysis'),
+                      ),
+                    ),
 
                   const SizedBox(height: 40),
                   FadeInUp(

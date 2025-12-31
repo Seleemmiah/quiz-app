@@ -82,6 +82,8 @@ dependencies:
   workmanager: ^0.9.0+3
   firebase_crashlytics: ^4.3.10
   flutter_svg: ^2.2.3
+  pdf: ^3.11.1
+  printing: ^5.13.2
 
   # New dependencies for advanced features
   local_auth: ^2.1.6  # Biometric authentication

@@ -13,8 +13,6 @@ import 'package:quiz_app/screens/questions/organic_chemistry_questions.dart';
 import 'package:quiz_app/screens/questions/circuit_questions.dart';
 import 'package:quiz_app/services/rate_limited_api_service.dart';
 import 'package:quiz_app/settings.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 
 class ApiService {
   final RateLimitedApiService _rateLimitedService = RateLimitedApiService();
@@ -54,12 +52,6 @@ class ApiService {
     try {
       await Future.delayed(const Duration(seconds: 1));
 
-      // Check connectivity status
-      final connectivityResult = await Connectivity().checkConnectivity();
-      final isOnline = connectivityResult.contains(ConnectivityResult.mobile) ||
-          connectivityResult.contains(ConnectivityResult.wifi) ||
-          connectivityResult.contains(ConnectivityResult.ethernet);
-
       // Filter questions by the selected difficulty
       // Combine local, additional, and generated questions
       var allQuestions = [
@@ -76,13 +68,6 @@ class ApiService {
       ];
 
       // Filter out image questions if offline
-      if (!isOnline) {
-        allQuestions = allQuestions
-            .where((q) => q['imageUrl'] == null || q['imageUrl'] == '')
-            .toList();
-        debugPrint(
-            '📵 Offline mode: Filtered out ${imageQuestions.length} image-based questions');
-      }
 
       // Filter questions by the selected difficulty
       final filteredQuestions = allQuestions

@@ -10,6 +10,7 @@ import 'package:quiz_app/screens/quiz_screen.dart';
 import 'package:quiz_app/widgets/activity_heatmap.dart';
 import 'package:quiz_app/widgets/skill_radar_chart.dart';
 import 'package:quiz_app/widgets/circular_progress_ring.dart';
+import 'package:quiz_app/services/shop_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -22,25 +23,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final GamificationService _gamificationService = GamificationService();
   final AchievementService _achievementService = AchievementService();
   final StatisticsService _statisticsService = StatisticsService();
+  final ShopService _shopService = ShopService();
 
-  static const List<String> _availableAvatars = [
-    '👨‍🎓',
-    '👩‍🎓',
-    '👨‍🏫',
-    '👩‍🏫',
-    '👨‍🔬',
-    '👩‍🔬',
-    '👨‍🚀',
-    '👩‍🚀',
-    '🦸‍♂️',
-    '🦸‍♀️',
-    '🧙‍♂️',
-    '🧙‍♀️',
-    '🥷',
-    '🤓',
-    '😎',
-    '🤠'
-  ];
+  List<String> _ownedAvatars = ['👨‍🎓', '👩‍🎓'];
 
   int _totalXP = 0;
   int _level = 1;
@@ -74,6 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final username = await PreferencesService.getUsername();
     final activity = await _statisticsService.getLast7DaysActivity();
     final categoryPerf = await _statisticsService.getCategoryPerformance();
+    final ownedAvatars = await _shopService.getOwnedAvatars();
 
     if (mounted) {
       setState(() {
@@ -89,6 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _activityData = activity;
         _categoryPerformance = categoryPerf;
         _averageScore = stats.averageScore;
+        _ownedAvatars = ownedAvatars;
       });
     }
   }
@@ -138,44 +125,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: const Text('Choose Your Avatar'),
         content: SizedBox(
           width: double.maxFinite,
-          child: GridView.builder(
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-            ),
-            itemCount: _availableAvatars.length,
-            itemBuilder: (context, index) {
-              final avatar = _availableAvatars[index];
-              final isSelected = avatar == _currentAvatar;
-              return InkWell(
-                onTap: () async {
-                  await PreferencesService.setAvatar(avatar);
-                  setState(() {
-                    _currentAvatar = avatar;
-                  });
-                  if (mounted) Navigator.pop(context);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: isSelected
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey.withOpacity(0.3),
-                      width: isSelected ? 3 : 1,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Text(
-                      avatar,
-                      style: const TextStyle(fontSize: 32),
-                    ),
-                  ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                  'Select one of your owned avatars or visit the shop for more!',
+                  style: TextStyle(fontSize: 12, color: Colors.grey)),
+              const SizedBox(height: 16),
+              GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
                 ),
-              );
-            },
+                itemCount: _ownedAvatars.length,
+                itemBuilder: (context, index) {
+                  final avatar = _ownedAvatars[index];
+                  final isSelected = avatar == _currentAvatar;
+                  return InkWell(
+                    onTap: () async {
+                      await PreferencesService.setAvatar(avatar);
+                      setState(() {
+                        _currentAvatar = avatar;
+                      });
+                      if (mounted) Navigator.pop(context);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: isSelected
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey.withOpacity(0.3),
+                          width: isSelected ? 3 : 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: Text(
+                          avatar,
+                          style: const TextStyle(fontSize: 32),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/shop');
+                },
+                icon: const Icon(Icons.shopping_bag),
+                label: const Text('Avatar Shop'),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 45),
+                ),
+              ),
+            ],
           ),
         ),
         actions: [

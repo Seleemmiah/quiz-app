@@ -5,6 +5,7 @@ import 'package:quiz_app/services/ai_service.dart';
 import 'package:quiz_app/screens/video_player_screen.dart';
 import 'package:quiz_app/services/video_service.dart';
 import 'package:quiz_app/models/video_explanation.dart';
+import 'package:quiz_app/services/quota_service.dart';
 import 'package:quiz_app/widgets/glass_dialog.dart';
 
 class ReviewScreen extends StatefulWidget {
@@ -86,7 +87,31 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   Future<void> _askAiTutor(
       String question, String correctAnswer, String userAnswer) async {
-    // ... (existing code)
+    final quotaService = QuotaService();
+
+    // Check quota
+    final hasQuota = await quotaService.hasRemainingQuota('ai_explanation');
+    if (!hasQuota) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Daily Limit Reached 🛑'),
+            content: const Text(
+              'You have used up your daily AI Tutor explanations. Please try again tomorrow or upgrade for more!',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+      return;
+    }
+
     // Show loading dialog
     showDialog(
       context: context,
@@ -317,8 +342,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
           preferredSize: const Size.fromHeight(4.0),
           child: LinearProgressIndicator(
             value: (_reviewIndex + 1) / _filteredIndices.length,
-            backgroundColor:
-                Theme.of(context).primaryColor.withOpacity(0.2),
+            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
             valueColor:
                 AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           ),

@@ -1,11 +1,11 @@
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:quiz_app/settings.dart';
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:quiz_app/settings.dart';
+import 'package:quiz_app/services/cache_service.dart';
+import 'package:quiz_app/utils/firestore_error_handler.dart';
 
 class QuizHistory {
+  final String? id;
   final DateTime date;
   final int score;
   final int totalQuestions;
@@ -13,6 +13,7 @@ class QuizHistory {
   final String? category;
 
   QuizHistory({
+    this.id,
     required this.date,
     required this.score,
     required this.totalQuestions,
@@ -28,13 +29,16 @@ class QuizHistory {
         'category': category,
       };
 
-  factory QuizHistory.fromJson(Map<String, dynamic> json) {
+  factory QuizHistory.fromJson(Map<String, dynamic> json, [String? id]) {
     return QuizHistory(
+      id: id,
       date: DateTime.parse(json['date']),
-      score: json['score'],
-      totalQuestions: json['totalQuestions'],
-      difficulty:
-          Difficulty.values.firstWhere((d) => d.name == json['difficulty']),
+      score: json['score'] ?? 0,
+      totalQuestions: json['totalQuestions'] ?? 0,
+      difficulty: Difficulty.values.firstWhere(
+        (d) => d.name == json['difficulty'],
+        orElse: () => Difficulty.medium,
+      ),
       category: json['category'],
     );
   }
@@ -54,6 +58,13 @@ class QuizStatistics {
   final Map<Difficulty, double> difficultyAverages;
   final String? bestCategory;
   final Difficulty? bestDifficulty;
+  final int flashcardSessions;
+  final int spacedReviews;
+  final int aiExplanationsRead;
+  final int ttsUsedCount;
+  final int handwritingUsedCount;
+  final int manualExplanationsRead;
+  final int maxCorrectRow;
 
   QuizStatistics({
     required this.totalQuizzes,
@@ -66,145 +77,76 @@ class QuizStatistics {
     required this.difficultyAverages,
     this.bestCategory,
     this.bestDifficulty,
+    this.flashcardSessions = 0,
+    this.spacedReviews = 0,
+    this.aiExplanationsRead = 0,
+    this.ttsUsedCount = 0,
+    this.handwritingUsedCount = 0,
+    this.manualExplanationsRead = 0,
+    this.maxCorrectRow = 0,
   });
-}
 
-class StatisticsService {
-  static const String _totalQuizzesKey = 'total_quizzes';
-  static const String _totalQuestionsKey = 'total_questions';
-  static const String _totalCorrectKey = 'total_correct';
-  static const String _categoryQuizzesPrefix = 'category_quizzes_';
-  static const String _categoryCorrectPrefix = 'category_correct_';
-  static const String _categoryQuestionsPrefix = 'category_questions_';
-  static const String _difficultyQuizzesPrefix = 'difficulty_quizzes_';
-  static const String _difficultyCorrectPrefix = 'difficulty_correct_';
-  static const String _difficultyQuestionsPrefix = 'difficulty_questions_';
-  static const String _quizHistoryKey = 'quiz_history';
+  factory QuizStatistics.fromMap(Map<String, dynamic> data) {
+    final totalQuizzes = (data['total_quizzes'] as int?) ?? 0;
+    final totalQuestions = (data['total_all_questions'] as int?) ?? 0;
+    final totalCorrect = (data['total_correct'] as int?) ?? 0;
 
-  Future<void> recordQuizCompletion({
-    required int score,
-    required int totalQuestions,
-    required Difficulty difficulty,
-    String? category,
-  }) async {
-    final prefs = await SharedPreferences.getInstance();
+    final categoryQuizzes =
+        Map<String, int>.from(data['category_quizzes'] ?? {});
+    final categoryCorrect =
+        Map<String, int>.from(data['category_correct'] ?? {});
+    final categoryQuestions =
+        Map<String, int>.from(data['category_questions'] ?? {});
 
-    // Save to quiz history
-    final history = QuizHistory(
-      date: DateTime.now(),
-      score: score,
-      totalQuestions: totalQuestions,
-      difficulty: difficulty,
-      category: category,
-    );
-    await _saveQuizHistory(history);
+    final difficultyQuizzesData =
+        Map<String, int>.from(data['difficulty_quizzes'] ?? {});
+    final difficultyCorrectData =
+        Map<String, int>.from(data['difficulty_correct'] ?? {});
+    final difficultyQuestionsData =
+        Map<String, int>.from(data['difficulty_questions'] ?? {});
 
-    // Update global stats
-    final totalQuizzes = (prefs.getInt(_totalQuizzesKey) ?? 0) + 1;
-    final globalQuestions =
-        (prefs.getInt(_totalQuestionsKey) ?? 0) + totalQuestions;
-    final globalCorrect = (prefs.getInt(_totalCorrectKey) ?? 0) + score;
-
-    await prefs.setInt(_totalQuizzesKey, totalQuizzes);
-    await prefs.setInt(_totalQuestionsKey, globalQuestions);
-    await prefs.setInt(_totalCorrectKey, globalCorrect);
-
-    // Update category stats
-    if (category != null) {
-      final categoryKey = _categoryQuizzesPrefix + category;
-      final categoryQuestionsKey = _categoryQuestionsPrefix + category;
-      final categoryCorrectKey = _categoryCorrectPrefix + category;
-
-      final categoryQuizzes = (prefs.getInt(categoryKey) ?? 0) + 1;
-      final categoryQuestions =
-          (prefs.getInt(categoryQuestionsKey) ?? 0) + totalQuestions;
-      final categoryCorrect = (prefs.getInt(categoryCorrectKey) ?? 0) + score;
-
-      await prefs.setInt(categoryKey, categoryQuizzes);
-      await prefs.setInt(categoryQuestionsKey, categoryQuestions);
-      await prefs.setInt(categoryCorrectKey, categoryCorrect);
-    }
-
-    // Update difficulty stats
-    final difficultyKey = _difficultyQuizzesPrefix + difficulty.name;
-    final difficultyQuestionsKey = _difficultyQuestionsPrefix + difficulty.name;
-    final difficultyCorrectKey = _difficultyCorrectPrefix + difficulty.name;
-
-    final difficultyQuizzes = (prefs.getInt(difficultyKey) ?? 0) + 1;
-    final difficultyQuestions =
-        (prefs.getInt(difficultyQuestionsKey) ?? 0) + totalQuestions;
-    final difficultyCorrect = (prefs.getInt(difficultyCorrectKey) ?? 0) + score;
-
-    await prefs.setInt(difficultyKey, difficultyQuizzes);
-    await prefs.setInt(difficultyQuestionsKey, difficultyQuestions);
-    await prefs.setInt(difficultyCorrectKey, difficultyCorrect);
-  }
-
-  Future<QuizStatistics> getStatistics() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    final totalQuizzes = prefs.getInt(_totalQuizzesKey) ?? 0;
-    final totalQuestions = prefs.getInt(_totalQuestionsKey) ?? 0;
-    final totalCorrect = prefs.getInt(_totalCorrectKey) ?? 0;
-
-    final averageScore =
-        totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0.0;
-
-    // Get all category stats
-    final categoryQuizzes = <String, int>{};
     final categoryAverages = <String, double>{};
-    String? bestCategory;
-    double bestCategoryAverage = 0.0;
-
-    final allKeys = prefs.getKeys();
-    for (final key in allKeys) {
-      if (key.startsWith(_categoryQuizzesPrefix)) {
-        final category = key.substring(_categoryQuizzesPrefix.length);
-        final quizzes = prefs.getInt(key) ?? 0;
-        final questions =
-            prefs.getInt(_categoryQuestionsPrefix + category) ?? 0;
-        final correct = prefs.getInt(_categoryCorrectPrefix + category) ?? 0;
-
-        categoryQuizzes[category] = quizzes;
-        if (questions > 0) {
-          final average = (correct / questions) * 100;
-          categoryAverages[category] = average;
-          if (average > bestCategoryAverage) {
-            bestCategoryAverage = average;
-            bestCategory = category;
-          }
-        }
+    categoryQuestions.forEach((cat, questions) {
+      if (questions > 0) {
+        categoryAverages[cat] = (categoryCorrect[cat]! / questions) * 100;
       }
-    }
+    });
 
-    // Get all difficulty stats
     final difficultyQuizzes = <Difficulty, int>{};
     final difficultyAverages = <Difficulty, double>{};
-    Difficulty? bestDifficulty;
-    double bestDifficultyAverage = 0.0;
+    for (var diff in Difficulty.values) {
+      final quizzes = difficultyQuizzesData[diff.name] ?? 0;
+      final questions = difficultyQuestionsData[diff.name] ?? 0;
+      final correct = difficultyCorrectData[diff.name] ?? 0;
 
-    for (final difficulty in Difficulty.values) {
-      final quizzes =
-          prefs.getInt(_difficultyQuizzesPrefix + difficulty.name) ?? 0;
-      final questions =
-          prefs.getInt(_difficultyQuestionsPrefix + difficulty.name) ?? 0;
-      final correct =
-          prefs.getInt(_difficultyCorrectPrefix + difficulty.name) ?? 0;
-
-      difficultyQuizzes[difficulty] = quizzes;
+      difficultyQuizzes[diff] = quizzes;
       if (questions > 0) {
-        final average = (correct / questions) * 100;
-        difficultyAverages[difficulty] = average;
-        if (average > bestDifficultyAverage) {
-          bestDifficultyAverage = average;
-          bestDifficulty = difficulty;
-        }
+        difficultyAverages[diff] = (correct / questions) * 100;
       }
     }
+
+    String? bestCategory;
+    double bestCategoryAverage = -1;
+    categoryAverages.forEach((cat, avg) {
+      if (avg > bestCategoryAverage) {
+        bestCategoryAverage = avg;
+        bestCategory = cat;
+      }
+    });
+
+    Difficulty? bestDifficulty;
+    double bestDifficultyAverage = -1;
+    difficultyAverages.forEach((diff, avg) {
+      if (avg > bestDifficultyAverage) {
+        bestDifficultyAverage = avg;
+        bestDifficulty = diff;
+      }
+    });
 
     return QuizStatistics(
       totalQuizzes: totalQuizzes,
-      averageScore: averageScore,
+      averageScore:
+          totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0,
       totalQuestions: totalQuestions,
       totalCorrect: totalCorrect,
       categoryQuizzes: categoryQuizzes,
@@ -213,52 +155,188 @@ class StatisticsService {
       difficultyAverages: difficultyAverages,
       bestCategory: bestCategory,
       bestDifficulty: bestDifficulty,
+      flashcardSessions: (data['flashcard_sessions'] as int?) ?? 0,
+      spacedReviews: (data['spaced_reviews'] as int?) ?? 0,
+      aiExplanationsRead: (data['ai_explanations_read'] as int?) ?? 0,
+      ttsUsedCount: (data['tts_used_count'] as int?) ?? 0,
+      handwritingUsedCount: (data['handwriting_used_count'] as int?) ?? 0,
+      manualExplanationsRead: (data['manual_explanations_read'] as int?) ?? 0,
+      maxCorrectRow: (data['max_correct_row'] as int?) ?? 0,
     );
   }
+}
 
-  // Quiz History Methods
-  Future<void> _saveQuizHistory(QuizHistory history) async {
-    final prefs = await SharedPreferences.getInstance();
-    final historyList = await getQuizHistory();
-    historyList.add(history);
+class StatisticsService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-    // Keep only last 100 quizzes to avoid excessive storage
-    if (historyList.length > 100) {
-      historyList.removeRange(0, historyList.length - 100);
+  Future<void> recordQuizCompletion({
+    required int score,
+    required int totalQuestions,
+    required Difficulty difficulty,
+    String? category,
+    int maxStreak = 0,
+  }) async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    final statsRef = _firestore.collection('users').doc(user.uid);
+    final historyRef = statsRef.collection('quizHistory');
+
+    // Create history entry
+    final history = QuizHistory(
+      date: DateTime.now(),
+      score: score,
+      totalQuestions: totalQuestions,
+      difficulty: difficulty,
+      category: category,
+    );
+
+    await FirestoreErrorHandler.executeWithRetry(
+      operation: () async {
+        final doc = await statsRef.get();
+        final currentMaxCorrectRow =
+            (doc.data()?['max_correct_row'] as int?) ?? 0;
+
+        final batch = _firestore.batch();
+
+        // Add to history subcollection
+        batch.set(historyRef.doc(), history.toJson());
+
+        // Update main stats
+        final Map<String, dynamic> updates = {
+          'total_quizzes': FieldValue.increment(1),
+          'total_all_questions': FieldValue.increment(totalQuestions),
+          'total_correct': FieldValue.increment(score),
+          'difficulty_quizzes.${difficulty.name}': FieldValue.increment(1),
+          'difficulty_questions.${difficulty.name}':
+              FieldValue.increment(totalQuestions),
+          'difficulty_correct.${difficulty.name}': FieldValue.increment(score),
+        };
+
+        if (maxStreak > currentMaxCorrectRow) {
+          updates['max_correct_row'] = maxStreak;
+        }
+
+        if (category != null) {
+          updates['category_quizzes.$category'] = FieldValue.increment(1);
+          updates['category_questions.$category'] =
+              FieldValue.increment(totalQuestions);
+          updates['category_correct.$category'] = FieldValue.increment(score);
+        }
+
+        batch.set(statsRef, updates, SetOptions(merge: true));
+        await batch.commit();
+      },
+      operationName: 'Record quiz completion',
+    );
+    await CacheService.remove('user_stats');
+  }
+
+  Future<void> _incrementMetric(String field) async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    await FirestoreErrorHandler.executeWithRetry(
+      operation: () => _firestore.collection('users').doc(user.uid).set(
+        {field: FieldValue.increment(1)},
+        SetOptions(merge: true),
+      ),
+      operationName: 'Increment $field',
+    );
+    await CacheService.remove('user_stats');
+  }
+
+  Future<void> recordFlashcardSession() =>
+      _incrementMetric('flashcard_sessions');
+  Future<void> recordSpacedReview() => _incrementMetric('spaced_reviews');
+  Future<void> recordAIExplanationRead() =>
+      _incrementMetric('ai_explanations_read');
+  Future<void> recordTTSUsage() => _incrementMetric('tts_used_count');
+  Future<void> recordHandwritingUsage() =>
+      _incrementMetric('handwriting_used_count');
+  Future<void> recordManualExplanationRead() =>
+      _incrementMetric('manual_explanations_read');
+
+  Future<QuizStatistics> getStatistics() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      return QuizStatistics(
+        totalQuizzes: 0,
+        averageScore: 0,
+        totalQuestions: 0,
+        totalCorrect: 0,
+        categoryQuizzes: {},
+        categoryAverages: {},
+        difficultyQuizzes: {},
+        difficultyAverages: {},
+      );
     }
 
-    final jsonList = historyList.map((h) => h.toJson()).toList();
-    await prefs.setString(_quizHistoryKey, jsonEncode(jsonList));
+    // Try to get from cache first
+    final cachedData = await CacheService.getCachedUserStats();
+    if (cachedData != null) {
+      return QuizStatistics.fromMap(cachedData);
+    }
+
+    final doc = await FirestoreErrorHandler.executeWithRetry(
+      operation: () => _firestore.collection('users').doc(user.uid).get(),
+      operationName: 'Fetch statistics',
+    );
+
+    if (doc != null && doc.exists) {
+      final data = doc.data()!;
+      await CacheService.cacheUserStats(data);
+      return QuizStatistics.fromMap(data);
+    }
+
+    return QuizStatistics(
+      totalQuizzes: 0,
+      averageScore: 0,
+      totalQuestions: 0,
+      totalCorrect: 0,
+      categoryQuizzes: {},
+      categoryAverages: {},
+      difficultyQuizzes: {},
+      difficultyAverages: {},
+    );
   }
 
   Future<List<QuizHistory>> getQuizHistory({
     DateTime? startDate,
     DateTime? endDate,
+    int limit = 50,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
-    final historyJson = prefs.getString(_quizHistoryKey);
+    final user = _auth.currentUser;
+    if (user == null) return [];
 
-    if (historyJson == null) return [];
+    Query query = _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('quizHistory')
+        .orderBy('date', descending: true)
+        .limit(limit);
 
-    final List<dynamic> jsonList = jsonDecode(historyJson);
-    List<QuizHistory> history =
-        jsonList.map((json) => QuizHistory.fromJson(json)).toList();
-
-    // Filter by date range if provided
     if (startDate != null) {
-      history = history
-          .where((h) =>
-              h.date.isAfter(startDate) || h.date.isAtSameMomentAs(startDate))
-          .toList();
+      query = query.where('date',
+          isGreaterThanOrEqualTo: startDate.toIso8601String());
     }
     if (endDate != null) {
-      history = history
-          .where((h) =>
-              h.date.isBefore(endDate) || h.date.isAtSameMomentAs(endDate))
-          .toList();
+      query =
+          query.where('date', isLessThanOrEqualTo: endDate.toIso8601String());
     }
 
-    return history;
+    final snapshot = await FirestoreErrorHandler.executeWithRetry(
+      operation: () => query.get(),
+      operationName: 'Fetch quiz history',
+    );
+
+    if (snapshot == null) return [];
+
+    return snapshot.docs
+        .map((doc) =>
+            QuizHistory.fromJson(doc.data() as Map<String, dynamic>, doc.id))
+        .toList();
   }
 
   Future<Map<String, double>> getPerformanceTrend(int days) async {
@@ -340,34 +418,12 @@ class StatisticsService {
     };
   }
 
-  Future<void> resetStatistics() async {
-    final prefs = await SharedPreferences.getInstance();
-    final allKeys = prefs.getKeys();
-
-    for (final key in allKeys) {
-      if (key.startsWith(_totalQuizzesKey) ||
-          key.startsWith(_totalQuestionsKey) ||
-          key.startsWith(_totalCorrectKey) ||
-          key.startsWith(_categoryQuizzesPrefix) ||
-          key.startsWith(_categoryCorrectPrefix) ||
-          key.startsWith(_categoryQuestionsPrefix) ||
-          key.startsWith(_difficultyQuizzesPrefix) ||
-          key.startsWith(_difficultyCorrectPrefix) ||
-          key.startsWith(_difficultyQuestionsPrefix) ||
-          key == _quizHistoryKey) {
-        await prefs.remove(key);
-      }
-    }
-  }
-
-  // --- Missing Methods Implementation ---
-
-  // Fetch last 7 days activity (quiz counts)
   Future<Map<DateTime, int>> getLast7DaysActivity() async {
-    final history = await getQuizHistory();
     final now = DateTime.now();
-    final sevenDaysAgo = now.subtract(const Duration(days: 7));
+    final sevenDaysAgo = DateTime(now.year, now.month, now.day)
+        .subtract(const Duration(days: 7));
 
+    final history = await getQuizHistory(startDate: sevenDaysAgo);
     final activity = <DateTime, int>{};
 
     // Initialize last 7 days with 0
@@ -378,34 +434,35 @@ class StatisticsService {
     }
 
     for (var quiz in history) {
-      if (quiz.date.isAfter(sevenDaysAgo)) {
-        final day = DateTime(quiz.date.year, quiz.date.month, quiz.date.day);
-        if (activity.containsKey(day)) {
-          activity[day] = (activity[day] ?? 0) + 1;
-        }
+      final quizDate = DateTime(quiz.date.year, quiz.date.month, quiz.date.day);
+      if (activity.containsKey(quizDate)) {
+        activity[quizDate] = (activity[quizDate] ?? 0) + 1;
       }
     }
 
     return activity;
   }
 
-  // Fetch average score per category
   Future<Map<String, double>> getCategoryPerformance() async {
     final stats = await getStatistics();
     return stats.categoryAverages;
   }
 
-  // Fetch Spaced Repetition stats
   Future<Map<String, int>> getSpacedRepetitionStats() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return {'due': 0, 'total': 0, 'mastered': 0};
 
     try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .collection('spacedRepetition')
-          .get();
+      final snapshot = await FirestoreErrorHandler.executeWithRetry(
+        operation: () => _firestore
+            .collection('users')
+            .doc(user.uid)
+            .collection('spacedRepetition')
+            .get(),
+        operationName: 'Fetch spaced repetition stats',
+      );
+
+      if (snapshot == null) return {'due': 0, 'total': 0, 'mastered': 0};
 
       int due = 0;
       int mastered = 0;
@@ -419,8 +476,6 @@ class StatisticsService {
         if (nextReview.isBefore(now)) {
           due++;
         }
-
-        // Consider mastered if interval > 21 days
         if (interval > 21) {
           mastered++;
         }
@@ -432,8 +487,40 @@ class StatisticsService {
         'mastered': mastered,
       };
     } catch (e) {
-      debugPrint('Error fetching SR stats: $e');
       return {'due': 0, 'total': 0, 'mastered': 0};
     }
+  }
+
+  Future<void> resetStatistics() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    await FirestoreErrorHandler.executeWithRetry(
+      operation: () async {
+        final statsRef = _firestore.collection('users').doc(user.uid);
+
+        // Clearing stats fields
+        await statsRef.update({
+          'total_quizzes': FieldValue.delete(),
+          'total_all_questions': FieldValue.delete(),
+          'total_correct': FieldValue.delete(),
+          'category_quizzes': FieldValue.delete(),
+          'category_questions': FieldValue.delete(),
+          'category_correct': FieldValue.delete(),
+          'difficulty_quizzes': FieldValue.delete(),
+          'difficulty_questions': FieldValue.delete(),
+          'difficulty_correct': FieldValue.delete(),
+        });
+
+        // Delete history subcollection (Requires manual iteration in Firestore client SDK)
+        final history = await statsRef.collection('quizHistory').get();
+        final batch = _firestore.batch();
+        for (var doc in history.docs) {
+          batch.delete(doc.reference);
+        }
+        await batch.commit();
+      },
+      operationName: 'Reset statistics',
+    );
   }
 }

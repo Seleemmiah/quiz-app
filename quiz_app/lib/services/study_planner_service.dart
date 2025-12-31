@@ -1,15 +1,38 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
 import 'package:quiz_app/models/study_plan.dart';
+import 'package:quiz_app/services/shop_service.dart';
+import 'package:quiz_app/services/professional_notification_service.dart';
+import 'package:quiz_app/utils/firestore_error_handler.dart';
 
 class StudyPlannerService {
-  static const String _studyPlanKey = 'current_study_plan';
+  final ShopService _shopService = ShopService();
+  final ProfessionalNotificationService _notificationService =
+      ProfessionalNotificationService.instance;
+
+  // Simplified getter that doesn't throw, for checking existence
+  DocumentReference? get _safePlanRef {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return null;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('study_plans')
+        .doc('current');
+  }
 
   Future<StudyPlan?> getCurrentPlan() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonStr = prefs.getString(_studyPlanKey);
-    if (jsonStr == null) return null;
-    return StudyPlan.fromJson(jsonStr);
+    final ref = _safePlanRef;
+    if (ref == null) return null;
+
+    return await FirestoreErrorHandler.executeWithRetry<StudyPlan?>(
+      operation: () async {
+        final doc = await ref.get();
+        if (!doc.exists) return null;
+        return StudyPlan.fromMap(doc.data() as Map<String, dynamic>);
+      },
+    );
   }
 
   Future<void> createPlan({
@@ -17,7 +40,8 @@ class StudyPlannerService {
     required DateTime examDate,
     required List<String> topics,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
+    final ref = _safePlanRef;
+    if (ref == null) throw Exception('User must be logged in to create a plan');
 
     // Generate sessions (simple algorithm for now)
     final sessions = _generateSessions(examDate, topics);
@@ -32,7 +56,27 @@ class StudyPlannerService {
       createdDate: DateTime.now(),
     );
 
-    await prefs.setString(_studyPlanKey, plan.toJson());
+    await FirestoreErrorHandler.executeWithRetry(
+      operation: () async {
+        await ref.set(plan.toMap());
+      },
+    );
+
+    // Schedule notifications for all sessions
+    await _scheduleNotifications(sessions);
+  }
+
+  Future<void> _scheduleNotifications(List<StudySession> sessions) async {
+    for (var session in sessions) {
+      // Schedule only future sessions
+      if (session.date.isAfter(DateTime.now())) {
+        await _notificationService.scheduleStudySession(
+          sessionDate: session.date,
+          topic: session.topic,
+          sessionId: session.id,
+        );
+      }
+    }
   }
 
   List<StudySession> _generateSessions(DateTime examDate, List<String> topics) {
@@ -44,7 +88,12 @@ class StudyPlannerService {
 
     // Create a session for each day until exam
     for (int i = 0; i < days; i++) {
-      final date = now.add(Duration(days: i + 1));
+      // Default to 10:00 AM if created now, or maybe just preserve time?
+      // "date" here includes time.
+      // Let's set it to 6:00 PM (18:00) which is a good study time
+      final nextDay = now.add(Duration(days: i + 1));
+      final date = DateTime(nextDay.year, nextDay.month, nextDay.day, 18, 0);
+
       final topic = topics[i % topics.length]; // Rotate topics
 
       sessions.add(StudySession(
@@ -62,15 +111,20 @@ class StudyPlannerService {
     final plan = await getCurrentPlan();
     if (plan == null) return;
 
+    bool newlyCompleted = false;
+
     final updatedSessions = plan.sessions.map((s) {
       if (s.id == sessionId) {
+        if (!s.completed) newlyCompleted = true;
         return s.copyWith(completed: true);
       }
       return s;
     }).toList();
 
-    // Update progress logic could be more complex, but for now just count completed sessions
-    // We could also update topicProgress based on quiz results in the future
+    // Reward coins if newly completed
+    if (newlyCompleted) {
+      await _shopService.addCoins(50);
+    }
 
     final updatedPlan = StudyPlan(
       id: plan.id,
@@ -82,12 +136,26 @@ class StudyPlannerService {
       createdDate: plan.createdDate,
     );
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_studyPlanKey, updatedPlan.toJson());
+    await _savePlan(updatedPlan);
+  }
+
+  Future<void> _savePlan(StudyPlan plan) async {
+    final ref = _safePlanRef;
+    if (ref == null) return;
+
+    await FirestoreErrorHandler.executeWithRetry(
+      operation: () async {
+        await ref.set(plan.toMap());
+      },
+    );
   }
 
   Future<void> deletePlan() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_studyPlanKey);
+    final ref = _safePlanRef;
+    if (ref == null) return;
+
+    await FirestoreErrorHandler.executeWithRetry(
+      operation: () => ref.delete(),
+    );
   }
 }

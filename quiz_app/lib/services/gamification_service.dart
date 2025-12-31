@@ -1,23 +1,39 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/settings.dart';
+import 'package:quiz_app/utils/firestore_error_handler.dart';
 import 'dart:math';
 
 class GamificationService {
-  static const String _xpKey = 'total_xp';
-  static const String _dailyChallengeKey = 'daily_challenge';
-  static const String _dailyChallengeCompletedKey = 'daily_challenge_completed';
-  static const String _lastChallengeResetKey = 'last_challenge_reset';
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // XP System
   Future<int> getTotalXP() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt(_xpKey) ?? 0;
+    final user = _auth.currentUser;
+    if (user == null) return 0;
+
+    final doc = await FirestoreErrorHandler.executeWithRetry(
+      operation: () => _firestore.collection('users').doc(user.uid).get(),
+      operationName: 'Fetch total XP',
+    );
+
+    if (doc != null && doc.exists) {
+      return (doc.data()?['total_xp'] as int?) ?? 0;
+    }
+    return 0;
   }
 
   Future<void> addXP(int xp) async {
-    final prefs = await SharedPreferences.getInstance();
-    final currentXP = await getTotalXP();
-    await prefs.setInt(_xpKey, currentXP + xp);
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    await FirestoreErrorHandler.executeWithRetry(
+      operation: () => _firestore.collection('users').doc(user.uid).set({
+        'total_xp': FieldValue.increment(xp),
+      }, SetOptions(merge: true)),
+      operationName: 'Add XP',
+    );
   }
 
   // Calculate XP earned from a quiz
@@ -79,58 +95,17 @@ class GamificationService {
     final nextLevelXP = getXPForNextLevel(level);
     final xpInCurrentLevel = totalXP - currentLevelXP;
     final xpNeededForLevel = nextLevelXP - currentLevelXP;
+    if (xpNeededForLevel == 0) return 1.0;
     return xpInCurrentLevel / xpNeededForLevel;
   }
 
-  // Daily Challenges
+  // Daily Challenges (Still using local storage for faster reset check, but could be Firestore)
+  // For now, let's keep challenges local but Award XP to Firestore
+  // Actually, let's just make the completion update Firestore XP
+
   Future<Map<String, dynamic>> getDailyChallenge() async {
-    final prefs = await SharedPreferences.getInstance();
-    await _checkAndResetDailyChallenge();
-
-    final challengeJson = prefs.getString(_dailyChallengeKey);
-    if (challengeJson != null) {
-      // Parse stored challenge
-      final parts = challengeJson.split('|');
-      return {
-        'description': parts[0],
-        'category': parts.length > 1 ? parts[1] : null,
-        'difficulty': parts.length > 2 ? parts[2] : null,
-        'targetScore': parts.length > 3 ? int.parse(parts[3]) : 7,
-      };
-    }
-
-    // Generate new challenge
-    return await _generateDailyChallenge();
-  }
-
-  Future<bool> isDailyChallengeCompleted() async {
-    final prefs = await SharedPreferences.getInstance();
-    await _checkAndResetDailyChallenge();
-    return prefs.getBool(_dailyChallengeCompletedKey) ?? false;
-  }
-
-  Future<void> completeDailyChallenge() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_dailyChallengeCompletedKey, true);
-    // Award bonus XP
-    await addXP(100);
-  }
-
-  Future<void> _checkAndResetDailyChallenge() async {
-    final prefs = await SharedPreferences.getInstance();
-    final lastReset = prefs.getString(_lastChallengeResetKey);
-    final today = DateTime.now().toIso8601String().split('T')[0];
-
-    if (lastReset != today) {
-      // New day, reset challenge
-      await prefs.remove(_dailyChallengeKey);
-      await prefs.remove(_dailyChallengeCompletedKey);
-      await prefs.setString(_lastChallengeResetKey, today);
-    }
-  }
-
-  Future<Map<String, dynamic>> _generateDailyChallenge() async {
-    final prefs = await SharedPreferences.getInstance();
+    // In a real app, you might fetch this from a 'metadata' collection in Firestore
+    // For simplicity, we'll keep the generation logic but Award XP to the cloud
     final challenges = [
       {'description': 'Score 7/10 or better on any quiz', 'targetScore': 7},
       {'description': 'Complete a Hard difficulty quiz', 'difficulty': 'hard'},
@@ -138,12 +113,41 @@ class GamificationService {
       {'description': 'Complete 3 quizzes today', 'targetScore': 3},
     ];
 
-    final challenge = challenges[DateTime.now().day % challenges.length];
-    final challengeJson =
-        '${challenge['description']}|${challenge['category'] ?? ''}|${challenge['difficulty'] ?? ''}|${challenge['targetScore'] ?? 7}';
-    await prefs.setString(_dailyChallengeKey, challengeJson);
+    // Seed based on date so everyone gets the same challenge or at least it persists today
+    final day = DateTime.now().day;
+    return challenges[day % challenges.length];
+  }
 
-    return challenge;
+  Future<bool> isDailyChallengeCompleted() async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+
+    final doc = await FirestoreErrorHandler.executeWithRetry(
+      operation: () => _firestore.collection('users').doc(user.uid).get(),
+      operationName: 'Check daily challenge status',
+    );
+
+    if (doc != null && doc.exists) {
+      final lastCompleted = doc.data()?['last_challenge_completed'] as String?;
+      final today = DateTime.now().toIso8601String().split('T')[0];
+      return lastCompleted == today;
+    }
+    return false;
+  }
+
+  Future<void> completeDailyChallenge() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    final today = DateTime.now().toIso8601String().split('T')[0];
+
+    await FirestoreErrorHandler.executeWithRetry(
+      operation: () => _firestore.collection('users').doc(user.uid).set({
+        'total_xp': FieldValue.increment(100),
+        'last_challenge_completed': today,
+      }, SetOptions(merge: true)),
+      operationName: 'Complete daily challenge',
+    );
   }
 
   // Check if quiz completes daily challenge
@@ -157,32 +161,22 @@ class GamificationService {
     final challenge = await getDailyChallenge();
     final description = challenge['description'] as String;
 
+    bool isCompleted = false;
     if (description.contains('perfect score') && score == totalQuestions) {
-      await completeDailyChallenge();
-      return true;
-    }
-
-    if (description.contains('Hard difficulty') &&
+      isCompleted = true;
+    } else if (description.contains('Hard difficulty') &&
         difficulty == Difficulty.hard) {
-      await completeDailyChallenge();
-      return true;
+      isCompleted = true;
+    } else if (description.contains('Score') &&
+        score >= (challenge['targetScore'] as int)) {
+      isCompleted = true;
     }
 
-    if (description.contains('Score') &&
-        score >= (challenge['targetScore'] as int)) {
+    if (isCompleted) {
       await completeDailyChallenge();
       return true;
     }
 
     return false;
-  }
-
-  // Reset all gamification data
-  Future<void> resetGamification() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_xpKey);
-    await prefs.remove(_dailyChallengeKey);
-    await prefs.remove(_dailyChallengeCompletedKey);
-    await prefs.remove(_lastChallengeResetKey);
   }
 }

@@ -155,10 +155,15 @@ class ProfessionalNotificationService {
       if (token != null) {
         final userId = FirebaseAuth.instance.currentUser?.uid;
         if (userId != null) {
-          await _firestore.collection('users').doc(userId).update({
-            'fcmToken': token,
-            'fcmTokenUpdatedAt': FieldValue.serverTimestamp(),
-          });
+          try {
+            await _firestore.collection('users').doc(userId).update({
+              'fcmToken': token,
+              'fcmTokenUpdatedAt': FieldValue.serverTimestamp(),
+            });
+          } catch (e) {
+            debugPrint('Silent Firestore update failure (Token): $e');
+            // Fail silently - the user might not have a document yet
+          }
         }
       }
 
@@ -166,10 +171,14 @@ class ProfessionalNotificationService {
       _fcm.onTokenRefresh.listen((newToken) async {
         final userId = FirebaseAuth.instance.currentUser?.uid;
         if (userId != null) {
-          await _firestore.collection('users').doc(userId).update({
-            'fcmToken': newToken,
-            'fcmTokenUpdatedAt': FieldValue.serverTimestamp(),
-          });
+          try {
+            await _firestore.collection('users').doc(userId).update({
+              'fcmToken': newToken,
+              'fcmTokenUpdatedAt': FieldValue.serverTimestamp(),
+            });
+          } catch (e) {
+            debugPrint('Silent Firestore update failure (Refresh): $e');
+          }
         }
       });
     } catch (e) {
@@ -526,6 +535,36 @@ class ProfessionalNotificationService {
     }
   }
 
+  Future<void> scheduleStudySession({
+    required DateTime sessionDate,
+    required String topic,
+    required String sessionId,
+  }) async {
+    final now = DateTime.now();
+
+    if (sessionDate.isAfter(now)) {
+      await _localNotifications.zonedSchedule(
+        sessionId.hashCode,
+        '📚 Study Time: $topic',
+        'Time to master $topic! Keep your streak alive.',
+        tz.TZDateTime.from(sessionDate, tz.local),
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'study_reminders',
+            'Study Reminders',
+            channelDescription: 'Reminders for your study plan',
+            importance: Importance.high,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+      );
+    }
+  }
+
   // Monitor Firestore for new notifications (Foreground Listener)
   void _startFirestoreListener() {
     FirebaseAuth.instance.authStateChanges().listen((user) {
@@ -573,17 +612,12 @@ class ProfessionalNotificationService {
 
           // If it's an exam creation, Schedule Local Reminders!
           if (data['type'] == 'exam_created' && data['data'] != null) {
-            // Parse time string if preserved or passed?
-            // Firestore usually stores Timestamp.
-            // data['data'] might need 'examTime' string?
-            // The 'sendExamCreated' notification message is just text.
-            // But 'data' contains 'examId'.
-            // We might need to fetch Exam details to schedule precisely?
-            // Or we trust the text? No, schedule needs Date.
-            // Logic Update: sendExamCreated should include 'examTime' in Metadata.
+            // Logic to handle exam reminders if needed
           }
         }
       }
+    }, onError: (error) {
+      debugPrint('Notification listener error: $error');
     });
   }
 
@@ -605,7 +639,30 @@ class ProfessionalNotificationService {
     required int score,
     required int totalQuestions,
   }) async {
-    // ...
+    final percentage = (score / totalQuestions * 100).round();
+    await _sendNotification(
+      userId: userId,
+      title: '📈 Exam Completed',
+      message: 'Your results for "$examTitle" are in! You scored $percentage%.',
+      type: 'exam_results',
+      data: {'exam': examTitle, 'score': score, 'total': totalQuestions},
+    );
+  }
+
+  Future<void> sendResultsReleasedNotification({
+    required List<String> studentIds,
+    required String examTitle,
+  }) async {
+    for (final studentId in studentIds) {
+      await _sendNotification(
+        userId: studentId,
+        title: '📢 Results Released!',
+        message:
+            'Your scores for "$examTitle" have been released. Check them now!',
+        type: 'results_released',
+        data: {'exam': examTitle},
+      );
+    }
   }
 
   // ==================== ACHIEVEMENT & CLASS EVENTS ====================

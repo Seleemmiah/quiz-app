@@ -24,6 +24,8 @@ import 'package:quiz_app/screens/teacher_dashboard_screen.dart';
 import 'package:quiz_app/services/professional_notification_service.dart';
 import 'package:intl/intl.dart';
 import 'package:quiz_app/widgets/glass_dialog.dart';
+import 'package:quiz_app/services/spaced_repetition_service.dart';
+import 'package:quiz_app/widgets/glass_card.dart';
 
 class StartScreen extends StatefulWidget {
   final String? initialCategory;
@@ -54,8 +56,10 @@ class _StartScreenState extends State<StartScreen> {
   final ApiService _apiService = ApiService();
   final AchievementService _achievementService = AchievementService();
   final FirestoreService _firestoreService = FirestoreService();
+  final SpacedRepetitionService _srService = SpacedRepetitionService();
 
   List<Recommendation> _recommendations = [];
+  int _dueReviews = 0;
 
   @override
   void initState() {
@@ -107,6 +111,7 @@ class _StartScreenState extends State<StartScreen> {
       _loadHighScore();
       _loadAvatar();
       _loadRecommendations();
+      _loadDueReviews();
       _generateSmartRecommendations(); // Generate personalized recommendations
 
       // Setup notifications
@@ -146,6 +151,32 @@ class _StartScreenState extends State<StartScreen> {
     }
   }
 
+  Future<void> _loadDueReviews() async {
+    final count = await _srService.getDueCount();
+    if (mounted) {
+      setState(() {
+        _dueReviews = count;
+      });
+    }
+  }
+
+  Future<void> _startSpacedRepetitionQuiz() async {
+    final questions = await _srService.getDueQuestions();
+    if (questions.isEmpty) return;
+
+    if (mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => QuizScreen(
+            customQuestions: questions,
+            category: 'Mastery Review',
+          ),
+        ),
+      ).then((_) => _loadDueReviews()); // Reload count when back
+    }
+  }
+
   Future<void> _loadRecommendations() async {
     final recommendations = await _recommendationService.getRecommendations();
     if (mounted) {
@@ -173,75 +204,92 @@ class _StartScreenState extends State<StartScreen> {
       return Stream.value(0);
     }
 
-    return FirebaseFirestore.instance
-        .collection('notifications')
-        .where('userId', isEqualTo: user.uid)
-        .where('read', isEqualTo: false)
-        .snapshots()
-        .map((snapshot) => snapshot.docs.length);
+    try {
+      return FirebaseFirestore.instance
+          .collection('notifications')
+          .where('userId', isEqualTo: user.uid)
+          .where('read', isEqualTo: false)
+          .snapshots()
+          .map((snapshot) => snapshot.docs.length)
+          .handleError((error) {
+        // Log error but don't crash or show user-facing error for this
+        debugPrint('Notification stream error: $error');
+        return 0;
+      });
+    } catch (e) {
+      debugPrint('Error creating notification stream: $e');
+      return Stream.value(0);
+    }
   }
 
   Future<void> _generateSmartRecommendations() async {
-    final stats = await StatisticsService().getStatistics();
-    final recommendations = <SmartRecommendation>[];
+    try {
+      final stats = await StatisticsService().getStatistics();
 
-    // Recommendation 1: Weak category (lowest score)
-    if (stats.categoryAverages.isNotEmpty) {
-      final weakest = stats.categoryAverages.entries
-          .reduce((a, b) => a.value < b.value ? a : b);
+      final recommendations = <SmartRecommendation>[];
 
-      if (weakest.value < 70) {
+      // Recommendation 1: Weak category (lowest score)
+      if (stats.categoryAverages.isNotEmpty) {
+        final weakest = stats.categoryAverages.entries
+            .reduce((a, b) => a.value < b.value ? a : b);
+
+        if (weakest.value < 70) {
+          recommendations.add(SmartRecommendation(
+            title: 'Practice ${weakest.key}',
+            subtitle:
+                'Your score: ${weakest.value.toStringAsFixed(0)}% - Let\'s improve!',
+            icon: Icons.trending_up,
+            color: Colors.red,
+            onTap: () {
+              setState(() {
+                _selectedCategory = weakest.key;
+              });
+              _showTimeLimitPicker(context);
+            },
+          ));
+        }
+      }
+
+      // Recommendation 2: Best time of day
+      final timePerf = await StatisticsService().getPerformanceByTimeOfDay();
+      if (timePerf.isNotEmpty) {
+        final bestTime =
+            timePerf.entries.reduce((a, b) => a.value > b.value ? a : b);
+
         recommendations.add(SmartRecommendation(
-          title: 'Practice ${weakest.key}',
+          title: 'Best Performance Time',
           subtitle:
-              'Your score: ${weakest.value.toStringAsFixed(0)}% - Let\'s improve!',
-          icon: Icons.trending_up,
-          color: Colors.red,
+              'You score ${bestTime.value.toStringAsFixed(0)}% during ${bestTime.key}',
+          icon: Icons.access_time,
+          color: Colors.blue,
           onTap: () {
-            setState(() {
-              _selectedCategory = weakest.key;
-            });
+            // Just informational
+          },
+        ));
+      }
+
+      // Recommendation 3: Streak motivation
+      if (_currentStreak > 0) {
+        recommendations.add(SmartRecommendation(
+          title: 'Keep Your Streak!',
+          subtitle: '$_currentStreak day streak - Don\'t break it!',
+          icon: Icons.local_fire_department,
+          color: Colors.orange,
+          onTap: () {
             _showTimeLimitPicker(context);
           },
         ));
       }
-    }
 
-    // Recommendation 2: Best time of day
-    final timePerf = await StatisticsService().getPerformanceByTimeOfDay();
-    if (timePerf.isNotEmpty) {
-      final bestTime =
-          timePerf.entries.reduce((a, b) => a.value > b.value ? a : b);
-
-      recommendations.add(SmartRecommendation(
-        title: 'Best Performance Time',
-        subtitle:
-            'You score ${bestTime.value.toStringAsFixed(0)}% during ${bestTime.key}',
-        icon: Icons.access_time,
-        color: Colors.blue,
-        onTap: () {
-          // Just informational
-        },
-      ));
-    }
-
-    // Recommendation 3: Streak motivation
-    if (_currentStreak > 0) {
-      recommendations.add(SmartRecommendation(
-        title: 'Keep Your Streak!',
-        subtitle: '$_currentStreak day streak - Don\'t break it!',
-        icon: Icons.local_fire_department,
-        color: Colors.orange,
-        onTap: () {
-          _showTimeLimitPicker(context);
-        },
-      ));
-    }
-
-    if (mounted) {
-      setState(() {
-        _smartRecommendations = recommendations.take(2).toList(); // Show max 2
-      });
+      if (mounted) {
+        setState(() {
+          _smartRecommendations =
+              recommendations.take(2).toList(); // Show max 2
+        });
+      }
+    } catch (e) {
+      debugPrint('Error generating smart recommendations: $e');
+      // Silently fail - recommendations are optional
     }
   }
 
@@ -1063,6 +1111,7 @@ class _StartScreenState extends State<StartScreen> {
               leading: const Icon(Icons.settings),
               title: const Text('Settings'),
               onTap: () {
+                HapticFeedback.mediumImpact();
                 Navigator.pop(context);
                 Navigator.pushNamed(context, '/settings').then((_) {
                   // Reload preferences when returning from settings
@@ -1073,199 +1122,366 @@ class _StartScreenState extends State<StartScreen> {
           ],
         ),
       ),
-      body: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: SafeArea(
-          child: Center(
-            child: RefreshIndicator(
-              onRefresh: refreshDashboard,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Animated Icon
-                      FadeInDown(
-                        duration: const Duration(milliseconds: 600),
-                        child: ElasticIn(
-                          duration: const Duration(milliseconds: 1000),
-                          child: Hero(
-                            tag: 'app_icon',
-                            child: Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white.withOpacity(0.2),
-                                border: Border.all(
-                                  color: Colors.white.withOpacity(0.5),
-                                  width: 2,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Theme.of(context)
-                                        .primaryColor
-                                        .withOpacity(0.3),
-                                    blurRadius: 20,
-                                    spreadRadius: 5,
+      body: Stack(
+        children: [
+          // Premium Background Effects
+          _buildAnimatedBackground(),
+          SafeArea(
+            child: Center(
+              child: RefreshIndicator(
+                onRefresh: refreshDashboard,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Animated Icon
+                        FadeInDown(
+                          duration: const Duration(milliseconds: 600),
+                          child: ElasticIn(
+                            duration: const Duration(milliseconds: 1000),
+                            child: Hero(
+                              tag: 'app_icon',
+                              child: Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withOpacity(0.2),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.5),
+                                    width: 2,
                                   ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.school,
-                                size: 60,
-                                color: Theme.of(context).primaryColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(0.3),
+                                      blurRadius: 20,
+                                      spreadRadius: 5,
+                                    ),
+                                  ],
+                                ),
+                                child: Icon(
+                                  Icons.school,
+                                  size: 60,
+                                  color: Theme.of(context).primaryColor,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 30),
-                      // Animated Greeting
-                      FadeIn(
-                        duration: const Duration(milliseconds: 600),
-                        delay: const Duration(milliseconds: 200),
-                        child: Text(
-                          '${_getGreeting()} $_username!',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                        const SizedBox(height: 30),
+                        // Animated Greeting
+                        FadeIn(
+                          duration: const Duration(milliseconds: 600),
+                          delay: const Duration(milliseconds: 200),
+                          child: Text(
+                            '${_getGreeting()} $_username!',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      FadeIn(
-                        duration: const Duration(milliseconds: 600),
-                        delay: const Duration(milliseconds: 400),
-                        child: Text(
-                          'Test your knowledge.',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge,
+                        const SizedBox(height: 10),
+                        FadeIn(
+                          duration: const Duration(milliseconds: 600),
+                          delay: const Duration(milliseconds: 400),
+                          child: Text(
+                            'Test your knowledge.',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 30),
+                        const SizedBox(height: 30),
 
-                      // --- Daily Goal Card ---
-                      FadeInUp(
-                        duration: const Duration(milliseconds: 600),
-                        delay: const Duration(milliseconds: 600),
-                        child: Container(
-                          padding: const EdgeInsets.all(16), // Reduced from 20
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Theme.of(context).primaryColor,
-                                Theme.of(context).primaryColor.withOpacity(0.7),
-                              ],
-                            ),
-                            borderRadius:
-                                BorderRadius.circular(16), // Reduced from 20
-                            boxShadow: [
-                              BoxShadow(
-                                color: Theme.of(context)
-                                    .primaryColor
-                                    .withOpacity(0.3),
-                                blurRadius: 15,
-                                offset: const Offset(0, 8),
+                        const SizedBox(height: 30),
+
+                        // --- Daily Goal Card ---
+                        FadeInUp(
+                          duration: const Duration(milliseconds: 600),
+                          delay: const Duration(milliseconds: 600),
+                          child: GlassCard(
+                            padding: EdgeInsets.zero,
+                            borderColor:
+                                Theme.of(context).primaryColor.withOpacity(0.3),
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Theme.of(context)
+                                        .primaryColor
+                                        .withOpacity(0.6),
+                                    Theme.of(context)
+                                        .primaryColor
+                                        .withOpacity(0.4),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              child: Column(
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        'Daily Goal',
-                                        style: TextStyle(
-                                          color: Colors.white.withOpacity(0.9),
-                                          fontSize: 8,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'DAILY GOAL',
+                                            style: TextStyle(
+                                              color:
+                                                  Colors.white.withOpacity(0.9),
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 1.2,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            '${_totalQuizzes % 3}/3 Quizzes',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        '${_totalQuizzes % 3}/3 Quizzes',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      const Icon(
+                                        Icons.emoji_events,
+                                        color: Colors.white,
+                                        size: 28,
                                       ),
                                     ],
                                   ),
-                                  // Trophy icon without circle
-                                  const Icon(
-                                    Icons.emoji_events,
-                                    color: Colors.white,
-                                    size: 25, // Slightly larger since no circle
+                                  const SizedBox(height: 16),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: LinearProgressIndicator(
+                                      value: (_totalQuizzes % 3) / 3,
+                                      minHeight: 8,
+                                      backgroundColor:
+                                          Colors.white.withOpacity(0.2),
+                                      valueColor:
+                                          const AlwaysStoppedAnimation<Color>(
+                                              Colors.white),
+                                    ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 12), // Reduced from 16
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: LinearProgressIndicator(
-                                  value: (_totalQuizzes % 3) / 3,
-                                  minHeight: 6, // Reduced from 8
-                                  backgroundColor:
-                                      Colors.white.withOpacity(0.3),
-                                  valueColor:
-                                      const AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                      ), // Close FadeInUp
-                      const SizedBox(height: 24),
+                        // Close FadeInUp
+                        const SizedBox(height: 24),
 
-                      // --- Teacher Dashboard (Only for Teachers) ---
-                      if (_userRole == 'teacher')
+                        // --- Teacher Dashboard (Only for Teachers) ---
+                        if (_userRole == 'teacher')
+                          FadeInUp(
+                            duration: const Duration(milliseconds: 600),
+                            delay: const Duration(milliseconds: 700),
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 24),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const TeacherDashboardScreen(),
+                                    ),
+                                  );
+                                },
+                                borderRadius: BorderRadius.circular(16),
+                                child: Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.purple.shade700,
+                                        Colors.purple.shade500,
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.purple.withOpacity(0.3),
+                                        blurRadius: 15,
+                                        offset: const Offset(0, 8),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.2),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: const Icon(Icons.dashboard,
+                                            color: Colors.white, size: 24),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      const Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Teacher Dashboard',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(height: 4),
+                                            Text(
+                                              'View student progress & results',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Icon(Icons.arrow_forward_ios,
+                                          color: Colors.white, size: 16),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        // --- Spaced Repetition Review Card ---
+                        if (_dueReviews > 0)
+                          FadeInUp(
+                            duration: const Duration(milliseconds: 600),
+                            delay: const Duration(milliseconds: 800),
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 24),
+                              child: InkWell(
+                                onTap: _startSpacedRepetitionQuiz,
+                                borderRadius: BorderRadius.circular(16),
+                                child: GlassCard(
+                                  padding: EdgeInsets.zero,
+                                  borderColor: Colors.orange.withOpacity(0.3),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.orange.withOpacity(0.6),
+                                          Colors.deepOrange.withOpacity(0.4),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Colors.white.withOpacity(0.2),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: const Icon(Icons.psychology,
+                                              color: Colors.white, size: 24),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Mastery Review',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                '$_dueReviews items due for review!',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.1),
+                                                blurRadius: 4,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: const Text(
+                                            'REVIEW',
+                                            style: TextStyle(
+                                              color: Colors.deepOrange,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 11,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        // --- Enter Exam Code (For Students/Everyone) ---
                         FadeInUp(
                           duration: const Duration(milliseconds: 600),
-                          delay: const Duration(milliseconds: 700),
-                          child: Container(
-                            margin: const EdgeInsets.only(bottom: 24),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const TeacherDashboardScreen(),
-                                  ),
-                                );
-                              },
-                              borderRadius: BorderRadius.circular(16),
+                          delay: const Duration(milliseconds: 750),
+                          child: InkWell(
+                            onTap: _showExamCodeDialog,
+                            borderRadius: BorderRadius.circular(16),
+                            child: GlassCard(
+                              padding: EdgeInsets.zero,
+                              borderColor: Colors.indigo.withOpacity(0.3),
                               child: Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
-                                      Colors.purple.shade700,
-                                      Colors.purple.shade500,
+                                      Colors.indigo.withOpacity(0.6),
+                                      Colors.indigo.withOpacity(0.4),
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.purple.withOpacity(0.3),
-                                      blurRadius: 15,
-                                      offset: const Offset(0, 8),
-                                    ),
-                                  ],
                                 ),
                                 child: Row(
                                   children: [
@@ -1275,7 +1491,7 @@ class _StartScreenState extends State<StartScreen> {
                                         color: Colors.white.withOpacity(0.2),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      child: const Icon(Icons.dashboard,
+                                      child: const Icon(Icons.vpn_key,
                                           color: Colors.white, size: 24),
                                     ),
                                     const SizedBox(width: 12),
@@ -1285,7 +1501,7 @@ class _StartScreenState extends State<StartScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Teacher Dashboard',
+                                            'Enter Exam Code',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 15,
@@ -1294,7 +1510,7 @@ class _StartScreenState extends State<StartScreen> {
                                           ),
                                           SizedBox(height: 4),
                                           Text(
-                                            'View student progress & results',
+                                            'Start a secure exam session',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 10,
@@ -1312,437 +1528,408 @@ class _StartScreenState extends State<StartScreen> {
                           ),
                         ),
 
-                      // --- Enter Exam Code (For Students/Everyone) ---
-                      FadeInUp(
-                        duration: const Duration(milliseconds: 600),
-                        delay: const Duration(milliseconds: 750),
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 24),
-                          child: InkWell(
-                            onTap: _showExamCodeDialog,
-                            borderRadius: BorderRadius.circular(16),
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.indigo.shade700,
-                                    Colors.indigo.shade500,
-                                  ],
+                        // --- Quick Actions ---
+                        Row(
+                          children: [
+                            Expanded(
+                              child: FadeInLeft(
+                                duration: const Duration(milliseconds: 600),
+                                delay: const Duration(milliseconds: 800),
+                                child: _buildQuickActionCard(
+                                  context,
+                                  icon: Icons.play_circle_outline,
+                                  title: 'Daily\nChallenge',
+                                  color: Colors.orange,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, '/daily_challenge');
+                                  },
                                 ),
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.indigo.withOpacity(0.3),
-                                    blurRadius: 15,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: const Icon(Icons.vpn_key,
-                                        color: Colors.white, size: 24),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Enter Exam Code',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            shadows: [
-                                              Shadow(
-                                                offset: const Offset(1, 1),
-                                                blurRadius: 2,
-                                                color: Colors.black
-                                                    .withOpacity(0.5),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        const Text(
-                                          'Start a secure exam session',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 10,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const Icon(Icons.arrow_forward_ios,
-                                      color: Colors.white, size: 16),
-                                ],
                               ),
                             ),
-                          ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: FadeInRight(
+                                duration: const Duration(milliseconds: 600),
+                                delay: const Duration(milliseconds: 800),
+                                child: _buildQuickActionCard(
+                                  context,
+                                  icon: Icons.video_library,
+                                  title: 'Video\nLibrary',
+                                  color: Colors.blue,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const VideoLibraryScreen(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
+                        const SizedBox(height: 30),
 
-                      // --- Quick Actions ---
-                      Row(
-                        children: [
-                          Expanded(
-                            child: FadeInLeft(
-                              duration: const Duration(milliseconds: 600),
-                              delay: const Duration(milliseconds: 800),
-                              child: _buildQuickActionCard(
-                                context,
-                                icon: Icons.play_circle_outline,
-                                title: 'Daily\nChallenge',
-                                color: Colors.orange,
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, '/daily_challenge');
-                                },
-                              ),
+                        // --- Smart Recommendations ---
+                        if (_smartRecommendations.isNotEmpty)
+                          FadeIn(
+                            duration: const Duration(milliseconds: 600),
+                            delay: const Duration(milliseconds: 1000),
+                            child: SmartRecommendationsCard(
+                              recommendations: _smartRecommendations,
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: FadeInRight(
-                              duration: const Duration(milliseconds: 600),
-                              delay: const Duration(milliseconds: 800),
-                              child: _buildQuickActionCard(
-                                context,
-                                icon: Icons.video_library,
-                                title: 'Video\nLibrary',
-                                color: Colors.blue,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const VideoLibraryScreen(),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 30),
 
-                      // --- Smart Recommendations ---
-                      if (_smartRecommendations.isNotEmpty)
+                        if (_smartRecommendations.isNotEmpty)
+                          const SizedBox(height: 30),
+
+                        // --- Current Settings Summary ---
                         FadeIn(
                           duration: const Duration(milliseconds: 600),
                           delay: const Duration(milliseconds: 1000),
-                          child: SmartRecommendationsCard(
-                            recommendations: _smartRecommendations,
-                          ),
-                        ),
-
-                      if (_smartRecommendations.isNotEmpty)
-                        const SizedBox(height: 30),
-
-                      // --- Current Settings Summary ---
-                      FadeIn(
-                        duration: const Duration(milliseconds: 600),
-                        delay: const Duration(milliseconds: 1000),
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).cardColor,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).cardColor,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                              border: Border.all(
+                                color: Colors.grey.withOpacity(0.1),
                               ),
-                            ],
-                            border: Border.all(
-                              color: Colors.grey.withOpacity(0.1),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Current Settings',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () =>
+                                            _showCategoryPicker(context),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .primaryColor
+                                                .withOpacity(0.05),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            border: Border.all(
+                                              color: Theme.of(context)
+                                                  .primaryColor
+                                                  .withOpacity(0.1),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Icon(Icons.category,
+                                                  size: 20,
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                _selectedCategory ?? 'All',
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              Text(
+                                                'Category',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall,
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Icon(Icons.expand_more,
+                                                  size: 14, color: Colors.grey),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () =>
+                                            _showDifficultyPicker(context),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .primaryColor
+                                                .withOpacity(0.05),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            border: Border.all(
+                                              color: Theme.of(context)
+                                                  .primaryColor
+                                                  .withOpacity(0.1),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Icon(Icons.speed,
+                                                  size: 20,
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                _selectedDifficulty.name
+                                                    .toUpperCase(),
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              Text(
+                                                'Difficulty',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall,
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Icon(Icons.expand_more,
+                                                  size: 14, color: Colors.grey),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () =>
+                                            _showTimeLimitPicker(context),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .primaryColor
+                                                .withOpacity(0.05),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            border: Border.all(
+                                              color: Theme.of(context)
+                                                  .primaryColor
+                                                  .withOpacity(0.1),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Icon(Icons.timer,
+                                                  size: 20,
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                _selectedTimeInMinutes == 0
+                                                    ? 'No Limit'
+                                                    : '$_selectedTimeInMinutes min',
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              Text(
+                                                'Time',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall,
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Icon(Icons.expand_more,
+                                                  size: 14, color: Colors.grey),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          child: Column(
-                            children: [
-                              Text(
-                                'Current Settings',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall
-                                    ?.copyWith(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                              const SizedBox(height: 12),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () => _showCategoryPicker(context),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .primaryColor
-                                              .withOpacity(0.05),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                            color: Theme.of(context)
-                                                .primaryColor
-                                                .withOpacity(0.1),
-                                          ),
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Icon(Icons.category,
-                                                size: 20,
-                                                color: Theme.of(context)
-                                                    .primaryColor),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              _selectedCategory ?? 'All',
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            Text(
-                                              'Category',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall,
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Icon(Icons.expand_more,
-                                                size: 14, color: Colors.grey),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () =>
-                                          _showDifficultyPicker(context),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .primaryColor
-                                              .withOpacity(0.05),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                            color: Theme.of(context)
-                                                .primaryColor
-                                                .withOpacity(0.1),
-                                          ),
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Icon(Icons.speed,
-                                                size: 20,
-                                                color: Theme.of(context)
-                                                    .primaryColor),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              _selectedDifficulty.name
-                                                  .toUpperCase(),
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            Text(
-                                              'Difficulty',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall,
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Icon(Icons.expand_more,
-                                                size: 14, color: Colors.grey),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () =>
-                                          _showTimeLimitPicker(context),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .primaryColor
-                                              .withOpacity(0.05),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                            color: Theme.of(context)
-                                                .primaryColor
-                                                .withOpacity(0.1),
-                                          ),
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Icon(Icons.timer,
-                                                size: 20,
-                                                color: Theme.of(context)
-                                                    .primaryColor),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              _selectedTimeInMinutes == 0
-                                                  ? 'No Limit'
-                                                  : '$_selectedTimeInMinutes min',
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            Text(
-                                              'Time',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall,
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Icon(Icons.expand_more,
-                                                size: 14, color: Colors.grey),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
+                        const SizedBox(height: 20),
 
-                      // --- High Score Display ---
-                      if (_highScore > 0)
-                        FadeIn(
+                        // --- High Score Display ---
+                        if (_highScore > 0)
+                          FadeIn(
+                            duration: const Duration(milliseconds: 600),
+                            delay: const Duration(milliseconds: 1200),
+                            child: Text(
+                              'High Score: $_highScore',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ),
+
+                        const SizedBox(height: 40),
+                        FadeInUp(
                           duration: const Duration(milliseconds: 600),
-                          delay: const Duration(milliseconds: 1200),
-                          child: Text(
-                            'High Score: $_highScore',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                        ),
+                          delay: const Duration(milliseconds: 1400),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              textStyle: const TextStyle(fontSize: 16),
+                            ),
+                            child: const Text('Start Quiz'),
+                            onPressed: () {
+                              // Haptic Feedback
+                              final myAppState =
+                                  context.findAncestorStateOfType<MyAppState>();
+                              if (myAppState?.hapticEnabled ?? true) {
+                                HapticFeedback.lightImpact();
+                              }
 
-                      const SizedBox(height: 40),
-                      FadeInUp(
-                        duration: const Duration(milliseconds: 600),
-                        delay: const Duration(milliseconds: 1400),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            textStyle: const TextStyle(fontSize: 16),
-                          ),
-                          child: const Text('Start Quiz'),
-                          onPressed: () {
-                            // Haptic Feedback
-                            final myAppState =
-                                context.findAncestorStateOfType<MyAppState>();
-                            if (myAppState?.hapticEnabled ?? true) {
-                              HapticFeedback.lightImpact();
-                            }
+                              // Use defaults if null
+                              final category = _selectedCategory ??
+                                  'General Knowledge'; // Fallback
 
-                            // Use defaults if null
-                            final category = _selectedCategory ??
-                                'General Knowledge'; // Fallback
-
-                            Navigator.pushReplacementNamed(
-                              context,
-                              '/quiz',
-                              arguments: {
-                                'difficulty': _selectedDifficulty,
-                                'category': category == 'All'
-                                    ? null
-                                    : category, // Handle 'All'
-                                'timeLimitInMinutes': _selectedTimeInMinutes,
-                                'quizLength': _quizLength,
-                              },
-                            );
-                          },
-                        ),
-                      ), // Close FadeInUp for Start Quiz
-                      const SizedBox(height: 12),
-                      FadeInUp(
-                        duration: const Duration(milliseconds: 600),
-                        delay: const Duration(milliseconds: 1500),
-                        child: OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            textStyle: const TextStyle(fontSize: 16),
-                          ),
-                          icon: const Icon(Icons.fitness_center, size: 20),
-                          label: const Text('Practice Mode'),
-                          onPressed: () async {
-                            // Import needed
-                            final bookmarkService = BookmarkService();
-                            final bookmarks =
-                                await bookmarkService.getBookmarkedQuestions();
-
-                            if (!mounted) return;
-
-                            if (bookmarks.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'No bookmarked questions yet! Bookmark questions during quizzes.'),
-                                ),
+                              Navigator.pushReplacementNamed(
+                                context,
+                                '/quiz',
+                                arguments: {
+                                  'difficulty': _selectedDifficulty,
+                                  'category': category == 'All'
+                                      ? null
+                                      : category, // Handle 'All'
+                                  'timeLimitInMinutes': _selectedTimeInMinutes,
+                                  'quizLength': _quizLength,
+                                },
                               );
-                              return;
-                            }
+                            },
+                          ),
+                        ), // Close FadeInUp for Start Quiz
+                        const SizedBox(height: 12),
+                        FadeInUp(
+                          duration: const Duration(milliseconds: 600),
+                          delay: const Duration(milliseconds: 1500),
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              textStyle: const TextStyle(fontSize: 16),
+                            ),
+                            icon: const Icon(Icons.fitness_center, size: 20),
+                            label: const Text('Practice Mode'),
+                            onPressed: () async {
+                              // Import needed
+                              final bookmarkService = BookmarkService();
+                              final bookmarks = await bookmarkService
+                                  .getBookmarkedQuestions();
 
-                            Navigator.pushNamed(
-                              context,
-                              '/practice',
-                              arguments: {
-                                'questions': bookmarks,
-                                'title': 'Practice: Bookmarked Questions',
-                              },
-                            );
-                          },
-                        ),
-                      ), // Close FadeInUp for Practice Mode
-                    ],
+                              if (!mounted) return;
+
+                              if (bookmarks.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'No bookmarked questions yet! Bookmark questions during quizzes.'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              Navigator.pushNamed(
+                                context,
+                                '/practice',
+                                arguments: {
+                                  'questions': bookmarks,
+                                  'title': 'Practice: Bookmarked Questions',
+                                },
+                              );
+                            },
+                          ),
+                        ), // Close FadeInUp for Practice Mode
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildAnimatedBackground() {
+    return Stack(
+      children: [
+        Positioned(
+          top: -100,
+          right: -50,
+          child: FadeIn(
+            duration: const Duration(seconds: 3),
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).primaryColor.withOpacity(0.05),
+              ),
+              child: ClipOval(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                  child: Container(color: Colors.transparent),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: -50,
+          left: -100,
+          child: FadeIn(
+            duration: const Duration(seconds: 4),
+            child: Container(
+              width: 350,
+              height: 350,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.purple.withOpacity(0.05),
+              ),
+              child: ClipOval(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 70, sigmaY: 70),
+                  child: Container(color: Colors.transparent),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

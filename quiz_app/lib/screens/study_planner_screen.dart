@@ -29,12 +29,21 @@ class _StudyPlannerScreenState extends State<StudyPlannerScreen> {
 
   Future<void> _loadPlan() async {
     setState(() => _isLoading = true);
-    final plan = await _plannerService.getCurrentPlan();
-    if (mounted) {
-      setState(() {
-        _currentPlan = plan;
-        _isLoading = false;
-      });
+    try {
+      final plan = await _plannerService.getCurrentPlan();
+      if (mounted) {
+        setState(() {
+          _currentPlan = plan;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load plan: $e')),
+        );
+      }
     }
   }
 
@@ -61,22 +70,37 @@ class _StudyPlannerScreenState extends State<StudyPlannerScreen> {
       return;
     }
 
-    await _plannerService.createPlan(
-      examName: _examNameController.text,
-      examDate: _selectedDate!,
-      topics: topics,
-    );
-
-    _loadPlan();
+    try {
+      await _plannerService.createPlan(
+        examName: _examNameController.text,
+        examDate: _selectedDate!,
+        topics: topics,
+      );
+      _loadPlan();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to create plan: $e')),
+        );
+      }
+    }
   }
 
   Future<void> _deletePlan() async {
-    await _plannerService.deletePlan();
-    // Reset controllers
-    _examNameController.clear();
-    _topicsController.clear();
-    _selectedDate = null;
-    _loadPlan();
+    try {
+      await _plannerService.deletePlan();
+      // Reset controllers
+      _examNameController.clear();
+      _topicsController.clear();
+      _selectedDate = null;
+      _loadPlan();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to delete plan: $e')),
+        );
+      }
+    }
   }
 
   void _showDeleteConfirmation() {

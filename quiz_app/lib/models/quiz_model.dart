@@ -15,6 +15,7 @@ class Quiz {
   final String? accessCode;
   final bool isBlindMode; // No answer feedback during quiz
   final int? timeLimitMinutes; // Teacher-set time limit
+  final bool resultsReleased; // Privacy: Toggle score/explanation visibility
 
   Quiz({
     required this.id,
@@ -30,6 +31,7 @@ class Quiz {
     this.accessCode,
     this.isBlindMode = false,
     this.timeLimitMinutes,
+    this.resultsReleased = true, // Default to true for regular quizzes
   });
 
   Map<String, dynamic> toJson() {
@@ -47,6 +49,7 @@ class Quiz {
       'accessCode': accessCode,
       'isBlindMode': isBlindMode,
       'timeLimitMinutes': timeLimitMinutes,
+      'resultsReleased': resultsReleased,
     };
   }
 
@@ -66,6 +69,7 @@ class Quiz {
       accessCode: json['accessCode'],
       isBlindMode: json['isBlindMode'] ?? false,
       timeLimitMinutes: json['timeLimitMinutes'],
+      resultsReleased: json['resultsReleased'] ?? true,
     );
   }
 
@@ -84,6 +88,7 @@ class Quiz {
     String? accessCode,
     bool? isBlindMode,
     int? timeLimitMinutes,
+    bool? resultsReleased,
   }) {
     return Quiz(
       id: id ?? this.id,
@@ -99,6 +104,7 @@ class Quiz {
       accessCode: accessCode ?? this.accessCode,
       isBlindMode: isBlindMode ?? this.isBlindMode,
       timeLimitMinutes: timeLimitMinutes ?? this.timeLimitMinutes,
+      resultsReleased: resultsReleased ?? this.resultsReleased,
     );
   }
 }

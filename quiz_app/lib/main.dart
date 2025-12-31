@@ -59,6 +59,8 @@ import 'package:quiz_app/screens/practice_weak_areas_screen.dart';
 import 'package:quiz_app/screens/notification_test_screen.dart';
 import 'package:quiz_app/screens/multiplayer/leaderboard_screen.dart';
 import 'package:quiz_app/screens/document_library_screen.dart';
+import 'package:quiz_app/screens/offline_library_screen.dart';
+import 'package:quiz_app/services/offline_cache_service.dart';
 import 'package:quiz_app/firebase_options.dart';
 
 // Background message handler - must be top-level function
@@ -130,6 +132,14 @@ void main() async {
 
   final settingsService = SettingsService();
   await settingsService.loadSettings();
+
+  // Initialize Offline Cache Service
+  try {
+    await OfflineCacheService.init();
+    debugPrint('✅ Offline Cache Service initialized');
+  } catch (e) {
+    debugPrint('Offline cache service initialization failed: $e');
+  }
 
   runApp(MyApp(settingsService: settingsService));
 }
@@ -284,6 +294,8 @@ class MyAppState extends State<MyApp> {
                     : null,
                 quiz: args['quiz'],
                 levelId: args['levelId'], // Pass levelId
+                isExamMode: args['isExamMode'] ?? false,
+                isSpacedRepetition: args['isSpacedRepetition'] ?? false,
               ),
             );
           case '/result':
@@ -300,7 +312,11 @@ class MyAppState extends State<MyApp> {
                 isBlindMode: args['isBlindMode'] ?? false,
                 levelId: args['levelId'], // Pass levelId
                 streakIncreased: args['streakIncreased'] ?? false,
+                quizId: args['quizId'],
                 showAnswers: args['showAnswers'] ?? true, // Default to true
+                isFlashcardMode: args['isFlashcardMode'] ?? false,
+                maxStreak: args['maxStreak'] ?? 0,
+                isExam: args['isExam'] ?? false,
               ),
             );
           case '/campaign':
@@ -356,6 +372,9 @@ class MyAppState extends State<MyApp> {
             );
           case '/myQuizzes':
             return MaterialPageRoute(builder: (_) => const MyQuizzesScreen());
+          case '/offlineLibrary':
+            return MaterialPageRoute(
+                builder: (_) => const OfflineLibraryScreen());
           case '/joinQuiz':
             return MaterialPageRoute(builder: (_) => const JoinQuizScreen());
           case '/customQuiz':

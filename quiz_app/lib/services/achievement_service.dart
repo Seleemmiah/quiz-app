@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/models/achievement.dart';
+import 'package:quiz_app/services/statistics_service.dart';
 
 class AchievementService {
   static final AchievementService _instance = AchievementService._internal();
@@ -11,6 +12,11 @@ class AchievementService {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _achievementController = StreamController<Achievement>.broadcast();
+
+  // In-memory cache for achievements
+  List<Achievement>? _cachedAchievements;
+  DateTime? _lastFetchTime;
+  static const _cacheDuration = Duration(minutes: 5);
 
   Stream<Achievement> get achievementUnlocked => _achievementController.stream;
 
@@ -124,9 +130,19 @@ class AchievementService {
     }
   }
 
-  Future<List<Achievement>> getUserAchievements() async {
+  Future<List<Achievement>> getUserAchievements(
+      {bool forceRefresh = false}) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return Achievement.getDefaultAchievements();
+
+    // Check cache
+    if (!forceRefresh &&
+        _cachedAchievements != null &&
+        _lastFetchTime != null) {
+      if (DateTime.now().difference(_lastFetchTime!) < _cacheDuration) {
+        return _cachedAchievements!;
+      }
+    }
 
     try {
       final doc = await _firestore
@@ -136,35 +152,40 @@ class AchievementService {
           .doc('unlocked')
           .get();
 
+      List<Achievement> results;
       if (!doc.exists) {
-        return Achievement.getDefaultAchievements();
+        results = Achievement.getDefaultAchievements();
+      } else {
+        final data = doc.data()!;
+        final unlockedIds = Set<String>.from(data['achievements'] ?? []);
+        final unlockedDates = Map<String, DateTime>.from(
+          (data['dates'] as Map<String, dynamic>? ?? {}).map(
+            (key, value) => MapEntry(key, DateTime.parse(value)),
+          ),
+        );
+
+        results = Achievement.getDefaultAchievements().map((achievement) {
+          final isUnlocked = unlockedIds.contains(achievement.id);
+          return achievement.copyWith(
+            isUnlocked: isUnlocked,
+            unlockedAt: isUnlocked ? unlockedDates[achievement.id] : null,
+          );
+        }).toList();
       }
 
-      final data = doc.data()!;
-      final unlockedIds = Set<String>.from(data['achievements'] ?? []);
-      final unlockedDates = Map<String, DateTime>.from(
-        (data['dates'] as Map<String, dynamic>? ?? {}).map(
-          (key, value) => MapEntry(key, DateTime.parse(value)),
-        ),
-      );
-
-      return Achievement.getDefaultAchievements().map((achievement) {
-        final isUnlocked = unlockedIds.contains(achievement.id);
-        return achievement.copyWith(
-          isUnlocked: isUnlocked,
-          unlockedAt: isUnlocked ? unlockedDates[achievement.id] : null,
-        );
-      }).toList();
+      // Update cache
+      _cachedAchievements = results;
+      _lastFetchTime = DateTime.now();
+      return results;
     } catch (e) {
       debugPrint('Error loading achievements: $e');
-      return Achievement.getDefaultAchievements();
+      return _cachedAchievements ?? Achievement.getDefaultAchievements();
     }
   }
 
   Future<void> checkAndUnlockAchievements({
-    int? quizCount,
-    int? questionCount,
-    int? streak,
+    required QuizStatistics stats,
+    required int loginStreak,
     double? lastScore,
     bool? isExam,
     bool? isMultiplayer,
@@ -182,22 +203,22 @@ class AchievementService {
 
       switch (achievement.type) {
         case AchievementType.firstQuiz:
-          shouldUnlock = quizCount != null && quizCount >= 1;
+          shouldUnlock = stats.totalQuizzes >= 1;
           break;
         case AchievementType.perfectScore:
           shouldUnlock = lastScore != null && lastScore >= 100.0;
           break;
         case AchievementType.streak7:
-          shouldUnlock = streak != null && streak >= 7;
+          shouldUnlock = loginStreak >= 7;
           break;
         case AchievementType.streak30:
-          shouldUnlock = streak != null && streak >= 30;
+          shouldUnlock = loginStreak >= 30;
           break;
         case AchievementType.speed100:
-          shouldUnlock = questionCount != null && questionCount >= 100;
+          shouldUnlock = stats.totalQuestions >= 100;
           break;
         case AchievementType.master50:
-          shouldUnlock = quizCount != null && quizCount >= 50;
+          shouldUnlock = stats.totalQuizzes >= 50;
           break;
         case AchievementType.examAce:
           shouldUnlock =
@@ -211,6 +232,33 @@ class AchievementService {
           break;
         case AchievementType.earlyBird:
           shouldUnlock = now.hour >= 4 && now.hour < 6;
+          break;
+        case AchievementType.flashcardFan:
+          shouldUnlock = stats.flashcardSessions >= 10;
+          break;
+        case AchievementType.spacedMaster:
+          shouldUnlock = stats.spacedReviews >= 50;
+          break;
+        case AchievementType.tutorPet:
+          shouldUnlock = stats.aiExplanationsRead >= 20;
+          break;
+        case AchievementType.marathoner:
+          shouldUnlock = stats.totalQuestions >= 50;
+          break;
+        case AchievementType.multiSubject:
+          shouldUnlock = stats.categoryQuizzes.length >= 5;
+          break;
+        case AchievementType.sharpshooter:
+          shouldUnlock = stats.maxCorrectRow >= 10;
+          break;
+        case AchievementType.vocalist:
+          shouldUnlock = stats.ttsUsedCount >= 20;
+          break;
+        case AchievementType.doodler:
+          shouldUnlock = stats.handwritingUsedCount >= 10;
+          break;
+        case AchievementType.scholar:
+          shouldUnlock = stats.manualExplanationsRead >= 10;
           break;
       }
 
@@ -259,6 +307,9 @@ class AchievementService {
             isUnlocked: true,
             unlockedAt: now,
           ));
+
+          // Invalidate cache
+          _cachedAchievements = null;
         }
       });
     } catch (e) {
@@ -277,6 +328,10 @@ class AchievementService {
           .collection('achievements')
           .doc('unlocked')
           .delete();
+
+      // Invalidate cache
+      _cachedAchievements = null;
+      _lastFetchTime = null;
 
       // Optionally reset streak too if considered part of achievements
       // For now just achievements as requested

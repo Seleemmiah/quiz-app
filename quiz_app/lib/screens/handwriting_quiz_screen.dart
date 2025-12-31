@@ -29,10 +29,20 @@ class _HandwritingQuizScreenState extends State<HandwritingQuizScreen> {
   Future<void> _checkModel() async {
     final isDownloaded = await _ocrService.isModelDownloaded();
     if (!isDownloaded) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Downloading handwriting model...')),
-      );
-      await _ocrService.downloadModel();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Downloading handwriting model...')),
+        );
+      }
+      final result = await _ocrService.downloadModel();
+      if (result.contains('Error') || result.contains('Failed')) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to download model: $result')),
+          );
+        }
+        return;
+      }
     }
     if (mounted) {
       setState(() {

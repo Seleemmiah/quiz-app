@@ -35,12 +35,15 @@ class StudyPlan {
     return StudyPlan(
       id: map['id'] ?? '',
       examName: map['examName'] ?? '',
-      examDate: DateTime.parse(map['examDate']),
-      topics: List<String>.from(map['topics']),
-      topicProgress: Map<String, int>.from(map['topicProgress']),
-      sessions: List<StudySession>.from(
-          map['sessions']?.map((x) => StudySession.fromMap(x))),
-      createdDate: DateTime.parse(map['createdDate']),
+      examDate: DateTime.tryParse(map['examDate'] ?? '') ?? DateTime.now(),
+      topics: List<String>.from(map['topics'] ?? []),
+      topicProgress: Map<String, int>.from(map['topicProgress'] ?? {}),
+      sessions: (map['sessions'] as List<dynamic>?)
+              ?.map((x) => StudySession.fromMap(x))
+              .toList() ??
+          [],
+      createdDate:
+          DateTime.tryParse(map['createdDate'] ?? '') ?? DateTime.now(),
     );
   }
 
